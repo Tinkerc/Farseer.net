@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Web.Mvc;
-using FS.Utils.Extends;
 
-namespace FS.Utils.Web.Extends
+// ReSharper disable once CheckNamespace
+namespace FS.Extends
 {
     /// <summary>
     ///     其它扩展，夫归类的扩展

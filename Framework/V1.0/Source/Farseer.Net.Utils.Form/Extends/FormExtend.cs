@@ -1,4 +1,4 @@
-﻿namespace FS.Utils.Form.Extends
+﻿namespace FS.Extends
 {
     public static class FormExtend
     {

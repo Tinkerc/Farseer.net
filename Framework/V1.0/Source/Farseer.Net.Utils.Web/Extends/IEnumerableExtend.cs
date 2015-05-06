@@ -1,10 +1,10 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using FS.Core.Infrastructure;
-using FS.Utils.Extends;
 using FS.Utils.Web.UI.WebControls;
 
-namespace FS.Utils.Web.Extends
+// ReSharper disable once CheckNamespace
+namespace FS.Extends
 {
     public static class IEnumerableExtend
     {

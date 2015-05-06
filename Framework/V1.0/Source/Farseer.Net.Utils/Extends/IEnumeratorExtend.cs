@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 
-namespace FS.Utils.Extends
+// ReSharper disable once CheckNamespace
+namespace FS.Extends
 {
     public static class IEnumeratorExtend
     {

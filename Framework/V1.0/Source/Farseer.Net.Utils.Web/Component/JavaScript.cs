@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using FS.Utils.Extends;
+using FS.Extends;
 
 namespace FS.Utils.Web.Component
 {

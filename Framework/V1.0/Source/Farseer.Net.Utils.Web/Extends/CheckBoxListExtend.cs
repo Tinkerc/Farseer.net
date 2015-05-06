@@ -3,9 +3,10 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Web.UI;
 using System.Web.UI.WebControls;
-using FS.Utils.Extends;
+using FS.Utils;
 
-namespace FS.Utils.Web.Extends
+// ReSharper disable once CheckNamespace
+namespace FS.Extends
 {
     public static class CheckBoxListExtend
     {

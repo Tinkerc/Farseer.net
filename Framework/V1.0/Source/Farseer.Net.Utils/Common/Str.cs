@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Text;
 using System.Text.RegularExpressions;
-using FS.Utils.Extends;
+using FS.Extends;
 
 namespace FS.Utils.Common
 {

@@ -1,4 +1,4 @@
-﻿namespace FS.Utils.Extends
+﻿namespace FS.Extends
 {
     public static class ListHelper
     {

@@ -1,4 +1,4 @@
-﻿namespace FS.Utils.Extends
+﻿namespace FS.Extends
 {
     /// <summary>
     ///     格式化变量

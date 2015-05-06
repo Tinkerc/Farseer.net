@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Windows.Forms;
+using FS.Extends;
 
 namespace FS.Utils.Form.Common
 {

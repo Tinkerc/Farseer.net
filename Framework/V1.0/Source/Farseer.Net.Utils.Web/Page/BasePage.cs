@@ -3,7 +3,7 @@ using System.Text;
 using System.Web;
 using System.Web.SessionState;
 using FS.Configs;
-using FS.Utils.Extends;
+using FS.Extends;
 using FS.Utils.Web.Common;
 using FS.Utils.Web.Component;
 

@@ -2,8 +2,10 @@
 using System.Collections.Generic;
 using System.Xml.Linq;
 using FS.Mapping.Context;
+using FS.Utils;
 
-namespace FS.Utils.Extends
+// ReSharper disable once CheckNamespace
+namespace FS.Extends
 {
     /// <summary>
     /// XML扩展

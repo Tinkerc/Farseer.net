@@ -1,4 +1,5 @@
 ﻿using System;
+using FS.Extends;
 
 namespace FS.Utils.Common
 {

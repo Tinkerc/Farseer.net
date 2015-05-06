@@ -5,6 +5,7 @@ using System.Data.Common;
 using System.Linq;
 using System.Text;
 using FS.Core.Infrastructure;
+using FS.Extends;
 using FS.Mapping.Context;
 using FS.Utils;
 

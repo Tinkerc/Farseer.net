@@ -1,7 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace FS.Utils.Extends
+// ReSharper disable once CheckNamespace
+namespace FS.Extends
 {
     /// <summary>
     ///     其它扩展，夫归类的扩展

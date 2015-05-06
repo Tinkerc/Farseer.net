@@ -1,7 +1,8 @@
 ﻿using FS.Core.Data.Table;
 using FS.Core.Data.View;
 
-namespace FS.Utils.Extends
+// ReSharper disable once CheckNamespace
+namespace FS.Extends
 {
     public static class SetExtend
     {

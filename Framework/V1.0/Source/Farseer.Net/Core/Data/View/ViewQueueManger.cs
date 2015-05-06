@@ -3,8 +3,8 @@ using System.Collections.Generic;
 using System.Data;
 using System.Data.Common;
 using FS.Core.Infrastructure;
+using FS.Extends;
 using FS.Mapping.Context;
-using FS.Utils;
 
 namespace FS.Core.Data.View
 {

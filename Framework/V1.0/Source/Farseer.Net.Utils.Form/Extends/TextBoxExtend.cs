@@ -3,9 +3,9 @@ using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Windows.Forms;
-using FS.Utils.Extends;
 
-namespace FS.Utils.Form.Extends
+// ReSharper disable once CheckNamespace
+namespace FS.Extends
 {
     public static class TextBoxExtend
     {

@@ -2,7 +2,8 @@
 using System.Text;
 using System.Text.RegularExpressions;
 
-namespace FS.Utils.Extends
+// ReSharper disable once CheckNamespace
+namespace FS.Extends
 {
     public static class ArrayExtend
     {

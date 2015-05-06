@@ -4,14 +4,11 @@ using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 using FS.Core.Infrastructure;
-using FS.Extends;
+using FS.Utils;
 
-namespace FS.Utils
+namespace FS.Extends
 {
-    /// <summary>
-    /// 类型转换器
-    /// </summary>
-    public class ConvertHelper
+    public static class Extend
     {
         /// <summary>
         ///     将对象转换为T类型
@@ -19,7 +16,7 @@ namespace FS.Utils
         /// <param name="sourceValue">要转换的源对象</param>
         /// <param name="defValue">转换失败时，代替的默认值</param>
         /// <typeparam name="T">基本类型</typeparam>
-        public static T ConvertType<T>(object sourceValue, T defValue = default(T))
+        public static T ConvertType<T>(this object sourceValue, T defValue = default(T))
         {
             if (sourceValue == null) { return defValue; }
 
@@ -38,7 +35,7 @@ namespace FS.Utils
         /// </summary>
         /// <param name="sourceValue">要转换的值</param>
         /// <param name="defType">要转换的对象的类型</param>
-        public static object ConvertType(object sourceValue, Type defType)
+        public static object ConvertType(this object sourceValue, Type defType)
         {
             if (sourceValue == null) { return null; }
 
@@ -72,130 +69,7 @@ namespace FS.Utils
                 }
             }
 
-            return ConvertType(sourceValue, sourceValue.GetType(), defType);
-        }
-
-        /// <summary>
-        /// 将值转换成类型对象的值（此方法作为公共的调用，只支持单值转换)
-        /// </summary>
-        /// <param name="objValue">要转换的值</param>
-        /// <param name="objType">要转换的值类型</param>
-        /// <param name="defType">转换失败时，代替的默认值类型</param>
-        /// <returns></returns>
-        public static object ConvertType(object objValue, Type objType, Type defType)
-        {
-            if (objValue == null) { return null; }
-            if (objType == defType) { return objValue; }
-
-            var objString = objValue.ToString();
-
-            var defTypeCode = Type.GetTypeCode(defType);
-            var objTypeCode = Type.GetTypeCode(objType);
-
-            // 枚举处理
-            if (defType.IsEnum)
-            {
-                if (string.IsNullOrWhiteSpace(objString)) { return null; }
-                return IsType<int>(objString) ? Enum.ToObject(defType, int.Parse(objString)) : Enum.Parse(defType, objString, true);
-            }
-            // bool转int
-            if (objTypeCode == TypeCode.Boolean)
-            {
-                switch (defTypeCode)
-                {
-                    case TypeCode.Byte:
-                    case TypeCode.Decimal:
-                    case TypeCode.Double:
-                    case TypeCode.Int16:
-                    case TypeCode.Int32:
-                    case TypeCode.Int64:
-                    case TypeCode.SByte:
-                    case TypeCode.UInt16:
-                    case TypeCode.UInt32:
-                    case TypeCode.UInt64: return ConvertType(objValue, true) ? 1 : 0;
-                }
-            }
-
-            switch (defTypeCode)
-            {
-                case TypeCode.Boolean: { return (object)(!string.IsNullOrWhiteSpace(objString) && (objString.Equals("on") || objString == "1" || objString.Equals("true"))); }
-                case TypeCode.Byte: { Byte result; return Byte.TryParse(objString, out result) ? (object)result : null; }
-                case TypeCode.Char: { Char result; return Char.TryParse(objString, out result) ? (object)result : null; }
-                case TypeCode.DateTime: { DateTime result; return DateTime.TryParse(objString, out result) ? (object)result : null; }
-                case TypeCode.Decimal: { Decimal result; return Decimal.TryParse(objString, out result) ? (object)result : null; }
-                case TypeCode.Double: { Double result; return Double.TryParse(objString, out result) ? (object)result : null; }
-                case TypeCode.Int16: { Int16 result; return Int16.TryParse(objString, out result) ? (object)result : null; }
-                case TypeCode.Int32: { Int32 result; return Int32.TryParse(objString, out result) ? (object)result : null; }
-                case TypeCode.Int64: { Int64 result; return Int64.TryParse(objString, out result) ? (object)result : null; }
-                case TypeCode.SByte: { SByte result; return SByte.TryParse(objString, out result) ? (object)result : null; }
-                case TypeCode.Single: { Single result; return Single.TryParse(objString, out result) ? (object)result : null; }
-                case TypeCode.UInt16: { UInt16 result; return UInt16.TryParse(objString, out result) ? (object)result : null; }
-                case TypeCode.UInt32: { UInt32 result; return UInt32.TryParse(objString, out result) ? (object)result : null; }
-                case TypeCode.UInt64: { UInt64 result; return UInt64.TryParse(objString, out result) ? (object)result : null; }
-                case TypeCode.Empty:
-                case TypeCode.String: { return (object)objString; }
-                case TypeCode.Object: { break; }
-            }
-
-            try { return Convert.ChangeType(objValue, defType); }
-            catch { return null; }
-        }
-
-        /// <summary>
-        ///     判断是否T类型
-        /// </summary>
-        /// <param name="sourceValue">要判断的对象</param>
-        /// <typeparam name="T">基本类型</typeparam>
-        public static bool IsType<T>(object sourceValue)
-        {
-            if (sourceValue == null) { return false; }
-
-            var defType = typeof(T);
-            var objType = sourceValue.GetType();
-
-            var defTypeCode = Type.GetTypeCode(defType);
-            var objTypeCode = Type.GetTypeCode(objType);
-
-            // 相同类型，则直接返回原型
-            if (objTypeCode == defTypeCode) { return true; }
-
-            // 判断是否为泛型
-            if (defType.IsGenericType)
-            {
-                // 非 Nullable<> 类型
-                if (defType.GetGenericTypeDefinition() != typeof(Nullable<>))
-                {
-                    return sourceValue is T;
-                }
-                // 对Nullable<>类型处理
-                defType = Nullable.GetUnderlyingType(defType);
-                defTypeCode = Type.GetTypeCode(defType);
-            }
-
-            if (defType.IsEnum) { return sourceValue is Enum; }
-            var objString = sourceValue.ToString();
-
-            switch (defTypeCode)
-            {
-                case TypeCode.Boolean: { return !string.IsNullOrWhiteSpace(objString) && (objString.Equals("on") || objString == "1" || objString.Equals("true")); }
-                case TypeCode.Byte: { Byte result; return Byte.TryParse(objString, out result); }
-                case TypeCode.Char: { Char result; return Char.TryParse(objString, out result); }
-                case TypeCode.DateTime: { DateTime result; return DateTime.TryParse(objString, out result); }
-                case TypeCode.Decimal: { Decimal result; return Decimal.TryParse(objString, out result); }
-                case TypeCode.Double: { Double result; return Double.TryParse(objString, out result); }
-                case TypeCode.Int16: { Int16 result; return Int16.TryParse(objString, out result); }
-                case TypeCode.Int32: { Int32 result; return Int32.TryParse(objString, out result); }
-                case TypeCode.Int64: { Int64 result; return Int64.TryParse(objString, out result); }
-                case TypeCode.SByte: { SByte result; return SByte.TryParse(objString, out result); }
-                case TypeCode.Single: { Single result; return Single.TryParse(objString, out result); }
-                case TypeCode.UInt16: { UInt16 result; return UInt16.TryParse(objString, out result); }
-                case TypeCode.UInt32: { UInt32 result; return UInt32.TryParse(objString, out result); }
-                case TypeCode.UInt64: { UInt64 result; return UInt64.TryParse(objString, out result); }
-                case TypeCode.Empty:
-                case TypeCode.String: { return true; }
-                case TypeCode.Object: { break; }
-            }
-            return objType == defType;
+            return ConvertHelper.ConvertType(sourceValue, sourceValue.GetType(), defType);
         }
 
         /// <summary>
@@ -205,7 +79,7 @@ namespace FS.Utils
         /// <param name="splitString">分隔符为NullOrEmpty时，则直接拆份为Char</param>
         /// <param name="defValue">默认值(单项转换失败时，默认值为NullOrEmpty时，则不添加，否则替换为默认值)</param>
         /// <typeparam name="T">基本类型</typeparam>
-        public static List<T> ToList<T>(string str, T defValue, string splitString = ",")
+        public static List<T> ToList<T>(this string str, T defValue, string splitString = ",")
         {
             var lst = new List<T>();
             if (string.IsNullOrWhiteSpace(str)) { return lst; }
@@ -228,7 +102,7 @@ namespace FS.Utils
         /// </summary>
         /// <param name="lst">集合</param>
         /// <returns></returns>
-        public static DataTable ToTable<TEntity>(List<TEntity> lst) where TEntity : class
+        public static DataTable ToTable<TEntity>(this List<TEntity> lst) where TEntity : class
         {
             var dt = new DataTable();
             if (lst.Count == 0) { return dt; }
@@ -250,7 +124,7 @@ namespace FS.Utils
                 dt.Rows.Add(dt.NewRow());
                 foreach (var field in lstFields)
                 {
-                    var value = GetValue(info, field.Key.Name, (object)null);
+                    var value = ConvertHelper.GetValue(info, field.Key.Name, (object)null);
                     if (value == null) { continue; }
                     if (!dt.Columns.Contains(field.Value.FieldAtt.Name)) { dt.Columns.Add(field.Value.FieldAtt.Name); }
                     dt.Rows[dt.Rows.Count - 1][field.Value.FieldAtt.Name] = value;
@@ -264,7 +138,7 @@ namespace FS.Utils
         /// </summary>
         /// <param name="dt">源DataTable</param>
         /// <typeparam name="TEntity">实体类</typeparam>
-        public static List<TEntity> ToList<TEntity>(DataTable dt) where TEntity : class, new()
+        public static List<TEntity> ToList<TEntity>(this DataTable dt) where TEntity : class, new()
         {
             var list = new List<TEntity>();
             var map = CacheManger.GetFieldMap(typeof(TEntity));
@@ -285,33 +159,12 @@ namespace FS.Utils
             }
             return list;
         }
-
-        /// <summary>
-        ///     查找对象属性值
-        /// </summary>
-        /// <typeparam name="TEntity">实体类</typeparam>
-        /// <typeparam name="T">返回值类型</typeparam>
-        /// <param name="info">当前实体类</param>
-        /// <param name="propertyName">属性名</param>
-        /// <param name="defValue">默认值</param>
-        public static T GetValue<TEntity, T>(TEntity info, string propertyName, T defValue = default(T)) where TEntity : class
-        {
-            if (info == null) { return defValue; }
-            foreach (var property in info.GetType().GetProperties())
-            {
-                if (property.Name != propertyName) { continue; }
-                if (!property.CanRead) { return defValue; }
-                return ConvertType(property.GetValue(info, null), defValue);
-            }
-            return defValue;
-        }
-
         /// <summary>
         ///     IDataReader转换为实体类
         /// </summary>
         /// <param name="reader">源IDataReader</param>
         /// <typeparam name="TEntity">实体类</typeparam>
-        public static List<TEntity> ToList<TEntity>(IDataReader reader) where TEntity : class, new()
+        public static List<TEntity> ToList<TEntity>(this IDataReader reader) where TEntity : class, new()
         {
             var list = new List<TEntity>();
             var map = CacheManger.GetFieldMap(typeof(TEntity));
@@ -323,7 +176,7 @@ namespace FS.Utils
                 //赋值字段
                 foreach (var kic in map.MapList)
                 {
-                    if (HaveName(reader, kic.Value.FieldAtt.Name))
+                    if (ConvertHelper.HaveName(reader, kic.Value.FieldAtt.Name))
                     {
                         if (!kic.Key.CanWrite) { continue; }
                         kic.Key.SetValue(t, reader[kic.Value.FieldAtt.Name].ConvertType(kic.Key.PropertyType), null);
@@ -341,7 +194,7 @@ namespace FS.Utils
         /// </summary>
         /// <param name="reader">源IDataReader</param>
         /// <typeparam name="TEntity">实体类</typeparam>
-        public static TEntity ToInfo<TEntity>(IDataReader reader) where TEntity : class, new()
+        public static TEntity ToInfo<TEntity>(this IDataReader reader) where TEntity : class, new()
         {
             var map = CacheManger.GetFieldMap(typeof(TEntity));
 
@@ -353,7 +206,7 @@ namespace FS.Utils
                 //赋值字段
                 foreach (var kic in map.MapList)
                 {
-                    if (HaveName(reader, kic.Value.FieldAtt.Name))
+                    if (ConvertHelper.HaveName(reader, kic.Value.FieldAtt.Name))
                     {
                         if (!kic.Key.CanWrite) { continue; }
                         kic.Key.SetValue(t, reader[kic.Value.FieldAtt.Name].ConvertType(kic.Key.PropertyType), null);
@@ -364,32 +217,12 @@ namespace FS.Utils
             reader.Close();
             return isHaveValue ? t : null;
         }
-
-        /// <summary>
-        ///     判断IDataReader是否存在某列
-        /// </summary>
-        /// <param name="reader"></param>
-        /// <param name="name"></param>
-        /// <returns></returns>
-        public static bool HaveName(IDataReader reader, string name)
-        {
-            for (var i = 0; i < reader.FieldCount; i++)
-            {
-                if (reader.GetName(i).Equals(name)) { return true; }
-            }
-            return false;
-        }
-
-
-
-
-
         /// <summary>
         ///     将集合类转换成DataTable
         /// </summary>
         /// <param name="list">集合</param>
         /// <returns></returns>
-        public static DataTable ToTable(IList list)
+        public static DataTable ToTable(this IList list)
         {
             var result = new DataTable();
             if (list.Count <= 0) { return result; }
@@ -413,7 +246,7 @@ namespace FS.Utils
         /// <param name="list">集合</param>
         /// <param name="propertyName">需要返回的列的列名</param>
         /// <returns>数据集(表)</returns>
-        public static DataTable ToTable(IList list, params string[] propertyName)
+        public static DataTable ToTable(this IList list, params string[] propertyName)
         {
             var propertyNameList = new List<string>();
             if (propertyName != null)
@@ -458,30 +291,11 @@ namespace FS.Utils
         }
 
         /// <summary>
-        ///     设置对象属性值
-        /// </summary>
-        /// <typeparam name="TEntity">实体类</typeparam>
-        /// <typeparam name="T">返回值类型</typeparam>
-        /// <param name="info">当前实体类</param>
-        /// <param name="propertyName">属性名</param>
-        /// <param name="objValue">要填充的值</param>
-        public static void SetValue<TEntity>(TEntity info, string propertyName, object objValue) where TEntity : class
-        {
-            if (info == null) { return; }
-            foreach (var property in info.GetType().GetProperties())
-            {
-                if (property.Name != propertyName) { continue; }
-                if (!property.CanWrite) { return; }
-                property.SetValue(info, ConvertType(objValue, property.PropertyType), null);
-            }
-        }
-
-        /// <summary>
         ///     将DataRow转成实体类
         /// </summary>
         /// <typeparam name="TEntity">实体类</typeparam>
         /// <param name="dr">源DataRow</param>
-        public static TEntity ToInfo<TEntity>(DataRow dr) where TEntity : class,new()
+        public static TEntity ToInfo<TEntity>(this DataRow dr) where TEntity : class,new()
         {
             var map = CacheManger.GetFieldMap(typeof(TEntity));
             var t = (TEntity)Activator.CreateInstance(typeof(TEntity));
@@ -505,7 +319,7 @@ namespace FS.Utils
         /// <param name="source">List列表</param>
         /// <param name="pageSize">每页大小</param>
         /// <param name="pageIndex">索引</param>
-        public static List<TSource> ToList<TSource>(IOrderedQueryable<TSource> source, int pageSize, int pageIndex = 1)
+        public static List<TSource> ToList<TSource>(this IOrderedQueryable<TSource> source, int pageSize, int pageIndex = 1)
         {
             return source.Skip(pageSize * (pageIndex - 1)).Take(pageSize).ToList();
         }
@@ -518,7 +332,7 @@ namespace FS.Utils
         /// <param name="recordCount">记录总数</param>
         /// <param name="pageSize">每页大小</param>
         /// <param name="pageIndex">索引</param>
-        public static List<TSource> ToList<TSource>(IOrderedQueryable<TSource> source, out int recordCount, int pageSize, int pageIndex = 1)
+        public static List<TSource> ToList<TSource>(this IOrderedQueryable<TSource> source, out int recordCount, int pageSize, int pageIndex = 1)
         {
             recordCount = source.Count();
 

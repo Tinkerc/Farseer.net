@@ -1,6 +1,7 @@
 ﻿using System.Web;
 using System.Web.SessionState;
 using FS.Configs;
+using FS.Extends;
 
 namespace FS.Utils.Web.Common
 {

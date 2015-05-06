@@ -1,6 +1,6 @@
 ﻿using System.Linq;
 using System.Text.RegularExpressions;
-using FS.Utils.Extends;
+using FS.Extends;
 
 namespace FS.Utils.Common
 {

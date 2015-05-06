@@ -1,7 +1,8 @@
 ﻿using System.Collections;
 using FS.Utils.Web.UI.WebControls;
 
-namespace FS.Utils.Web.Extends
+// ReSharper disable once CheckNamespace
+namespace FS.Extends
 {
     public static class RepeaterExtend
     {

@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Linq.Expressions;
+using FS.Utils;
 
-namespace FS.Utils.Extends
+// ReSharper disable once CheckNamespace
+namespace FS.Extends
 {
     /// <summary>
     ///     Expression表达式树扩展

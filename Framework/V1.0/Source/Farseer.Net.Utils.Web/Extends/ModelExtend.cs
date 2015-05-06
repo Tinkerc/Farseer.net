@@ -1,6 +1,7 @@
 ﻿using System.Web.UI;
 
-namespace FS.Utils.Web.Extends
+// ReSharper disable once CheckNamespace
+namespace FS.Extends
 {
     /// <summary>
     ///     实体类扩展方法

@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using FS.Mapping.Verify;
+using FS.Utils;
 
-namespace FS.Utils.Extends
+// ReSharper disable once CheckNamespace
+namespace FS.Extends
 {
     public static class EntityExtend
     {

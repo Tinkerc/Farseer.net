@@ -1,6 +1,7 @@
 using System;
 using System.Web;
 using System.Web.Caching;
+using FS.Extends;
 
 namespace FS.Utils.Web.Common
 {

@@ -3,7 +3,7 @@ using System.Text;
 using System.Web;
 using System.Web.Mvc;
 using FS.Configs;
-using FS.Utils.Extends;
+using FS.Extends;
 using FS.Utils.Web.Common;
 
 namespace FS.Utils.Web.Page

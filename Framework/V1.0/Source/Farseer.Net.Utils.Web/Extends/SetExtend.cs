@@ -3,7 +3,8 @@ using FS.Core.Data.Table;
 using FS.Core.Infrastructure;
 using FS.Utils.Web.UI.WebControls;
 
-namespace FS.Utils.Web.Extends
+// ReSharper disable once CheckNamespace
+namespace FS.Extends
 {
     public static class SetExtend
     {

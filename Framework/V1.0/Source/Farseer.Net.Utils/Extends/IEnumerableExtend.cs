@@ -5,7 +5,8 @@ using System.Linq;
 using System.Text;
 using FS.Core.Infrastructure;
 
-namespace FS.Utils.Extends
+// ReSharper disable once CheckNamespace
+namespace FS.Extends
 {
     public static class IEnumerableExtend
     {

@@ -2,6 +2,7 @@
 using System.Text.RegularExpressions;
 using System.Web;
 using FS.Configs;
+using FS.Extends;
 
 namespace FS.Utils.Web.Common
 {
