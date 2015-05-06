@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Reflection;
-using FS.Core;
+using FS.Utils;
 
 namespace FS.Mapping.Verify
 {

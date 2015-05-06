@@ -4,8 +4,8 @@ using System.Data;
 using System.Linq;
 using System.Linq.Expressions;
 using FS.Core.Infrastructure;
-using FS.Extend;
 using FS.Mapping.Context;
+using FS.Utils;
 
 namespace FS.Core.Data.View
 {

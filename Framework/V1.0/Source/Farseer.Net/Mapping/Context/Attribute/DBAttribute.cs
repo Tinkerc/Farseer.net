@@ -1,7 +1,7 @@
 ﻿using System;
 using FS.Configs;
-using FS.Core;
 using FS.Core.Data;
+using FS.Utils;
 
 namespace FS.Mapping.Context.Attribute
 {

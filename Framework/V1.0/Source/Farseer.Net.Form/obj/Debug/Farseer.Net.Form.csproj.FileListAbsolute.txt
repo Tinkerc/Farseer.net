@@ -1,0 +1,7 @@
+E:\公司\Farseer.Net\Framework\V1.0\Source\Farseer.Net.Form\obj\Debug\Farseer.Net.Form.csprojResolveAssemblyReference.cache
+E:\公司\Farseer.Net\Framework\V1.0\Source\Farseer.Net.Form\bin\Debug\Farseer.Net.Form.dll
+E:\公司\Farseer.Net\Framework\V1.0\Source\Farseer.Net.Form\bin\Debug\Farseer.Net.Form.pdb
+E:\公司\Farseer.Net\Framework\V1.0\Source\Farseer.Net.Form\bin\Debug\Farseer.Net.dll
+E:\公司\Farseer.Net\Framework\V1.0\Source\Farseer.Net.Form\bin\Debug\Farseer.Net.pdb
+E:\公司\Farseer.Net\Framework\V1.0\Source\Farseer.Net.Form\obj\Debug\Farseer.Net.Form.dll
+E:\公司\Farseer.Net\Framework\V1.0\Source\Farseer.Net.Form\obj\Debug\Farseer.Net.Form.pdb

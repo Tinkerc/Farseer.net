@@ -4,8 +4,8 @@ using System.Data;
 using System.Linq;
 using System.Linq.Expressions;
 using FS.Core.Infrastructure;
-using FS.Extend;
 using FS.Mapping.Context;
+using FS.Utils;
 
 namespace FS.Core.Data.Table
 {
@@ -505,7 +505,7 @@ namespace FS.Core.Data.Table
             // 如果是MSSQLSER，则启用BulkCopy
             if (QueueManger.DataBase.DataType == Data.DataBaseType.SqlServer)
             {
-                QueueManger.DataBase.ExecuteSqlBulkCopy(_name, lst.ToTable());
+                QueueManger.DataBase.ExecuteSqlBulkCopy(_name, ConvertHelper.ToTable(lst));
                 return lst;
             }
             lst.ForEach(entity =>

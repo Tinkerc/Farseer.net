@@ -3,8 +3,8 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Reflection;
-using FS.Core;
 using FS.Mapping.Context.Attribute;
+using FS.Utils;
 
 namespace FS.Mapping.Context
 {

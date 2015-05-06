@@ -3,8 +3,8 @@ using System.Collections.Generic;
 using System.Data;
 using System.Data.Common;
 using FS.Core.Infrastructure;
-using FS.Extend;
 using FS.Mapping.Context;
+using FS.Utils;
 
 namespace FS.Core.Data.View
 {
@@ -79,7 +79,6 @@ namespace FS.Core.Data.View
             using (var reader = DataBase.GetReader(CommandType.Text, queue.Sql.ToString(), param))
             {
                 t = reader.ToInfo<TEntity>();
-                //reader.Close();
             }
             DataBase.Close(false);
 

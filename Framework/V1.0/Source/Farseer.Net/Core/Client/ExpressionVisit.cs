@@ -5,6 +5,7 @@ using System.Text;
 using FS.Core.Client.SqlServer;
 using FS.Core.Data.Table;
 using FS.Core.Infrastructure;
+using FS.Utils;
 
 namespace FS.Core.Client
 {

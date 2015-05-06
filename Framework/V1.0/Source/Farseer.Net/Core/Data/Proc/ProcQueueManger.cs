@@ -5,8 +5,8 @@ using System.Data.Common;
 using System.Linq;
 using System.Text;
 using FS.Core.Infrastructure;
-using FS.Extend;
 using FS.Mapping.Context;
+using FS.Utils;
 
 namespace FS.Core.Data.Proc
 {
@@ -121,7 +121,7 @@ namespace FS.Core.Data.Proc
             var map = CacheManger.GetFieldMap(typeof(TEntity));
             foreach (var kic in map.MapList.Where(o => o.Value.FieldAtt.IsOutParam))
             {
-                kic.Key.SetValue(entity, queue.Param.Find(o => o.ParameterName == DbProvider.ParamsPrefix + kic.Value.FieldAtt.Name).Value.ConvertType(kic.Key.PropertyType), null);
+                kic.Key.SetValue(entity, ConvertHelper.ConvertType(queue.Param.Find(o => o.ParameterName == DbProvider.ParamsPrefix + kic.Value.FieldAtt.Name).Value, kic.Key.PropertyType), null);
             }
         }
         /// <summary>

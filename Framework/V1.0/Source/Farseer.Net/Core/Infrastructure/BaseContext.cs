@@ -3,6 +3,7 @@ using System.ComponentModel;
 using FS.Configs;
 using FS.Core.Data;
 using FS.Mapping.Context;
+using FS.Utils;
 
 namespace FS.Core.Infrastructure
 {

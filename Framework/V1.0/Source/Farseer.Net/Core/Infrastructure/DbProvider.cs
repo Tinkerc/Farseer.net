@@ -13,6 +13,7 @@ using FS.Core.Client.SqLite;
 using FS.Core.Client.SqlServer;
 using FS.Core.Data;
 using FS.Core.Data.Table;
+using FS.Utils;
 
 namespace FS.Core.Infrastructure
 {

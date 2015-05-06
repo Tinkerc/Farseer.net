@@ -4,11 +4,11 @@ using System.Data.Common;
 using System.Data.SqlClient;
 using System.IO;
 using System.Text;
-using System.Web;
 using FS.Configs;
 using FS.Core.Data;
 using FS.Core.Infrastructure;
 using FS.Mapping.Context;
+using FS.Utils;
 
 namespace FS.Core
 {
@@ -203,14 +203,7 @@ namespace FS.Core
             var fileName = filePath.Replace("/", "\\");
             if (fileName.StartsWith("/")) { fileName = fileName.Substring(1); }
 
-            if (HttpContext.Current != null)
-            {
-                fileName = HttpContext.Current.Request.PhysicalApplicationPath + "App_Data/" + fileName;
-            }
-            else
-            {
-                fileName = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "App_Data/" + fileName);
-            }
+            fileName = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "App_Data/" + fileName);
             return fileName;
         }
     }

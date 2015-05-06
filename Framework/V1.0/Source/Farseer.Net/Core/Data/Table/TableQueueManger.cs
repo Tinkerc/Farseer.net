@@ -5,8 +5,8 @@ using System.Data.Common;
 using System.Linq;
 using System.Text;
 using FS.Core.Infrastructure;
-using FS.Extend;
 using FS.Mapping.Context;
+using FS.Utils;
 
 namespace FS.Core.Data.Table
 {
@@ -137,7 +137,6 @@ namespace FS.Core.Data.Table
             using (var reader = DataBase.GetReader(CommandType.Text, queue.Sql.ToString(), param))
             {
                 t = reader.ToInfo<TEntity>();
-                //reader.Close();
             }
             DataBase.Close(false);
 
