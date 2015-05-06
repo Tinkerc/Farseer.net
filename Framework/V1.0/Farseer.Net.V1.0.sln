@@ -29,9 +29,9 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NHibernate.Tests", "Test\NH
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EntityFramework.Tests", "Test\EntityFramework.Tests\EntityFramework.Tests.csproj", "{E67BB23C-1BD8-4CF3-AB48-DF78D9150FE9}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Farseer.Net.Utils.Web", "Source\Farseer.Net.Web\Farseer.Net.Utils.Web.csproj", "{05F95F2C-15A2-49AA-ACF4-0357B582BBB5}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Farseer.Net.Utils.Web", "Source\Farseer.Net.Utils.Web\Farseer.Net.Utils.Web.csproj", "{05F95F2C-15A2-49AA-ACF4-0357B582BBB5}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Farseer.Net.Utils.Form", "Source\Farseer.Net.Form\Farseer.Net.Utils.Form.csproj", "{E6AD8305-13AD-4FA6-B9C7-7F183222D734}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Farseer.Net.Utils.Form", "Source\Farseer.Net.Utils.Form\Farseer.Net.Utils.Form.csproj", "{E6AD8305-13AD-4FA6-B9C7-7F183222D734}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Farseer.Net.Utils", "Source\Farseer.Net.Utils\Farseer.Net.Utils.csproj", "{9E86E93E-F4A9-4B48-BDD8-2DC9EC4568F4}"
 EndProject
