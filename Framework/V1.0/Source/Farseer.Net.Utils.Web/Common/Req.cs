@@ -8,7 +8,6 @@ using System.Text;
 using System.Web;
 using FS.Configs;
 using FS.Extends;
-using FS.Mapping.Verify;
 using FS.Utils.Common;
 using FS.Utils.Web.Component;
 
@@ -559,37 +558,7 @@ namespace FS.Utils.Web.Common
         /// <param name="request">NameValueCollection</param>
         /// <param name="prefix">控件前缀</param>
         /// <param name="tip">弹出框事件委托</param>
-        /// <param name="url">跳转地址</param>
-        public static TEntity Fill<TEntity>(NameValueCollection request, Action<string, string> tip = null, string url = "", string prefix = "hl") where TEntity : class,IVerification, new()
-        {
-            if (tip == null)
-            {
-                tip = new Terminator().Alert;
-            }
-
-            Dictionary<string, List<string>> dicError;
-            var info = Fill<TEntity>(request, out dicError, prefix);
-            if (dicError.Count > 0)
-            {
-                var lst = new List<string>();
-                foreach (var item in dicError)
-                {
-                    lst.AddRange(item.Value);
-                }
-
-                tip(lst.ToString("<br />"), url);
-                return null;
-            }
-            return info;
-        }
-
-        /// <summary>
-        ///     把提交过来的内容转化成为实体类(注意CheckBox 未选中时，是NULL，需要手动判断)
-        /// </summary>
-        /// <param name="request">NameValueCollection</param>
-        /// <param name="prefix">控件前缀</param>
-        /// <param name="tip">弹出框事件委托</param>
-        public static TEntity Fill<TEntity>(NameValueCollection request, Action<Dictionary<string, List<string>>> tip, string prefix = "hl") where TEntity : class,IVerification, new()
+        public static TEntity Fill<TEntity>(NameValueCollection request, Action<Dictionary<string, List<string>>> tip, string prefix = "hl") where TEntity : class, new()
         {
             Dictionary<string, List<string>> dicError;
             var info = Fill<TEntity>(request, out dicError, prefix);
@@ -607,7 +576,7 @@ namespace FS.Utils.Web.Common
         /// <param name="request">NameValueCollection</param>
         /// <param name="prefix">控件前缀</param>
         /// <param name="dicError">返回错误消息,key：属性名称；value：错误消息</param>
-        public static TEntity Fill<TEntity>(NameValueCollection request, out Dictionary<string, List<string>> dicError, string prefix = "hl") where TEntity : class,IVerification, new()
+        public static TEntity Fill<TEntity>(NameValueCollection request, out Dictionary<string, List<string>> dicError, string prefix = "hl") where TEntity : class, new()
         {
             dicError = new Dictionary<string, List<string>>();
             var t = new TEntity();

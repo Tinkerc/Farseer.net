@@ -1,6 +1,7 @@
 ﻿using System.Data.Entity;
 using Demo.VO.Members;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using System.Linq;
 
 namespace EntityFramework.Tests
 {
@@ -12,7 +13,7 @@ namespace EntityFramework.Tests
         {
             using (var po = new POTest())
             {
-                var type = po.User.GetType();
+                //po.User.Where()
             }
         }
     }

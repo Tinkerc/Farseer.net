@@ -53,6 +53,7 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Extends\IEnumerableExtend.cs" />
+    <Compile Include="Extends\IReqExtend.cs" />
     <Compile Include="Extends\ModelExtend.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -155,7 +156,6 @@
       <Name>Farseer.Net</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
