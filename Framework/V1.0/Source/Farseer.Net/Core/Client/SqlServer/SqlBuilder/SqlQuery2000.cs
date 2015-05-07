@@ -10,10 +10,10 @@ namespace FS.Core.Client.SqlServer.SqlBuilder
     {
         public SqlQuery2000(IQueueManger queueManger, IQueue queue) : base(queueManger, queue) { }
 
-        public override void ToList(int pageSize, int pageIndex, bool isDistinct = false)
+        public override IQueue ToList(int pageSize, int pageIndex, bool isDistinct = false)
         {
             // 不分页
-            if (pageIndex == 1) { ToList(pageSize, isDistinct); return; }
+            if (pageIndex == 1) { ToList(pageSize, isDistinct); return Queue; }
 
             var strSelectSql = Visit.Select(Queue.ExpSelect);
             var strWhereSql = Visit.Where(Queue.ExpWhere);
@@ -28,6 +28,7 @@ namespace FS.Core.Client.SqlServer.SqlBuilder
             if (string.IsNullOrWhiteSpace(strSelectSql)) { strSelectSql = "*"; }
 
             Queue.Sql.AppendFormat("SELECT {0} TOP {2} {1} FROM (SELECT TOP {3} {1} FROM {4} {5} {6}) a  {7};", strDistinctSql, strSelectSql, pageSize, pageSize * pageIndex, Queue.Name, strWhereSql, strOrderBySql, strOrderBySqlReverse);
+            return Queue;
         }
     }
 }

@@ -50,10 +50,12 @@
     <Compile Include="Component\Encrypt.cs" />
     <Compile Include="Common\Files.cs" />
     <Compile Include="Extends\BoolExtend.cs" />
+    <Compile Include="Extends\DataRowExtend.cs" />
     <Compile Include="Extends\ICateExtend.cs" />
     <Compile Include="Extends\IEnumerableExtend.cs" />
     <Compile Include="Extends\IListExtend.cs" />
     <Compile Include="Extends\IEnumeratorExtend.cs" />
+    <Compile Include="Extends\IOrderedQueryableExtend.cs" />
     <Compile Include="Extends\IQueryableExtend.cs" />
     <Compile Include="Extends\DataTableExtend.cs" />
     <Compile Include="Extends\DateTimeExtend.cs" />

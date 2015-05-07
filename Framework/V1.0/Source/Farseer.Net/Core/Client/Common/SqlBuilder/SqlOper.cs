@@ -13,7 +13,7 @@ namespace FS.Core.Client.Common.SqlBuilder
         /// <param name="queue">包含数据库SQL操作的队列</param>
         public SqlOper(IQueueManger queueManger, IQueue queue) : base(queueManger, queue) { }
 
-        public virtual void Delete()
+        public virtual IQueue Delete()
         {
             Queue.Sql = new StringBuilder();
             var strWhereSql = Visit.Where(Queue.ExpWhere);
@@ -21,24 +21,27 @@ namespace FS.Core.Client.Common.SqlBuilder
             if (!string.IsNullOrWhiteSpace(strWhereSql)) { strWhereSql = "WHERE " + strWhereSql; }
 
             Queue.Sql.AppendFormat("DELETE FROM {0} {1}", QueueManger.DbProvider.KeywordAegis(Queue.Name), strWhereSql);
+            return Queue;
         }
 
-        public virtual void Insert<TEntity>(TEntity entity) where TEntity : class,new()
+        public virtual IQueue Insert<TEntity>(TEntity entity) where TEntity : class,new()
         {
             Queue.Sql = new StringBuilder();
             var strinsertAssemble = Visit.Insert(entity);
 
             Queue.Sql.AppendFormat("INSERT INTO {0} {1}", Queue.Name, strinsertAssemble);
+            return Queue;
         }
 
-        public virtual void InsertIdentity<TEntity>(TEntity entity) where TEntity : class,new()
+        public virtual IQueue InsertIdentity<TEntity>(TEntity entity) where TEntity : class,new()
         {
             Queue.Sql = new StringBuilder();
             var strinsertAssemble = Visit.Insert(entity);
             Queue.Sql.AppendFormat("INSERT INTO {0} {1}", Queue.Name, strinsertAssemble);
+            return Queue;
         }
 
-        public virtual void Update<TEntity>(TEntity entity) where TEntity : class,new()
+        public virtual IQueue Update<TEntity>(TEntity entity) where TEntity : class,new()
         {
             Queue.Sql = new StringBuilder();
             var strWhereSql = Visit.Where(Queue.ExpWhere);
@@ -57,9 +60,10 @@ namespace FS.Core.Client.Common.SqlBuilder
             if (!string.IsNullOrWhiteSpace(strWhereSql)) { strWhereSql = "WHERE " + strWhereSql; }
 
             Queue.Sql.AppendFormat("UPDATE {0} SET {1} {2}", QueueManger.DbProvider.KeywordAegis(Queue.Name), strAssemble, strWhereSql);
+            return Queue;
         }
 
-        public virtual void AddUp()
+        public virtual IQueue AddUp()
         {
             if (Queue.ExpAssign == null || Queue.ExpAssign.Count == 0) { throw new Exception("赋值的参数不能为空！"); }
             Queue.Sql = new StringBuilder();
@@ -79,6 +83,7 @@ namespace FS.Core.Client.Common.SqlBuilder
             #endregion
 
             Queue.Sql.AppendFormat("UPDATE {0} SET {1} {2}", QueueManger.DbProvider.KeywordAegis(Queue.Name), sqlAssign, strWhereSql);
+            return Queue;
         }
     }
 }

@@ -39,7 +39,7 @@ namespace FS.Core.Infrastructure
         /// </summary>
         /// <param name="map">字段映射</param>
         /// <param name="name">表名称</param>
-        Queue GetQueue(string name, FieldMap map);
+        IQueue GetQueue(string name, FieldMap map);
         /// <summary>
         /// 提交所有GetQueue，完成数据库交互
         /// </summary>

@@ -33,7 +33,7 @@ namespace FS.Core.Client.Common.SqlBuilder
             Visit = new ExpressionVisit(queueManger, Queue);
         }
 
-        public virtual void ToEntity()
+        public virtual IQueue ToEntity()
         {
             Queue.Sql = new StringBuilder();
             var strSelectSql = Visit.Select(Queue.ExpSelect);
@@ -45,9 +45,10 @@ namespace FS.Core.Client.Common.SqlBuilder
             if (!string.IsNullOrWhiteSpace(strOrderBySql)) { strOrderBySql = "ORDER BY " + strOrderBySql; }
 
             Queue.Sql.AppendFormat("SELECT TOP 1 {0} FROM {1} {2} {3}", strSelectSql, QueueManger.DbProvider.KeywordAegis(Queue.Name), strWhereSql, strOrderBySql);
+            return Queue;
         }
 
-        public virtual void ToList(int top = 0, bool isDistinct = false, bool isRand = false)
+        public virtual IQueue ToList(int top = 0, bool isDistinct = false, bool isRand = false)
         {
             Queue.Sql = new StringBuilder();
             var strSelectSql = Visit.Select(Queue.ExpSelect);
@@ -73,12 +74,13 @@ namespace FS.Core.Client.Common.SqlBuilder
             {
                 Queue.Sql.AppendFormat("SELECT * FROM (SELECT {0} {1} {2} FROM {3} {4} ORDER BY NEWID()) a {5}", strDistinctSql, strTopSql, strSelectSql, QueueManger.DbProvider.KeywordAegis(Queue.Name), strWhereSql, strOrderBySql);
             }
+            return Queue;
         }
 
-        public virtual void ToList(int pageSize, int pageIndex, bool isDistinct = false)
+        public virtual IQueue ToList(int pageSize, int pageIndex, bool isDistinct = false)
         {
             // 不分页
-            if (pageIndex == 1) { ToList(pageSize, isDistinct); return; }
+            if (pageIndex == 1) { ToList(pageSize, isDistinct); return Queue; }
 
             var strSelectSql = Visit.Select(Queue.ExpSelect);
             var strWhereSql = Visit.Where(Queue.ExpWhere);
@@ -93,9 +95,10 @@ namespace FS.Core.Client.Common.SqlBuilder
             if (string.IsNullOrWhiteSpace(strSelectSql)) { strSelectSql = "*"; }
 
             Queue.Sql.AppendFormat("SELECT {0} TOP {2} {1} FROM (SELECT TOP {3} {1} FROM {4} {5} {6}) a  {7};", strDistinctSql, strSelectSql, pageSize, pageSize * pageIndex, Queue.Name, strWhereSql, strOrderBySql, strOrderBySqlReverse);
+            return Queue;
         }
 
-        public virtual void Count(bool isDistinct = false)
+        public virtual IQueue Count(bool isDistinct = false)
         {
             Queue.Sql = new StringBuilder();
             var strWhereSql = Visit.Where(Queue.ExpWhere);
@@ -104,9 +107,10 @@ namespace FS.Core.Client.Common.SqlBuilder
             if (!string.IsNullOrWhiteSpace(strWhereSql)) { strWhereSql = "WHERE " + strWhereSql; }
 
             Queue.Sql.AppendFormat("SELECT {0} Count(0) FROM {1} {2}", strDistinctSql, QueueManger.DbProvider.KeywordAegis(Queue.Name), strWhereSql);
+            return Queue;
         }
 
-        public virtual void Sum()
+        public virtual IQueue Sum()
         {
             Queue.Sql = new StringBuilder();
             var strSelectSql = Visit.Select(Queue.ExpSelect);
@@ -116,9 +120,10 @@ namespace FS.Core.Client.Common.SqlBuilder
             if (!string.IsNullOrWhiteSpace(strWhereSql)) { strWhereSql = "WHERE " + strWhereSql; }
 
             Queue.Sql.AppendFormat("SELECT SUM({0}) FROM {1} {2}", strSelectSql, QueueManger.DbProvider.KeywordAegis(Queue.Name), strWhereSql);
+            return Queue;
         }
 
-        public virtual void Max()
+        public virtual IQueue Max()
         {
             Queue.Sql = new StringBuilder();
             var strSelectSql = Visit.Select(Queue.ExpSelect);
@@ -128,9 +133,10 @@ namespace FS.Core.Client.Common.SqlBuilder
             if (!string.IsNullOrWhiteSpace(strWhereSql)) { strWhereSql = "WHERE " + strWhereSql; }
 
             Queue.Sql.AppendFormat("SELECT MAX({0}) FROM {1} {2}", strSelectSql, QueueManger.DbProvider.KeywordAegis(Queue.Name), strWhereSql);
+            return Queue;
         }
 
-        public virtual void Min()
+        public virtual IQueue Min()
         {
             Queue.Sql = new StringBuilder();
             var strSelectSql = Visit.Select(Queue.ExpSelect);
@@ -140,9 +146,10 @@ namespace FS.Core.Client.Common.SqlBuilder
             if (!string.IsNullOrWhiteSpace(strWhereSql)) { strWhereSql = "WHERE " + strWhereSql; }
 
             Queue.Sql.AppendFormat("SELECT MIN({0}) FROM {1} {2}", strSelectSql, QueueManger.DbProvider.KeywordAegis(Queue.Name), strWhereSql);
+            return Queue;
         }
 
-        public virtual void GetValue()
+        public virtual IQueue GetValue()
         {
             Queue.Sql = new StringBuilder();
             var strSelectSql = Visit.Select(Queue.ExpSelect);
@@ -154,6 +161,7 @@ namespace FS.Core.Client.Common.SqlBuilder
             if (!string.IsNullOrWhiteSpace(strOrderBySql)) { strOrderBySql = "ORDER BY " + strOrderBySql; }
 
             Queue.Sql.AppendFormat("SELECT TOP 1 {0} FROM {1} {2} {3}", strSelectSql, QueueManger.DbProvider.KeywordAegis(Queue.Name), strWhereSql, strOrderBySql);
+            return Queue;
         }
     }
 }

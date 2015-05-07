@@ -60,7 +60,7 @@ namespace FS.Core.Infrastructure
         /// <summary>
         /// TableContext、ProcContext、ViewContext 映射关系
         /// </summary>
-        public ContextMap ContextMap { get; private set; }
+        protected internal ContextMap ContextMap { get; private set; }
 
         /// <summary>
         /// 队列管理

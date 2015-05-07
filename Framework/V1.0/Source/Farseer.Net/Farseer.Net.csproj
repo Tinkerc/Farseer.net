@@ -51,6 +51,9 @@
     <Compile Include="Configs\GeneralConfigs.cs" />
     <Compile Include="Configs\RewriterConfigs.cs" />
     <Compile Include="Configs\SystemConfigs.cs" />
+    <Compile Include="Core\Infrastructure\DbWriteSet.cs" />
+    <Compile Include="Core\Infrastructure\IViewSet.cs" />
+    <Compile Include="Core\Infrastructure\DbReadSet.cs" />
     <Compile Include="Utils\CacheManger.cs" />
     <Compile Include="Core\Client\Common\ExpressionBool.cs" />
     <Compile Include="Core\Client\Common\SqlBuilder\SqlOper.cs" />

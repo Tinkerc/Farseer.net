@@ -12,7 +12,7 @@ namespace FS.Core.Client.SqlServer.SqlBuilder
         /// <param name="queue">包含数据库SQL操作的队列</param>
         public SqlOper(IQueueManger queueManger, IQueue queue) : base(queueManger, queue) { }
 
-        public override void Insert<TEntity>(TEntity entity)
+        public override IQueue Insert<TEntity>(TEntity entity)
         {
             base.Insert(entity);
 
@@ -22,12 +22,14 @@ namespace FS.Core.Client.SqlServer.SqlBuilder
             {
                 Queue.Sql = new StringBuilder(string.Format("SET IDENTITY_INSERT {0} ON ; {1} ; SET IDENTITY_INSERT {0} OFF;", Queue.Name, Queue.Sql));
             }
+            return Queue;
         }
 
-        public override void InsertIdentity<TEntity>(TEntity entity)
+        public override IQueue InsertIdentity<TEntity>(TEntity entity)
         {
             Insert(entity);
             Queue.Sql.AppendFormat("SELECT @@IDENTITY;");
+            return Queue;
         }
     }
 }

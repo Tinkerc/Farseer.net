@@ -19,11 +19,11 @@ namespace FS.Core.Data.Proc
         /// <summary>
         /// 当前所有持久化列表
         /// </summary>
-        private readonly List<Queue> _groupQueueList;
+        private readonly List<IQueue> _groupQueueList;
         /// <summary>
         /// 当前组查询队列（支持批量提交SQL）
         /// </summary>
-        private Queue _queue;
+        private IQueue _queue;
         /// <summary>
         /// 数据库操作
         /// </summary>
@@ -59,7 +59,7 @@ namespace FS.Core.Data.Proc
             DataBase = database;
             ContextMap = contextMap;
             DbProvider = DbProvider.CreateInstance(database.DataType);
-            _groupQueueList = new List<Queue>();
+            _groupQueueList = new List<IQueue>();
             Clear();
         }
 
@@ -68,7 +68,7 @@ namespace FS.Core.Data.Proc
         /// </summary>
         /// <param name="map">字段映射</param>
         /// <param name="name">表名称</param>
-        public Queue GetQueue(string name, FieldMap map)
+        public IQueue GetQueue(string name, FieldMap map)
         {
             return _queue ?? (_queue = new Queue(_groupQueueList.Count, name, map, this));
         }

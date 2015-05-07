@@ -11,10 +11,11 @@ namespace FS.Core.Client.OleDb.SqlBuilder
         /// <param name="queue">包含数据库SQL操作的队列</param>
         public SqlOper(IQueueManger queueManger, IQueue queue) : base(queueManger, queue) { }
 
-        public override void InsertIdentity<TEntity>(TEntity entity)
+        public override IQueue InsertIdentity<TEntity>(TEntity entity)
         {
             base.InsertIdentity(entity);
             Queue.Sql.AppendFormat("SELECT @@IDENTITY;");
+            return Queue;
         }
     }
 }

@@ -5,6 +5,7 @@ using FS.Core.Data;
 using FS.Core.Data.Table;
 using FS.Core.Infrastructure;
 using FS.Utils;
+using FS.Utils.Component;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Farseer.Net.Core.Tests

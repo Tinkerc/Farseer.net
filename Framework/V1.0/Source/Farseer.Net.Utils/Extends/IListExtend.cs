@@ -1,6 +1,9 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
+using FS.Utils;
 
 // ReSharper disable once CheckNamespace
 namespace FS.Extends
@@ -77,6 +80,115 @@ namespace FS.Extends
             }
 
             return lst;
+        }
+
+        /// <summary>
+        ///     将集合类转换成DataTable
+        /// </summary>
+        /// <param name="lst">集合</param>
+        /// <returns></returns>
+        public static DataTable ToTable<TEntity>(this IList<TEntity> lst) where TEntity : class
+        {
+            var dt = new DataTable();
+            if (lst.Count == 0) { return dt; }
+            var map = CacheManger.GetFieldMap(lst[0].GetType());
+            var lstFields = map.MapList.Where(o => o.Value.FieldAtt.IsMap).ToList();
+            foreach (var field in lstFields)
+            {
+                var type = field.Key.PropertyType;
+                // 对   List 类型处理
+                if (type.IsGenericType && type.GetGenericTypeDefinition() == typeof(Nullable<>))
+                {
+                    type = type.GetGenericArguments()[0];
+                }
+                dt.Columns.Add(field.Value.FieldAtt.Name, type);
+            }
+
+            foreach (var info in lst)
+            {
+                dt.Rows.Add(dt.NewRow());
+                foreach (var field in lstFields)
+                {
+                    var value = ConvertHelper.GetValue(info, field.Key.Name, (object)null);
+                    if (value == null) { continue; }
+                    if (!dt.Columns.Contains(field.Value.FieldAtt.Name)) { dt.Columns.Add(field.Value.FieldAtt.Name); }
+                    dt.Rows[dt.Rows.Count - 1][field.Value.FieldAtt.Name] = value;
+                }
+            }
+            return dt;
+        }
+
+        /// <summary>
+        ///     将集合类转换成DataTable
+        /// </summary>
+        /// <param name="list">集合</param>
+        /// <returns></returns>
+        public static DataTable ToTable(this IList list)
+        {
+            var result = new DataTable();
+            if (list.Count <= 0) { return result; }
+
+            var propertys = list[0].GetType().GetProperties();
+            foreach (var pi in propertys) { result.Columns.Add(pi.Name, pi.PropertyType); }
+
+            foreach (var info in list)
+            {
+                var tempList = new ArrayList();
+                foreach (var obj in propertys.Select(pi => pi.GetValue(info, null))) { tempList.Add(obj); }
+                var array = tempList.ToArray();
+                result.LoadDataRow(array, true);
+            }
+            return result;
+        }
+
+        /// <summary>
+        ///     将泛型集合类转换成DataTable
+        /// </summary>
+        /// <param name="list">集合</param>
+        /// <param name="propertyName">需要返回的列的列名</param>
+        /// <returns>数据集(表)</returns>
+        public static DataTable ToTable(this IList list, params string[] propertyName)
+        {
+            var propertyNameList = new List<string>();
+            if (propertyName != null)
+                propertyNameList.AddRange(propertyName);
+
+            var result = new DataTable();
+            if (list.Count <= 0) { return result; }
+            var propertys = list[0].GetType().GetProperties();
+            foreach (var pi in propertys)
+            {
+                if (propertyNameList.Count == 0)
+                {
+                    result.Columns.Add(pi.Name, pi.PropertyType);
+                }
+                else
+                {
+                    if (propertyNameList.Contains(pi.Name)) { result.Columns.Add(pi.Name, pi.PropertyType); }
+                }
+            }
+
+            foreach (var info in list)
+            {
+                var tempList = new ArrayList();
+                foreach (var pi in propertys)
+                {
+                    if (propertyNameList.Count == 0)
+                    {
+                        var obj = pi.GetValue(info, null);
+                        tempList.Add(obj);
+                    }
+                    else
+                    {
+                        if (!propertyNameList.Contains(pi.Name)) continue;
+                        var obj = pi.GetValue(info, null);
+                        tempList.Add(obj);
+                    }
+                }
+                var array = tempList.ToArray();
+                result.LoadDataRow(array, true);
+            }
+            return result;
         }
     }
 }

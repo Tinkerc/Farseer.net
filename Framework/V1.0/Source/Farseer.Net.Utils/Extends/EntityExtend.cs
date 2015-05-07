@@ -155,6 +155,25 @@ namespace FS.Extends
             return dicError.Count == 0;
         }
 
+        /// <summary>
+        ///     设置对象属性值
+        /// </summary>
+        /// <typeparam name="TEntity">实体类</typeparam>
+        /// <typeparam name="T">返回值类型</typeparam>
+        /// <param name="info">当前实体类</param>
+        /// <param name="propertyName">属性名</param>
+        /// <param name="objValue">要填充的值</param>
+        public static void SetValue<TEntity>(this TEntity info, string propertyName, object objValue) where TEntity : class
+        {
+            if (info == null) { return; }
+            foreach (var property in info.GetType().GetProperties())
+            {
+                if (property.Name != propertyName) { continue; }
+                if (!property.CanWrite) { return; }
+                property.SetValue(info, objValue.ConvertType(property.PropertyType), null);
+            }
+        }
+
         ///// <summary>
         /////     关联两个实体
         ///// </summary>

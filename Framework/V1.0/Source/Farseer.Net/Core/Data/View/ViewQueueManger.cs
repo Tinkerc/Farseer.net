@@ -37,7 +37,7 @@ namespace FS.Core.Data.View
         /// </summary>
         /// <param name="map">字段映射</param>
         /// <param name="name">表名称</param>
-        public Queue GetQueue(string name, FieldMap map)
+        public IQueue GetQueue(string name, FieldMap map)
         {
             return _queue ?? (_queue = new Queue(0, name, map, this));
         }
@@ -56,45 +56,6 @@ namespace FS.Core.Data.View
         {
             _queue = null;
         }
-
-        public int Execute(IQueue queue)
-        {
-            var param = queue.Param == null ? null : queue.Param.ToArray();
-            var result = queue.Sql.Length < 1 ? 0 : DataBase.ExecuteNonQuery(CommandType.Text, queue.Sql.ToString(), param);
-
-            Clear();
-            return result;
-        }
-        public DataTable ExecuteTable(IQueue queue)
-        {
-            var param = queue.Param == null ? null : queue.Param.ToArray();
-            var table = DataBase.GetDataTable(CommandType.Text, queue.Sql.ToString(), param);
-            Clear();
-            return table;
-        }
-        public TEntity ExecuteInfo<TEntity>(IQueue queue) where TEntity : class, new()
-        {
-            var param = queue.Param == null ? null : queue.Param.ToArray();
-            TEntity t;
-            using (var reader = DataBase.GetReader(CommandType.Text, queue.Sql.ToString(), param))
-            {
-                t = reader.ToInfo<TEntity>();
-            }
-            DataBase.Close(false);
-
-            Clear();
-            return t;
-        }
-        public T ExecuteQuery<T>(IQueue queue, T defValue = default(T))
-        {
-            var param = queue.Param == null ? null : queue.Param.ToArray();
-            var value = DataBase.ExecuteScalar(CommandType.Text, queue.Sql.ToString(), param);
-            var t = (T)Convert.ChangeType(value, typeof(T));
-
-            Clear();
-            return t;
-        }
-
 
         /// <summary>
         /// 释放资源

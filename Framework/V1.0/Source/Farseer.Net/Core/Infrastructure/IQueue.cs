@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Data.Common;
 using System.Linq.Expressions;
 using System.Text;
@@ -20,7 +21,7 @@ namespace FS.Core.Infrastructure
         /// <summary>
         /// 当前组索引
         /// </summary>
-        int Index { get; set; }
+        int Index { get; }
         /// <summary>
         /// 当前生成的参数
         /// </summary>
@@ -28,17 +29,46 @@ namespace FS.Core.Infrastructure
         /// <summary>
         /// 表名/视图名/存储过程名
         /// </summary>
-        string Name { get; set; }
+        string Name { get; }
         /// <summary>
         /// 实体类映射
         /// </summary>
-        FieldMap FieldMap { get; set; }
+        FieldMap FieldMap { get; }
         StringBuilder Sql { get; set; }
-        Dictionary<Expression, bool> ExpOrderBy { get; set; }
-        List<Expression> ExpSelect { get; set; }
-        Expression ExpWhere { get; set; }
+        Dictionary<Expression, bool> ExpOrderBy { get; }
+        List<Expression> ExpSelect { get; }
+        Expression ExpWhere { get; }
+        Dictionary<Expression, object> ExpAssign { get; }
         IBuilderSqlOper SqlBuilder { get; set; }
-        Action<Queue> LazyAct { get; set; }
-        Dictionary<Expression, object> ExpAssign { get; set; }
+        Action<IQueue> LazyAct { get; set; }
+
+        /// <summary>
+        /// 添加筛选
+        /// </summary>
+        /// <param name="select"></param>
+        void AddSelect(Expression select);
+        /// <summary>
+        ///     添加条件
+        /// </summary>
+        /// <param name="where">查询条件</param>
+        void AddWhere(Expression where);
+        /// <summary>
+        /// 添加排序
+        /// </summary>
+        /// <param name="exp"></param>
+        /// <param name="isAsc"></param>
+        void AddOrderBy(Expression exp, bool isAsc);
+        /// <summary>
+        /// 字段累加（字段 = 字段 + 值）
+        /// </summary>
+        /// <typeparam name="T">值类型</typeparam>
+        /// <param name="fieldName">字段选择器</param>
+        /// <param name="fieldValue">值</param>
+        void AddAssign(Expression fieldName, object fieldValue);
+        void Copy(IQueue queue);
+        int Execute();
+        DataTable ExecuteTable();
+        TEntity ExecuteInfo<TEntity>() where TEntity : class, new();
+        T ExecuteQuery<T>(T defValue = default(T));
     }
 }

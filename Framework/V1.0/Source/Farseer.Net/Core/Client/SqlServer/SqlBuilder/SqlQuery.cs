@@ -16,10 +16,10 @@ namespace FS.Core.Client.SqlServer.SqlBuilder
         /// <param name="queue">包含数据库SQL操作的队列</param>
         public SqlQuery(IQueueManger queueManger, IQueue queue) : base(queueManger, queue) { }
 
-        public override void ToList(int pageSize, int pageIndex, bool isDistinct = false)
+        public override IQueue ToList(int pageSize, int pageIndex, bool isDistinct = false)
         {
             // 不分页
-            if (pageIndex == 1) { ToList(pageSize, isDistinct); return; }
+            if (pageIndex == 1) { ToList(pageSize, isDistinct); return Queue; }
 
             var strSelectSql = Visit.Select(Queue.ExpSelect);
             var strWhereSql = Visit.Where(Queue.ExpWhere);
@@ -35,6 +35,7 @@ namespace FS.Core.Client.SqlServer.SqlBuilder
             strOrderBySql = "ORDER BY " + (string.IsNullOrWhiteSpace(strOrderBySql) ? string.Format("{0} ASC", Queue.FieldMap.PrimaryState.Value.FieldAtt.Name) : strOrderBySql);
 
             Queue.Sql.AppendFormat("SELECT {1} FROM (SELECT {0} {1},ROW_NUMBER() OVER({2}) as Row FROM {3} {4}) a WHERE Row BETWEEN {5} AND {6};", strDistinctSql, strSelectSql, strOrderBySql, Queue.Name, strWhereSql, (pageIndex - 1) * pageSize + 1, pageIndex * pageSize);
+            return Queue;
         }
     }
 }

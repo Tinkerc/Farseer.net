@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using FS.Core.Infrastructure;
 using FS.Mapping.Context;
 
 namespace FS.Core.Data.Proc
@@ -15,7 +16,7 @@ namespace FS.Core.Data.Proc
         private readonly ProcContext _context;
 
         private ProcQueueManger QueueManger { get { return (ProcQueueManger)_context.QueueManger; } }
-        private Queue Queue { get { return _context.QueueManger.GetQueue(_name, _map); } }
+        private IQueue Queue { get { return _context.QueueManger.GetQueue(_name, _map); } }
 
         /// <summary>
         /// 表名/视图名/存储过程名

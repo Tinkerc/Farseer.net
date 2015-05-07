@@ -4,6 +4,7 @@ using System.Linq.Expressions;
 using Demo.PO;
 using Demo.VO.Members;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using FS.Extends;
 
 namespace Farseer.Net.Core.Tests.ViewTest
 {
@@ -13,6 +14,7 @@ namespace Farseer.Net.Core.Tests.ViewTest
         [TestMethod]
         public void ToInfoTestMethod()
         {
+            //View.Data.Account.SelectMany
             var lst = View.Data.Account.Select(o => o.ID).Where(o => o.ID > 0).Asc(o => o.ID).ToList();
 
             var info = View.Data.Account.Select(o => o.ID).Select(o => o.Name).Where(o => o.ID > 1).ToEntity();
