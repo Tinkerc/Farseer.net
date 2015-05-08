@@ -94,6 +94,19 @@ namespace FS.Utils.Web
         /// <param name="pageName">页面名称</param>
         public SplitResult Split(int pageTotal, int pageSize, int pageIndex, string pageName, string pageParam = "")
         {
+            return Split(pageTotal, pageSize, pageIndex, 10, pageName, pageParam);
+        }
+
+        /// <summary>
+        /// 分页函数（模板）
+        /// </summary>
+        /// <param name="pageTotal">总记录数</param>
+        /// <param name="pageSize">每页显示记录数</param>
+        /// <param name="pageIndex">页面索引</param>
+        /// <param name="pageShowLength">显示页码长度</param>
+        /// <param name="pageName">页面名称</param>
+        public SplitResult Split(int pageTotal, int pageSize, int pageIndex, int pageShowLength, string pageName, string pageParam = "")
+        {
             //总页数
             var pageCount = 0;
             //下一页
@@ -124,10 +137,10 @@ namespace FS.Utils.Web
             if (nextIndex > pageCount) { nextIndex = pageCount; }
 
             //中间页起始序号
-            startCount = (pageIndex + 5) > pageCount ? pageCount - 9 : pageIndex - 4;
+            startCount = (pageIndex + pageShowLength / 2) > pageCount ? pageCount - (pageShowLength - 1) : pageIndex - pageShowLength / 2 - 1;
 
             //中间页终止序号
-            endCount = pageIndex < 5 ? 10 : pageIndex + 5;
+            endCount = pageIndex < pageShowLength / 2 ? pageShowLength : pageIndex + pageShowLength / 2;
 
             //为了避免输出的时候产生负数，设置如果小于1就从序号1开始
             if (startCount < 1) { startCount = 1; }
@@ -142,7 +155,7 @@ namespace FS.Utils.Web
             // 页码列表
             for (var i = startCount; i <= endCount; i++)
             {
-                if (i != pageIndex || Template_Active.IsNullOrEmpty()) { sp += Template(Template_Default, pageTotal, pageCount, nextIndex, preIndex, pageSize, i, pageName, pageParam); }
+                if (i != pageIndex || string.IsNullOrWhiteSpace(Template_Active)) { sp += Template(Template_Default, pageTotal, pageCount, nextIndex, preIndex, pageSize, i, pageName, pageParam); }
                 else { sp += Template(Template_Active, pageTotal, pageCount, nextIndex, preIndex, pageSize, i, pageName, pageParam); }
             }
             // 下一页 
