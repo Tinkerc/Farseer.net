@@ -137,10 +137,13 @@ namespace FS.Utils.Web
             if (nextIndex > pageCount) { nextIndex = pageCount; }
 
             //中间页起始序号
-            startCount = (pageIndex + pageShowLength / 2) > pageCount ? pageCount - (pageShowLength - 1) : pageIndex - pageShowLength / 2 - 1;
+            startCount = (pageIndex + pageShowLength / 2) > pageCount ? pageCount - (pageShowLength - 1) : pageIndex - pageShowLength / 2;
 
             //中间页终止序号
             endCount = pageIndex < pageShowLength / 2 ? pageShowLength : pageIndex + pageShowLength / 2;
+
+            if (pageShowLength % 2 == 0) { startCount = startCount + 1; }
+
 
             //为了避免输出的时候产生负数，设置如果小于1就从序号1开始
             if (startCount < 1) { startCount = 1; }
