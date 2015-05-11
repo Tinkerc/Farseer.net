@@ -19,7 +19,7 @@ namespace FS.Core.Infrastructure
         /// <typeparam name="T">值类型</typeparam>
         /// <param name="fieldName">字段选择器</param>
         /// <param name="fieldValue">值</param>
-        public TSet Append<T>(Expression<Func<TEntity, T>> fieldName, T fieldValue) where T : struct
+        public virtual TSet Append<T>(Expression<Func<TEntity, T>> fieldName, T fieldValue) where T : struct
         {
             Queue.AddAssign(fieldName, fieldValue);
             return (TSet)this;
@@ -31,7 +31,7 @@ namespace FS.Core.Infrastructure
         /// <typeparam name="T">值类型</typeparam>
         /// <param name="fieldName">字段选择器</param>
         /// <param name="fieldValue">值</param>
-        public TSet Append<T>(Expression<Func<TEntity, T?>> fieldName, T fieldValue) where T : struct
+        public virtual TSet Append<T>(Expression<Func<TEntity, T?>> fieldName, T fieldValue) where T : struct
         {
             Queue.AddAssign(fieldName, fieldValue);
             return (TSet)this;
@@ -43,7 +43,7 @@ namespace FS.Core.Infrastructure
         /// <typeparam name="T">值类型</typeparam>
         /// <param name="fieldName">字段选择器</param>
         /// <param name="fieldValue">值</param>
-        public TSet Append<T>(Expression<Func<TEntity, object>> fieldName, T fieldValue) where T : struct
+        public virtual TSet Append<T>(Expression<Func<TEntity, object>> fieldName, T fieldValue) where T : struct
         {
             Queue.AddAssign(fieldName, fieldValue);
             return (TSet)this;

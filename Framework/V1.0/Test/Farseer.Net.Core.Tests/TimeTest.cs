@@ -1,4 +1,5 @@
-﻿using Demo.PO;
+﻿using System;
+using Demo.PO;
 using Demo.VO.Members;
 using FS.Core;
 using FS.Core.Data;
@@ -16,16 +17,38 @@ namespace Farseer.Net.Core.Tests
         [TestMethod]
         public void TestTime()
         {
-            SpeedTest.Initialize();
-            SpeedTest.ConsoleTime("context", 100000, () =>
-            {
-                var context = new Demo.PO.Table();
-                //context.UserRole.Where(o => o.ID > 0).ToTable();
-                //context.UserRole.Where(o => o.ID > 0).Asc(o => o.ID).Desc(o => o.Caption).ToTable();
 
-                //var dbProvider = DbProvider.CreateInstance(DataBaseType.SqlServer);
-                //var contextx = new TableContext();
-                //dbProvider.CreateBuilderSqlOper<UserVO>()
+            var ID = Table.Data.User.Desc(o => o.ID).ToEntity().ID.GetValueOrDefault();
+
+
+            var where = Table.Data.User.Where(o => o.ID == ID);
+            SpeedTest.ConsoleTime("xxxxxxxxxxxx", 1, () =>
+            {
+                for (int i = 0; i < 1; i++)
+                {
+                    where.Update(new UserVO() { UserName = "zz" });
+                }
+            });
+
+
+            var context = new Table();
+            where = context.User.Where(o => o.ID == ID);
+            SpeedTest.ConsoleTime("IsMergeCommand", 1, () =>
+            {
+                for (int i = 0; i < 1000; i++)
+                {
+                    where.Update(new UserVO() { UserName = "zz" });
+                }
+                context.SaveChanges();
+            });
+
+            where = Table.Data.User.Where(o => o.ID == ID);
+            SpeedTest.ConsoleTime("NotIsMerge", 1, () =>
+            {
+                for (int i = 0; i < 1000; i++)
+                {
+                    where.Update(new UserVO() { UserName = "zz" });
+                }
             });
         }
     }

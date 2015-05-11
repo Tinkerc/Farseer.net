@@ -84,6 +84,9 @@ namespace FS.Core.Data.Table
             if (entity == null) { throw new ArgumentNullException("entity", "更新操作时，参数不能为空！"); }
 
             //  判断是否启用合并提交
+
+            //Queue.LazyQuery((queue) => queue.SqlBuilder.Update(entity));
+
             if (_context.IsMergeCommand)
             {
                 Queue.LazyAct = (queryQueue) => queryQueue.SqlBuilder.Update(entity);

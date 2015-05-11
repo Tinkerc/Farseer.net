@@ -43,6 +43,10 @@ namespace FS.Core.Data.View
         }
 
         public int Commit() { return -1; }
+        public void Append()
+        {
+            throw new NotImplementedException();
+        }
 
         public List<DbParameter> Param
         {

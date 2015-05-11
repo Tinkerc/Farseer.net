@@ -42,6 +42,7 @@ namespace FS.Core.Infrastructure
         IBuilderSqlOper SqlBuilder { get; set; }
         Action<IQueue> LazyAct { get; set; }
 
+        void LazyQuery(Action<IQueue> act);
         /// <summary>
         /// 添加筛选
         /// </summary>

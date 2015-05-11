@@ -44,5 +44,10 @@ namespace FS.Core.Infrastructure
         /// 提交所有GetQueue，完成数据库交互
         /// </summary>
         int Commit();
+
+        /// <summary>
+        /// 将GroupQueryQueue提交到组中，并创建新的GroupQueryQueue
+        /// </summary>
+        void Append();
     }
 }

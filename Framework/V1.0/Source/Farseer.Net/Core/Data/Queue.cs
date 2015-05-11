@@ -35,6 +35,13 @@ namespace FS.Core.Data
             _queueManger = queueManger;
             SqlBuilder = queueManger.DbProvider.CreateBuilderSqlOper(queueManger, this);
         }
+
+        public void LazyQuery(Action<IQueue> act)
+        {
+            LazyAct = act;
+            _queueManger.Append();
+        }
+
         /// <summary>
         /// 添加筛选
         /// </summary>

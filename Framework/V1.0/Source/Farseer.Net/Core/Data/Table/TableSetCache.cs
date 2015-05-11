@@ -9,7 +9,7 @@ using FS.Extend;
 
 namespace FS.Core.Data.Table
 {
-    public abstract class TableSetCache<TEntity> where TEntity : class, new()
+    public abstract class TableSetCache<TEntity> :  where TEntity : class, new()
     {
         private readonly TableSet<TEntity> _set;
         private List<TEntity> _lstCurrentCache;
