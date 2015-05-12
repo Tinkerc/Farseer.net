@@ -53,6 +53,7 @@ namespace FS.Core.Client.Common
                 case "STARTSWITH": VisitMethodStartswith(fieldType, fieldName, paramType, paramName); break;
                 case "ENDSWITH": VisitMethodEndswith(fieldType, fieldName, paramType, paramName); break;
                 case "ISEQUALS": VisitMethodIsEquals(fieldType, fieldName, paramType, paramName); break;
+                case "EQUALS": VisitMethodEquals(fieldType, fieldName, paramType, paramName); break;
                 default:
                     {
                         if (m.Arguments.Count == 0 && m.Object != null) { return m; }
@@ -137,7 +138,19 @@ namespace FS.Core.Client.Common
         /// <param name="paramName"></param>
         protected virtual void VisitMethodIsEquals(Type fieldType, string fieldName, Type paramType, string paramName)
         {
-            SqlList.Push(String.Format("{0} {1} {2}", fieldName, IsNot ? "<>" : "", paramName));
+            SqlList.Push(String.Format("{0} {1} {2}", fieldName, IsNot ? "<>" : "=", paramName));
+        }
+
+        /// <summary>
+        /// IsEquals方法解析
+        /// </summary>
+        /// <param name="fieldType"></param>
+        /// <param name="fieldName"></param>
+        /// <param name="paramType"></param>
+        /// <param name="paramName"></param>
+        protected virtual void VisitMethodEquals(Type fieldType, string fieldName, Type paramType, string paramName)
+        {
+            SqlList.Push(String.Format("{0} {1} {2}", fieldName, IsNot ? "<>" : "=", paramName));
         }
     }
 }
