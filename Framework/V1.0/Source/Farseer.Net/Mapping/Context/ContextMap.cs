@@ -29,7 +29,7 @@ namespace FS.Mapping.Context
             #region 类属性
             var attContext = Type.GetCustomAttributes(typeof(ContextAttribute), false);
             foreach (var attr in attContext.OfType<ContextAttribute>()) { ContextProperty = attr; }
-            if (ContextProperty == null) { ContextProperty = new ContextAttribute(null); }
+            if (ContextProperty == null) { ContextProperty = new ContextAttribute(); }
             #endregion
 
             #region 变量属性
@@ -87,7 +87,7 @@ namespace FS.Mapping.Context
         /// <summary>
         ///     获取标注的名称
         /// </summary>
-        /// <param name="setPropertyInfo">属性变量</param>
+        /// <param name="setType">属性变量</param>
         /// <returns></returns>
         public KeyValuePair<PropertyInfo, SetState> GetState(Type setType)
         {

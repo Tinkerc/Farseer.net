@@ -4,7 +4,7 @@ using FS.Mapping.Context.Attribute;
 
 namespace Demo.PO
 {
-    [Context()]
+    //[Context()]
     public class Table : TableContext<Table>
     {
         [Set(Name = "Members_User")]
