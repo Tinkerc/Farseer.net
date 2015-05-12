@@ -123,8 +123,7 @@ namespace FS.Core.Data
         {
             var param = Param == null ? null : Param.ToArray();
             var value = _queueManger.DataBase.ExecuteScalar(CommandType.Text, Sql.ToString(), param);
-            var t = (T)Convert.ChangeType(value, typeof(T));
-
+            var t = value.ConvertType(defValue);
             _queueManger.Clear();
             return t;
         }
