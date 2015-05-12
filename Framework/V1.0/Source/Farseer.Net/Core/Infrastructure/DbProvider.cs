@@ -90,7 +90,7 @@ namespace FS.Core.Infrastructure
                         while (enumerator.MoveNext()) { sb.Append(enumerator.Current.GetValueOrDefault() + ","); }
                     }
                 }
-                if (sb.Length > 0) { valu = sb.Remove(sb.Length - 1, 1).ToString(); }
+                valu = sb.Length > 0 ? sb.Remove(sb.Length - 1, 1).ToString() : null;
             }
             return valu;
         }

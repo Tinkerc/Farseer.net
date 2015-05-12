@@ -116,7 +116,7 @@ namespace FS.Core.Infrastructure
                 case ExpressionType.Quote:
                 case ExpressionType.TypeAs: return VisitUnary((UnaryExpression)exp);
                 case ExpressionType.Invoke: return VisitInvocation((InvocationExpression)exp);
-                case ExpressionType.Parameter:return VisitParameter((ParameterExpression)exp);
+                case ExpressionType.Parameter: return VisitParameter((ParameterExpression)exp);
             }
             throw new Exception(string.Format("类型：(ExpressionType){0}，不存在。", exp.NodeType));
         }
@@ -481,7 +481,7 @@ namespace FS.Core.Infrastructure
         /// </summary>
         protected virtual bool ClearCallSql()
         {
-            if (Queue.Param != null && Queue.Param.Count > 0 && string.IsNullOrWhiteSpace(Queue.Param.Last().Value.ToString()))
+            if (Queue.Param != null && Queue.Param.Count > 0 && (Queue.Param.Last().Value == null || string.IsNullOrWhiteSpace(Queue.Param.Last().Value.ToString())))
             {
                 Queue.Param.RemoveAt(Queue.Param.Count - 1);
                 SqlList.Pop();
