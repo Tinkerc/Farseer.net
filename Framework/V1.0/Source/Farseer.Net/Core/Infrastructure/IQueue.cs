@@ -48,11 +48,12 @@ namespace FS.Core.Infrastructure
         /// </summary>
         /// <param name="select"></param>
         void AddSelect(Expression select);
+
         /// <summary>
         ///     添加条件
         /// </summary>
         /// <param name="where">查询条件</param>
-        void AddWhere(Expression where);
+        void AddWhere<TEntity>(Expression<Func<TEntity, bool>> where) where TEntity : class;
         /// <summary>
         /// 添加排序
         /// </summary>

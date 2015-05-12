@@ -68,7 +68,10 @@ namespace Farseer.Net.Core.Tests.TableTest
         {
             using (var context = new Table())
             {
-
+                var where = Table.Data.User.Select(o => o.ID).Where(o => o.ID > 0).Asc(o => o.ID);
+                where.Where(o => o.UserName.Contains("xx"));
+                where.Where(o => o.ID > 1);
+                where.ToList();
             }
         }
 

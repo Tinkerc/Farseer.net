@@ -115,6 +115,8 @@ namespace FS.Core.Infrastructure
                 case ExpressionType.Not:
                 case ExpressionType.Quote:
                 case ExpressionType.TypeAs: return VisitUnary((UnaryExpression)exp);
+                case ExpressionType.Invoke: return VisitInvocation((InvocationExpression)exp);
+                case ExpressionType.Parameter:return VisitParameter((ParameterExpression)exp);
             }
             throw new Exception(string.Format("类型：(ExpressionType){0}，不存在。", exp.NodeType));
         }
@@ -458,6 +460,20 @@ namespace FS.Core.Infrastructure
         {
             var bindings = VisitBindingList(binding.Bindings);
             return bindings != binding.Bindings ? Expression.MemberBind(binding.Member, bindings) : binding;
+        }
+        protected virtual Expression VisitInvocation(InvocationExpression iv)
+        {
+            IEnumerable<Expression> arguments = VisitExpressionList(iv.Arguments);
+            var expression = Visit(iv.Expression);
+            if ((arguments == iv.Arguments) && (expression == iv.Expression))
+            {
+                return iv;
+            }
+            return Expression.Invoke(expression, arguments);
+        }
+        protected virtual Expression VisitParameter(ParameterExpression p)
+        {
+            return p;
         }
 
         /// <summary>

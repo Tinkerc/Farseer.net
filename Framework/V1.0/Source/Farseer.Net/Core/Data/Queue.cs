@@ -55,10 +55,11 @@ namespace FS.Core.Data
         ///     添加条件
         /// </summary>
         /// <param name="where">查询条件</param>
-        public void AddWhere(Expression where)
+        public void AddWhere<TEntity>(Expression<Func<TEntity, bool>> where) where TEntity : class
         {
-            ExpWhere = ExpWhere == null ? ExpWhere = where : Expression.Add(ExpWhere, where);
+            ExpWhere = ExpWhere == null ? ExpWhere = where : ((Expression<Func<TEntity, bool>>)ExpWhere).AndAlso(where);
         }
+
         /// <summary>
         /// 添加排序
         /// </summary>

@@ -77,6 +77,7 @@ namespace FS.Core.Data.Table
 
         /// <summary>
         /// 修改（支持延迟加载）
+        /// 如果设置了主键ID，并且entity的ID设置了值，那么会自动将ID的值转换成条件 entity.ID == 值
         /// </summary>
         /// <param name="entity"></param>
         public TEntity Update(TEntity entity)

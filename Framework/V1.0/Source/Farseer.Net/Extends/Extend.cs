@@ -72,5 +72,20 @@ namespace FS.Extends
         {
             return ConvertHelper.ToInfo<TEntity>(reader);
         }
+
+        /// <summary>
+        ///     And 操作
+        /// </summary>
+        /// <typeparam name="TEntity">实体类</typeparam>
+        /// <param name="left">左树</param>
+        /// <param name="right">右树</param>
+        public static Expression<Func<TEntity, bool>> AndAlso<TEntity>(this Expression<Func<TEntity, bool>> left, Expression<Func<TEntity, bool>> right) where TEntity : class
+        {
+            if (left == null) { return right; }
+            if (right == null) { return left; }
+
+            var param = left.Parameters[0];
+            return Expression.Lambda<Func<TEntity, bool>>(ReferenceEquals(param, right.Parameters[0]) ? Expression.AndAlso(left.Body, right.Body) : Expression.AndAlso(left.Body, Expression.Invoke(right, param)), param);
+        }
     }
 }
