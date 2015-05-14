@@ -316,18 +316,6 @@ namespace FS.Core.Infrastructure
             return Queue.SqlBuilder.GetValue().ExecuteQuery(defValue);
         }
 
-        ///// <summary>
-        /////     查询单个值（不支持延迟加载）
-        ///// </summary>
-        ///// <typeparam name="T">ID</typeparam>
-        ///// <param name="ID">条件，等同于：o=>o.ID.Equals(ID) 的操作</param>
-        ///// <param name="fieldName">筛选字段</param>
-        ///// <param name="defValue">不存在时默认值</param>
-        //public virtual T GetValue<T>(T ID, Expression<Func<TEntity, T>> fieldName, T defValue = default(T))
-        //{
-        //    return Where<T>(o => o.ID.Equals(ID)).GetValue(fieldName, defValue);
-        //}
-
         /// <summary>
         ///     获取数量
         /// </summary>

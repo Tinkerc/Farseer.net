@@ -53,6 +53,7 @@ namespace FS.Core.Data.Table
             {
                 QueueManger.DataBase.Commit();
                 QueueManger.DataBase.CloseTran();
+                QueueManger.DataBase.Close(true);
             }
             return result;
         }

@@ -100,6 +100,29 @@ namespace FS.Core.Data.Table
             return entity;
         }
 
+        ///// <summary>
+        ///// 修改（支持延迟加载）
+        ///// 如果设置了主键ID，并且entity的ID设置了值，那么会自动将ID的值转换成条件 entity.ID == 值
+        ///// </summary>
+        ///// <param name="entity"></param>
+        //public TEntity Update2(TEntity entity)
+        //{
+        //    if (entity == null) { throw new ArgumentNullException("entity", "更新操作时，参数不能为空！"); }
+
+        //    //  判断是否启用合并提交
+        //    if (_context.IsMergeCommand)
+        //    {
+        //        Queue.LazyQuery((queryQueue) => queryQueue.SqlBuilder.Update(entity));
+        //    }
+        //    else
+        //    {
+        //        Queue.LazyQuery((queryQueue) => queryQueue.SqlBuilder.Update(entity).Execute());
+        //        //Queue.LazyAct = (queryQueue) => queryQueue.SqlBuilder.Update(entity).Execute();
+        //        Queue.LazyAct(Queue);
+        //    }
+        //    return entity;
+        //}
+
         /// <summary>
         ///     更改实体类
         /// </summary>
@@ -163,7 +186,7 @@ namespace FS.Core.Data.Table
         {
             if (entity == null) { throw new ArgumentNullException("entity", "插入操作时，参数不能为空！"); }
 
-            identity =Queue.SqlBuilder.InsertIdentity(entity).ExecuteQuery<int>();
+            identity = Queue.SqlBuilder.InsertIdentity(entity).ExecuteQuery<int>();
 
             return entity;
         }
