@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Text;
+using FS.Core.Data;
 using FS.Core.Infrastructure;
 
 namespace FS.Core.Client.SqlServer.SqlBuilder
@@ -14,9 +15,9 @@ namespace FS.Core.Client.SqlServer.SqlBuilder
         /// </summary>
         /// <param name="queueManger">队列管理模块</param>
         /// <param name="queue">包含数据库SQL操作的队列</param>
-        public SqlQuery(IQueueManger queueManger, IQueue queue) : base(queueManger, queue) { }
+        public SqlQuery(BaseQueueManger queueManger, Queue queue) : base(queueManger, queue) { }
 
-        public override IQueue ToList(int pageSize, int pageIndex, bool isDistinct = false)
+        public override Queue ToList(int pageSize, int pageIndex, bool isDistinct = false)
         {
             // 不分页
             if (pageIndex == 1) { ToList(pageSize, isDistinct); return Queue; }

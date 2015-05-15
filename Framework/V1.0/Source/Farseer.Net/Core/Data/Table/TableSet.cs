@@ -16,8 +16,8 @@ namespace FS.Core.Data.Table
         /// 数据库上下文
         /// </summary>
         private readonly TableContext _context;
-        private TableQueueManger QueueManger { get { return (TableQueueManger)_context.QueueManger; } }
-        protected override IQueue Queue { get { return _context.QueueManger.GetQueue(Name, Map); } }
+        private TableQueueManger QueueManger { get { return _context.QueueManger; } }
+        protected override Queue Queue { get { return QueueManger.CreateQueue(Name, Map); } }
 
         /// <summary>
         /// 禁止外部实例化
@@ -80,48 +80,13 @@ namespace FS.Core.Data.Table
         /// 如果设置了主键ID，并且entity的ID设置了值，那么会自动将ID的值转换成条件 entity.ID == 值
         /// </summary>
         /// <param name="entity"></param>
-        public TEntity Update(TEntity entity)
+        public void Update(TEntity entity)
         {
             if (entity == null) { throw new ArgumentNullException("entity", "更新操作时，参数不能为空！"); }
 
-            //  判断是否启用合并提交
-
-            //Queue.LazyQuery((queue) => queue.SqlBuilder.Update(entity));
-
-            if (_context.IsMergeCommand)
-            {
-                Queue.LazyAct = (queryQueue) => queryQueue.SqlBuilder.Update(entity);
-                QueueManger.Append();
-            }
-            else
-            {
-                Queue.SqlBuilder.Update(entity).Execute();
-            }
-            return entity;
+            // 加入委托
+            QueueManger.Append(Name, Map, (queryQueue) => queryQueue.SqlBuilder.Update(entity).Execute(), !_context.IsMergeCommand);
         }
-
-        ///// <summary>
-        ///// 修改（支持延迟加载）
-        ///// 如果设置了主键ID，并且entity的ID设置了值，那么会自动将ID的值转换成条件 entity.ID == 值
-        ///// </summary>
-        ///// <param name="entity"></param>
-        //public TEntity Update2(TEntity entity)
-        //{
-        //    if (entity == null) { throw new ArgumentNullException("entity", "更新操作时，参数不能为空！"); }
-
-        //    //  判断是否启用合并提交
-        //    if (_context.IsMergeCommand)
-        //    {
-        //        Queue.LazyQuery((queryQueue) => queryQueue.SqlBuilder.Update(entity));
-        //    }
-        //    else
-        //    {
-        //        Queue.LazyQuery((queryQueue) => queryQueue.SqlBuilder.Update(entity).Execute());
-        //        //Queue.LazyAct = (queryQueue) => queryQueue.SqlBuilder.Update(entity).Execute();
-        //        Queue.LazyAct(Queue);
-        //    }
-        //    return entity;
-        //}
 
         /// <summary>
         ///     更改实体类
@@ -129,9 +94,9 @@ namespace FS.Core.Data.Table
         /// <param name="info">实体类</param>
         /// <typeparam name="T">ID</typeparam>
         /// <param name="ID">条件，等同于：o=>o.ID == ID 的操作</param>
-        public TEntity Update<T>(TEntity info, T ID)
+        public void Update<T>(TEntity info, T ID)
         {
-            return Where<T>(o => o.ID.Equals(ID)).Update(info);
+            Where<T>(o => o.ID.Equals(ID)).Update(info);
         }
 
         /// <summary>
@@ -140,9 +105,9 @@ namespace FS.Core.Data.Table
         /// <param name="info">实体类</param>
         /// <typeparam name="T">ID</typeparam>
         /// <param name="lstIDs">条件，等同于：o=> IDs.Contains(o.ID) 的操作</param>
-        public TEntity Update<T>(TEntity info, List<T> lstIDs)
+        public void Update<T>(TEntity info, List<T> lstIDs)
         {
-            return Where<T>(o => lstIDs.Contains(o.ID)).Update(info);
+            Where<T>(o => lstIDs.Contains(o.ID)).Update(info);
         }
 
         /// <summary>
@@ -151,9 +116,9 @@ namespace FS.Core.Data.Table
         /// <param name="info">实体类</param>
         /// <typeparam name="TEntity">实体类</typeparam>
         /// <param name="where">查询条件</param>
-        public TEntity Update(TEntity info, Expression<Func<TEntity, bool>> where)
+        public void Update(TEntity info, Expression<Func<TEntity, bool>> where)
         {
-            return Where(where).Update(info);
+            Where(where).Update(info);
         }
         #endregion
 
@@ -162,53 +127,42 @@ namespace FS.Core.Data.Table
         /// 插入（支持延迟加载）
         /// </summary>
         /// <param name="entity"></param>
-        public TEntity Insert(TEntity entity)
+        public void Insert(TEntity entity)
         {
             if (entity == null) { throw new ArgumentNullException("entity", "插入操作时，参数不能为空！"); }
-            //  判断是否启用合并提交
-            if (_context.IsMergeCommand)
-            {
-                Queue.LazyAct = (queryQueue) => queryQueue.SqlBuilder.Insert(entity);
-                QueueManger.Append();
-            }
-            else
-            {
-                Queue.SqlBuilder.Insert(entity).Execute();
-            }
-            return entity;
+
+            // 加入委托
+            QueueManger.Append(Name, Map, (queryQueue) => queryQueue.SqlBuilder.Insert(entity).Execute(), !_context.IsMergeCommand);
         }
         /// <summary>
         /// 插入（不支持延迟加载）
         /// </summary>
         /// <param name="entity">实体类</param>
         /// <param name="identity">返回新增的</param>
-        public TEntity Insert(TEntity entity, out int identity)
+        public void Insert(TEntity entity, out int identity)
         {
             if (entity == null) { throw new ArgumentNullException("entity", "插入操作时，参数不能为空！"); }
 
-            identity = Queue.SqlBuilder.InsertIdentity(entity).ExecuteQuery<int>();
-
-            return entity;
+            var ident = 0;
+            QueueManger.Append(Name, Map, (queryQueue) => ident = Queue.SqlBuilder.InsertIdentity(entity).ExecuteQuery<int>(), true);
+            identity = ident;
         }
         /// <summary>
         /// 插入（不支持延迟加载）
         /// </summary>
         /// <param name="lst"></param>
-        public List<TEntity> Insert(List<TEntity> lst)
+        public void Insert(List<TEntity> lst)
         {
             if (lst == null) { throw new ArgumentNullException("lst", "插入操作时，lst参数不能为空！"); }
 
-            // 如果是MSSQLSER，则启用BulkCopy
-            if (QueueManger.DataBase.DataType == Data.DataBaseType.SqlServer)
+            // 加入委托
+            QueueManger.Append(Name, Map, (queryQueue) =>
             {
-                QueueManger.DataBase.ExecuteSqlBulkCopy(Name, ConvertHelper.ToTable(lst));
-                return lst;
-            }
-            lst.ForEach(entity =>
-            {
-                Queue.SqlBuilder.Insert(entity).Execute();
-            });
-            return lst;
+                // 如果是MSSQLSER，则启用BulkCopy
+                if (QueueManger.DataBase.DataType == DataBaseType.SqlServer) { QueueManger.DataBase.ExecuteSqlBulkCopy(Name, ConvertHelper.ToTable(lst)); }
+                else { lst.ForEach(entity => Queue.SqlBuilder.Insert(entity).Execute()); }
+            }, !_context.IsMergeCommand);
+
         }
         #endregion
 
@@ -218,16 +172,8 @@ namespace FS.Core.Data.Table
         /// </summary>
         public void Delete()
         {
-            //  判断是否启用合并提交
-            if (_context.IsMergeCommand)
-            {
-                Queue.LazyAct = (queryQueue) => queryQueue.SqlBuilder.Delete();
-                QueueManger.Append();
-            }
-            else
-            {
-                Queue.SqlBuilder.Delete().Execute();
-            }
+            // 加入委托
+            QueueManger.Append(Name, Map, (queryQueue) => queryQueue.SqlBuilder.Delete().Execute(), !_context.IsMergeCommand);
         }
         /// <summary>
         ///     删除数据
@@ -278,16 +224,9 @@ namespace FS.Core.Data.Table
         {
             if (Queue.ExpAssign == null) { throw new ArgumentNullException("ExpAssign", "+=字段操作时，必须先执行AddUp的另一个重载版本！"); }
 
-            //  判断是否启用合并提交
-            if (_context.IsMergeCommand)
-            {
-                Queue.LazyAct = (queryQueue) => queryQueue.SqlBuilder.AddUp();
-                QueueManger.Append();
-            }
-            else
-            {
-                Queue.SqlBuilder.AddUp().Execute();
-            }
+            // 加入委托
+            QueueManger.Append(Name, Map, (queryQueue) => queryQueue.SqlBuilder.AddUp().Execute(), !_context.IsMergeCommand);
+
         }
 
         /// <summary>
@@ -297,8 +236,7 @@ namespace FS.Core.Data.Table
         /// <param name="select"></param>
         /// <param name="fieldValue">要更新的值</param>
         /// <param name="ID">o => o.ID.Equals(ID)</param>
-        public void AddUp<T>(int? ID, Expression<Func<TEntity, T>> select, T fieldValue)
-            where T : struct
+        public void AddUp<T>(int? ID, Expression<Func<TEntity, T>> select, T fieldValue)where T : struct
         {
             Where<T>(o => o.ID.Equals(ID)).AddUp(select, fieldValue);
         }

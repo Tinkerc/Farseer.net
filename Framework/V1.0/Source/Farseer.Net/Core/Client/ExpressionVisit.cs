@@ -3,6 +3,7 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Text;
 using FS.Core.Client.SqlServer;
+using FS.Core.Data;
 using FS.Core.Data.Table;
 using FS.Core.Infrastructure;
 using FS.Utils;
@@ -26,11 +27,11 @@ namespace FS.Core.Client
         /// <summary>
         /// 队列管理模块
         /// </summary>
-        protected readonly IQueueManger QueueManger;
+        protected readonly BaseQueueManger QueueManger;
         /// <summary>
         /// 包含数据库SQL操作的队列
         /// </summary>
-        protected readonly IQueue Queue;
+        protected readonly Queue Queue;
 
         /// <summary>
         /// 禁止无参数构造器
@@ -42,7 +43,7 @@ namespace FS.Core.Client
         /// </summary>
         /// <param name="queueManger">队列管理模块</param>
         /// <param name="queue">包含数据库SQL操作的队列</param>
-        public ExpressionVisit(IQueueManger queueManger, IQueue queue)
+        public ExpressionVisit(BaseQueueManger queueManger, Queue queue)
         {
             QueueManger = queueManger;
             Queue = queue;

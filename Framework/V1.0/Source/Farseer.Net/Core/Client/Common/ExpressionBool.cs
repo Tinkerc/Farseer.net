@@ -2,13 +2,14 @@
 using System.Data;
 using System.Linq.Expressions;
 using System.Text.RegularExpressions;
+using FS.Core.Data;
 using FS.Core.Infrastructure;
 
 namespace FS.Core.Client.Common
 {
     public class ExpressionBool : DbExpressionBoolProvider
     {
-        public ExpressionBool(IQueueManger queueManger, IQueue queue) : base(queueManger, queue) { }
+        public ExpressionBool(BaseQueueManger queueManger, Queue queue) : base(queueManger, queue) { }
 
         protected override Expression VisitMethodCall(MethodCallExpression m)
         {

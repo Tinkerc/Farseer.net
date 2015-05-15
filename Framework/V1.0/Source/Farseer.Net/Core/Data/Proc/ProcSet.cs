@@ -15,11 +15,11 @@ namespace FS.Core.Data.Proc
         /// </summary>
         private readonly ProcContext _context;
 
-        private ProcQueueManger QueueManger { get { return (ProcQueueManger)_context.QueueManger; } }
-        private IQueue Queue { get { return _context.QueueManger.GetQueue(_name, _map); } }
+        private ProcQueueManger QueueManger { get { return _context.QueueManger; } }
+        private Queue Queue { get { return QueueManger.CreateQueue(_name, _map); } }
 
         /// <summary>
-        /// 表名/视图名/存储过程名
+        /// 存储过程名
         /// </summary>
         private readonly string _name;
         /// <summary>
@@ -40,35 +40,43 @@ namespace FS.Core.Data.Proc
         }
 
         /// <summary>
-        /// 执行存储过程（不返回值）
+        /// 返回查询的值
         /// </summary>
         public T GetValue<T>(TEntity entity = null, T t = default(T))
         {
-            return QueueManger.ExecuteValue(Queue, entity, t);
+            // 加入委托
+            QueueManger.Append(_name, _map, (queryQueue) => t = QueueManger.ExecuteValue(queryQueue, entity, t), true);
+            return t;
         }
 
         /// <summary>
-        /// 执行存储过程（不返回值）
+        /// 执行存储过程
         /// </summary>
         public void Execute(TEntity entity = null)
         {
-            QueueManger.Execute(Queue, entity);
+            // 加入委托
+            QueueManger.Append(_name, _map, (queryQueue) => QueueManger.Execute(queryQueue, entity), !_context.IsMergeCommand);
         }
 
         /// <summary>
-        /// 执行存储过程（返回单条记录）
+        /// 返回单条记录
         /// </summary>
         public TEntity ToEntity(TEntity entity = null)
         {
-            return QueueManger.ExecuteInfo(Queue, entity);
+            // 加入委托
+            QueueManger.Append(_name, _map, (queryQueue) => entity = QueueManger.ExecuteInfo(queryQueue, entity), true);
+            return entity;
         }
 
         /// <summary>
-        /// 执行存储过程（返回多条记录）
+        /// 返回多条记录
         /// </summary>
         public List<TEntity> ToList(TEntity entity = null)
         {
-            return QueueManger.ExecuteList(Queue, entity);
+            List<TEntity> lst = null;
+            // 加入委托
+            QueueManger.Append(_name, _map, (queryQueue) => lst = QueueManger.ExecuteList(queryQueue, entity), true);
+            return lst;
         }
     }
 }

@@ -14,6 +14,7 @@ using FS.Core.Client.SqlServer;
 using FS.Core.Data;
 using FS.Core.Data.Table;
 using FS.Utils;
+using Queue = FS.Core.Data.Queue;
 
 namespace FS.Core.Infrastructure
 {
@@ -248,14 +249,14 @@ namespace FS.Core.Infrastructure
         /// </summary>
         /// <param name="queueManger">队列管理模块</param>
         /// <param name="queue">包含数据库SQL操作的队列</param>
-        public abstract IBuilderSqlQuery CreateBuilderSqlQuery(IQueueManger queueManger, IQueue queue);
+        public abstract IBuilderSqlQuery CreateBuilderSqlQuery(BaseQueueManger queueManger, Queue queue);
 
         /// <summary>
         /// 创建SQL执行
         /// </summary>
         /// <param name="queueManger">队列管理模块</param>
         /// <param name="queue">包含数据库SQL操作的队列</param>
-        public abstract IBuilderSqlOper CreateBuilderSqlOper(IQueueManger queueManger, IQueue queue);
+        public abstract IBuilderSqlOper CreateBuilderSqlOper(BaseQueueManger queueManger, Queue queue);
 
         /// <summary>
         /// 返回数据库类型名称

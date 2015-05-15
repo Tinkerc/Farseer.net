@@ -14,7 +14,7 @@ namespace FS.Core.Infrastructure
         where TSet : DbReadSet<TSet, TEntity>
         where TEntity : class, new()
     {
-        protected abstract IQueue Queue { get; }
+        protected abstract Queue Queue { get; }
         /// <summary>
         /// 表名/视图名/存储过程名
         /// </summary>

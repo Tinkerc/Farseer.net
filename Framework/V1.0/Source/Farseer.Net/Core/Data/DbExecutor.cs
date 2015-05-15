@@ -113,9 +113,12 @@ namespace FS.Core.Data
         /// </summary>
         public void Close(bool dispose)
         {
-            if ((dispose || comm.Transaction == null) && conn != null && conn.State != ConnectionState.Closed)
+            if (comm != null)
             {
                 comm.Parameters.Clear();
+            }
+            if ((dispose || comm.Transaction == null) && conn != null && conn.State != ConnectionState.Closed)
+            {
                 comm.Dispose();
                 comm = null;
                 conn.Close();

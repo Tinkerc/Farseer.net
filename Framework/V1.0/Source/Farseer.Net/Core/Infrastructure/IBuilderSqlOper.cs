@@ -1,4 +1,6 @@
-﻿namespace FS.Core.Infrastructure
+﻿using FS.Core.Data;
+
+namespace FS.Core.Infrastructure
 {
     /// <summary>
     /// 表支持的SQL方法
@@ -8,22 +10,22 @@
         /// <summary>
         /// 删除
         /// </summary>
-        IQueue Delete();
+        Queue Delete();
         /// <summary>
         /// 插入
         /// </summary>
-        IQueue Insert<TEntity>(TEntity entity) where TEntity : class,new();
+        Queue Insert<TEntity>(TEntity entity) where TEntity : class,new();
         /// <summary>
         /// 插入
         /// </summary>
-        IQueue InsertIdentity<TEntity>(TEntity entity) where TEntity : class,new();
+        Queue InsertIdentity<TEntity>(TEntity entity) where TEntity : class,new();
         /// <summary>
         /// 修改
         /// </summary>
-        IQueue Update<TEntity>(TEntity entity) where TEntity : class,new();
+        Queue Update<TEntity>(TEntity entity) where TEntity : class,new();
         /// <summary>
         /// 添加或者减少某个字段
         /// </summary>
-        IQueue AddUp();
+        Queue AddUp();
     }
 }

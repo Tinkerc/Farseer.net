@@ -125,7 +125,6 @@
     <Compile Include="Core\Data\View\ViewContext.cs" />
     <Compile Include="Core\Infrastructure\BaseContext.cs" />
     <Compile Include="Core\Infrastructure\ICate.cs" />
-    <Compile Include="Core\Infrastructure\IQueue.cs" />
     <Compile Include="Core\Data\Proc\ProcContext`1.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -148,7 +147,7 @@
     <Compile Include="Core\Client\SqlServer\SqlBuilder\SqlOper.cs" />
     <Compile Include="Core\Infrastructure\DbProvider.cs" />
     <Compile Include="Core\Infrastructure\IEntity.cs" />
-    <Compile Include="Core\Infrastructure\IQueueManger.cs" />
+    <Compile Include="Core\Infrastructure\BaseQueueManger.cs" />
     <Compile Include="Core\Data\Table\TableSet.cs" />
     <Compile Include="Core\Data\DbExecutor.cs" />
     <Compile Include="Core\DbFactory.cs" />

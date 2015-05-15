@@ -1,4 +1,5 @@
 ﻿using System.Text;
+using FS.Core.Data;
 using FS.Core.Infrastructure;
 
 namespace FS.Core.Client.SqlServer.SqlBuilder
@@ -10,9 +11,9 @@ namespace FS.Core.Client.SqlServer.SqlBuilder
         /// </summary>
         /// <param name="queueManger">队列管理模块</param>
         /// <param name="queue">包含数据库SQL操作的队列</param>
-        public SqlOper(IQueueManger queueManger, IQueue queue) : base(queueManger, queue) { }
+        public SqlOper(BaseQueueManger queueManger, Queue queue) : base(queueManger, queue) { }
 
-        public override IQueue Insert<TEntity>(TEntity entity)
+        public override Queue Insert<TEntity>(TEntity entity)
         {
             base.Insert(entity);
 
@@ -25,7 +26,7 @@ namespace FS.Core.Client.SqlServer.SqlBuilder
             return Queue;
         }
 
-        public override IQueue InsertIdentity<TEntity>(TEntity entity)
+        public override Queue InsertIdentity<TEntity>(TEntity entity)
         {
             Insert(entity);
             Queue.Sql.AppendFormat("SELECT @@IDENTITY;");

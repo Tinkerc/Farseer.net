@@ -1,4 +1,5 @@
-﻿using FS.Core.Infrastructure;
+﻿using FS.Core.Data;
+using FS.Core.Infrastructure;
 
 namespace FS.Core.Client.MySql.SqlBuilder
 {
@@ -9,9 +10,9 @@ namespace FS.Core.Client.MySql.SqlBuilder
         /// </summary>
         /// <param name="queueManger">队列管理模块</param>
         /// <param name="queue">包含数据库SQL操作的队列</param>
-        public SqlOper(IQueueManger queueManger, IQueue queue) : base(queueManger, queue) { }
+        public SqlOper(BaseQueueManger queueManger, Queue queue) : base(queueManger, queue) { }
 
-        public override IQueue InsertIdentity<TEntity>(TEntity entity)
+        public override Queue InsertIdentity<TEntity>(TEntity entity)
         {
             base.InsertIdentity(entity);
             Queue.Sql.AppendFormat("SELECT @@IDENTITY;");

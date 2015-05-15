@@ -1,4 +1,5 @@
 ﻿using System.Text;
+using FS.Core.Data;
 using FS.Core.Infrastructure;
 
 namespace FS.Core.Client.Common.SqlBuilder
@@ -11,11 +12,11 @@ namespace FS.Core.Client.Common.SqlBuilder
         /// <summary>
         /// 队列管理模块
         /// </summary>
-        protected readonly IQueueManger QueueManger;
+        protected readonly BaseQueueManger QueueManger;
         /// <summary>
         /// 包含数据库SQL操作的队列
         /// </summary>
-        protected readonly IQueue Queue;
+        protected readonly Queue Queue;
         /// <summary>
         /// 数据库字段解析器总入口，根据要解析的类型，再分散到各自负责的解析器
         /// </summary>
@@ -26,14 +27,14 @@ namespace FS.Core.Client.Common.SqlBuilder
         /// </summary>
         /// <param name="queueManger">队列管理模块</param>
         /// <param name="queue">包含数据库SQL操作的队列</param>
-        public SqlQuery(IQueueManger queueManger, IQueue queue)
+        public SqlQuery(BaseQueueManger queueManger, Queue queue)
         {
             QueueManger = queueManger;
             Queue = queue;
             Visit = new ExpressionVisit(queueManger, Queue);
         }
 
-        public virtual IQueue ToEntity()
+        public virtual Queue ToEntity()
         {
             Queue.Sql = new StringBuilder();
             var strSelectSql = Visit.Select(Queue.ExpSelect);
@@ -48,7 +49,7 @@ namespace FS.Core.Client.Common.SqlBuilder
             return Queue;
         }
 
-        public virtual IQueue ToList(int top = 0, bool isDistinct = false, bool isRand = false)
+        public virtual Queue ToList(int top = 0, bool isDistinct = false, bool isRand = false)
         {
             Queue.Sql = new StringBuilder();
             var strSelectSql = Visit.Select(Queue.ExpSelect);
@@ -77,7 +78,7 @@ namespace FS.Core.Client.Common.SqlBuilder
             return Queue;
         }
 
-        public virtual IQueue ToList(int pageSize, int pageIndex, bool isDistinct = false)
+        public virtual Queue ToList(int pageSize, int pageIndex, bool isDistinct = false)
         {
             // 不分页
             if (pageIndex == 1) { ToList(pageSize, isDistinct); return Queue; }
@@ -98,7 +99,7 @@ namespace FS.Core.Client.Common.SqlBuilder
             return Queue;
         }
 
-        public virtual IQueue Count(bool isDistinct = false)
+        public virtual Queue Count(bool isDistinct = false)
         {
             Queue.Sql = new StringBuilder();
             var strWhereSql = Visit.Where(Queue.ExpWhere);
@@ -110,7 +111,7 @@ namespace FS.Core.Client.Common.SqlBuilder
             return Queue;
         }
 
-        public virtual IQueue Sum()
+        public virtual Queue Sum()
         {
             Queue.Sql = new StringBuilder();
             var strSelectSql = Visit.Select(Queue.ExpSelect);
@@ -123,7 +124,7 @@ namespace FS.Core.Client.Common.SqlBuilder
             return Queue;
         }
 
-        public virtual IQueue Max()
+        public virtual Queue Max()
         {
             Queue.Sql = new StringBuilder();
             var strSelectSql = Visit.Select(Queue.ExpSelect);
@@ -136,7 +137,7 @@ namespace FS.Core.Client.Common.SqlBuilder
             return Queue;
         }
 
-        public virtual IQueue Min()
+        public virtual Queue Min()
         {
             Queue.Sql = new StringBuilder();
             var strSelectSql = Visit.Select(Queue.ExpSelect);
@@ -149,7 +150,7 @@ namespace FS.Core.Client.Common.SqlBuilder
             return Queue;
         }
 
-        public virtual IQueue GetValue()
+        public virtual Queue GetValue()
         {
             Queue.Sql = new StringBuilder();
             var strSelectSql = Visit.Select(Queue.ExpSelect);

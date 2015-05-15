@@ -13,32 +13,16 @@ namespace FS.Core.Data.Table
     /// <summary>
     /// 队列管理
     /// </summary>
-    public class TableQueueManger : IQueueManger
+    public class TableQueueManger : BaseQueueManger
     {
         /// <summary>
         /// 当前所有持久化列表
         /// </summary>
         private readonly List<Queue> _groupQueueList;
         /// <summary>
-        /// 当前组查询队列（支持批量提交SQL）
-        /// </summary>
-        private Queue _queue;
-        /// <summary>
-        /// 数据库操作
-        /// </summary>
-        public DbExecutor DataBase { get; private set; }
-        /// <summary>
-        /// 数据库提供者（不同数据库的特性）
-        /// </summary>
-        public DbProvider DbProvider { get; set; }
-        /// <summary>
-        /// 映射关系
-        /// </summary>
-        public ContextMap ContextMap { get; set; }
-        /// <summary>
         /// 所有队列的参数
         /// </summary>
-        public List<DbParameter> Param
+        public override List<DbParameter> Param
         {
             get
             {
@@ -57,13 +41,9 @@ namespace FS.Core.Data.Table
         /// <param name="database">数据库操作</param>
         /// <param name="contextMap">映射关系</param>
         public TableQueueManger(DbExecutor database, ContextMap contextMap)
+            : base(database, contextMap)
         {
-            DataBase = database;
-            ContextMap = contextMap;
-
-            DbProvider = DbProvider.CreateInstance(database.DataType);
             _groupQueueList = new List<Queue>();
-            Clear();
         }
 
         /// <summary>
@@ -71,17 +51,24 @@ namespace FS.Core.Data.Table
         /// </summary>
         /// <param name="map">字段映射</param>
         /// <param name="name">表名称</param>
-        public IQueue GetQueue(string name, FieldMap map)
+        public override Queue CreateQueue(string name, FieldMap map)
         {
-            return _queue ?? (_queue = new Queue(_groupQueueList.Count, name, map, this));
+            return Queue ?? (Queue = new Queue(_groupQueueList.Count, name, map, this));
         }
 
         /// <summary>
-        /// 将GroupQueryQueue提交到组中，并创建新的GroupQueryQueue
+        /// 延迟执行数据库交互，并提交到队列
         /// </summary>
-        public void Append()
+        /// <param name="act">要延迟操作的委托</param>
+        /// <param name="map">字段映射</param>
+        /// <param name="name">表名称</param>
+        /// <param name="isExecute">是否立即执行</param>
+        public override void Append(string name, FieldMap map, Action<Queue> act, bool isExecute)
         {
-            if (_queue != null) { _groupQueueList.Add(_queue); }
+            CreateQueue(name, map);
+            if (isExecute) { act(Queue); return; }
+            Queue.LazyAct = act;
+            if (Queue != null) { _groupQueueList.Add(Queue); }
             Clear();
         }
 
@@ -90,52 +77,17 @@ namespace FS.Core.Data.Table
         /// </summary>
         public int Commit()
         {
-            var sb = new StringBuilder();
             foreach (var queryQueue in _groupQueueList)
             {
-                // 查看是否延迟加载
+                // 查看是否延迟执行
                 if (queryQueue.LazyAct != null) { queryQueue.LazyAct(queryQueue); }
-                if (queryQueue.Sql != null) { sb.AppendLine(queryQueue.Sql + ";"); }
+                // 清除队列
+                queryQueue.Dispose();
             }
 
-            if (Param.Count > DbProvider.ParamsMaxLength) { throw new Exception(string.Format("SQL参数过多，当前数据库类型，最多支持：{0}个，目前生成了{1}个", DbProvider.ParamsMaxLength, Param.Count)); }
-            var result = DataBase.ExecuteNonQuery(CommandType.Text, sb.ToString(), Param == null ? null : Param.ToArray());
-
-            // 清除队列
-            _groupQueueList.ForEach(o => o.Dispose());
             _groupQueueList.Clear();
             Clear();
-            return result;
-        }
-
-        /// <summary>
-        /// 清除当前队列
-        /// </summary>
-        public void Clear()
-        {
-            _queue = null;
-        }
-
-        /// <summary>
-        /// 释放资源
-        /// </summary>
-        /// <param name="disposing">是否释放托管资源</param>
-        private void Dispose(bool disposing)
-        {
-            //释放托管资源
-            if (disposing)
-            {
-                DataBase.Dispose();
-                DataBase = null;
-            }
-        }
-        /// <summary>
-        /// 释放资源
-        /// </summary>
-        public void Dispose()
-        {
-            Dispose(true);
-            GC.SuppressFinalize(this);
+            return 0;
         }
     }
 }

@@ -62,11 +62,6 @@ namespace FS.Core.Infrastructure
         /// </summary>
         protected internal ContextMap ContextMap { get; private set; }
 
-        /// <summary>
-        /// 队列管理
-        /// </summary>
-        protected internal IQueueManger QueueManger { get; protected set; }
-
         #region 禁用智能提示
         [EditorBrowsable(EditorBrowsableState.Never)]
         public override bool Equals(object obj)

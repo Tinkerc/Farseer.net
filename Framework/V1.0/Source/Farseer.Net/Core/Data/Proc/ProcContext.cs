@@ -34,7 +34,12 @@ namespace FS.Core.Data.Proc
         /// <summary>
         /// true:启用合并执行命令、并延迟加载
         /// </summary>
-        protected bool IsMergeCommand { get; set; }
+        protected internal bool IsMergeCommand { get; set; }
+
+        /// <summary>
+        /// 队列管理
+        /// </summary>
+        protected internal ProcQueueManger QueueManger { get; private set; }
 
         /// <summary>
         /// 保存修改

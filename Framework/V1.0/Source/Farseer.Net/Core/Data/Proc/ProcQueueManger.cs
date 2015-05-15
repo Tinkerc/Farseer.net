@@ -14,32 +14,16 @@ namespace FS.Core.Data.Proc
     /// <summary>
     /// 队列管理
     /// </summary>
-    public class ProcQueueManger : IQueueManger
+    public class ProcQueueManger : BaseQueueManger
     {
         /// <summary>
         /// 当前所有持久化列表
         /// </summary>
-        private readonly List<IQueue> _groupQueueList;
-        /// <summary>
-        /// 当前组查询队列（支持批量提交SQL）
-        /// </summary>
-        private IQueue _queue;
-        /// <summary>
-        /// 数据库操作
-        /// </summary>
-        public DbExecutor DataBase { get; internal set; }
-        /// <summary>
-        /// 数据库提供者（不同数据库的特性）
-        /// </summary>
-        public DbProvider DbProvider { get; set; }
-        /// <summary>
-        /// 映射关系
-        /// </summary>
-        public ContextMap ContextMap { get; set; }
+        private readonly List<Queue> _groupQueueList;
         /// <summary>
         /// 所有队列的参数
         /// </summary>
-        public List<DbParameter> Param
+        public override List<DbParameter> Param
         {
             get
             {
@@ -55,12 +39,9 @@ namespace FS.Core.Data.Proc
         /// <param name="database">数据库操作</param>
         /// <param name="contextMap">映射关系</param>
         public ProcQueueManger(DbExecutor database, ContextMap contextMap)
+            : base(database, contextMap)
         {
-            DataBase = database;
-            ContextMap = contextMap;
-            DbProvider = DbProvider.CreateInstance(database.DataType);
-            _groupQueueList = new List<IQueue>();
-            Clear();
+            _groupQueueList = new List<Queue>();
         }
 
         /// <summary>
@@ -68,17 +49,24 @@ namespace FS.Core.Data.Proc
         /// </summary>
         /// <param name="map">字段映射</param>
         /// <param name="name">表名称</param>
-        public IQueue GetQueue(string name, FieldMap map)
+        public override Queue CreateQueue(string name, FieldMap map)
         {
-            return _queue ?? (_queue = new Queue(_groupQueueList.Count, name, map, this));
+            return Queue ?? (Queue = new Queue(_groupQueueList.Count, name, map, this));
         }
 
         /// <summary>
-        /// 将GroupQueryQueue提交到组中，并创建新的GroupQueryQueue
+        /// 延迟执行数据库交互，并提交到队列
         /// </summary>
-        public void Append()
+        /// <param name="act">要延迟操作的委托</param>
+        /// <param name="map">字段映射</param>
+        /// <param name="name">表名称</param>
+        /// <param name="isExecute">是否立即执行</param>
+        public override void Append(string name, FieldMap map, Action<Queue> act, bool isExecute)
         {
-            if (_queue != null) { _groupQueueList.Add(_queue); }
+            CreateQueue(name, map);
+            if (isExecute) { act(Queue); return; }
+            Queue.LazyAct = act;
+            if (Queue != null) { _groupQueueList.Add(Queue); }
             Clear();
         }
 
@@ -87,13 +75,11 @@ namespace FS.Core.Data.Proc
         /// </summary>
         public int Commit()
         {
-            var sb = new StringBuilder();
-            foreach (var queue in _groupQueueList)
+            foreach (var queryQueue in _groupQueueList)
             {
                 // 查看是否延迟加载
-                if (queue.LazyAct != null) { queue.LazyAct(queue); }
-                var result = DataBase.ExecuteNonQuery(CommandType.StoredProcedure, queue.Name, queue.Param == null ? null : queue.Param.ToArray());
-                queue.Dispose();
+                if (queryQueue.LazyAct != null) { queryQueue.LazyAct(queryQueue); }
+                queryQueue.Dispose();
             }
 
             // 清除队列
@@ -103,20 +89,12 @@ namespace FS.Core.Data.Proc
         }
 
         /// <summary>
-        /// 清除当前队列
-        /// </summary>
-        public void Clear()
-        {
-            _queue = null;
-        }
-
-        /// <summary>
         /// 将OutPut参数赋值到实体
         /// </summary>
         /// <typeparam name="TEntity">实体类</typeparam>
         /// <param name="queue">每一次的数据库查询，将生成一个新的实例</param>
         /// <param name="entity">实体类</param>
-        private void SetParamToEntity<TEntity>(IQueue queue, TEntity entity) where TEntity : class,new()
+        private void SetParamToEntity<TEntity>(Queue queue, TEntity entity) where TEntity : class,new()
         {
             if (entity == null) { return; }
             var map = CacheManger.GetFieldMap(typeof(TEntity));
@@ -131,7 +109,7 @@ namespace FS.Core.Data.Proc
         /// <typeparam name="TEntity"></typeparam>
         /// <param name="queue"></param>
         /// <param name="entity"></param>
-        private List<DbParameter> CreateParam<TEntity>(IQueue queue, TEntity entity) where TEntity : class,new()
+        private List<DbParameter> CreateParam<TEntity>(Queue queue, TEntity entity) where TEntity : class,new()
         {
             queue.Param = new List<DbParameter>();
             if (entity == null) { return queue.Param; }
@@ -145,7 +123,7 @@ namespace FS.Core.Data.Proc
             return queue.Param;
         }
 
-        public int Execute<TEntity>(IQueue queue, TEntity entity = null) where TEntity : class,new()
+        public int Execute<TEntity>(Queue queue, TEntity entity = null) where TEntity : class,new()
         {
             var param = CreateParam(queue, entity).ToArray();
             var result = DataBase.ExecuteNonQuery(CommandType.StoredProcedure, queue.Name, param);
@@ -154,28 +132,26 @@ namespace FS.Core.Data.Proc
             Clear();
             return result;
         }
-        public List<TEntity> ExecuteList<TEntity>(IQueue queue, TEntity entity = null) where TEntity : class,new()
+        public List<TEntity> ExecuteList<TEntity>(Queue queue, TEntity entity = null) where TEntity : class,new()
         {
             var param = CreateParam(queue, entity).ToArray();
             List<TEntity> lst;
             using (var reader = DataBase.GetReader(CommandType.StoredProcedure, queue.Name, param))
             {
                 lst = reader.ToList<TEntity>();
-                //reader.Close();
             }
             DataBase.Close(false);
             SetParamToEntity(queue, entity);
             Clear();
             return lst;
         }
-        public TEntity ExecuteInfo<TEntity>(IQueue queue, TEntity entity = null) where TEntity : class,new()
+        public TEntity ExecuteInfo<TEntity>(Queue queue, TEntity entity = null) where TEntity : class,new()
         {
             var param = CreateParam(queue, entity).ToArray();
             TEntity t;
             using (var reader = DataBase.GetReader(CommandType.StoredProcedure, queue.Name, param))
             {
                 t = reader.ToInfo<TEntity>();
-                //reader.Close();
             }
             DataBase.Close(false);
 
@@ -183,37 +159,15 @@ namespace FS.Core.Data.Proc
             Clear();
             return t;
         }
-        public T ExecuteValue<TEntity, T>(IQueue queue, TEntity entity = null, T defValue = default(T)) where TEntity : class, new()
+        public T ExecuteValue<TEntity, T>(Queue queue, TEntity entity = null, T defValue = default(T)) where TEntity : class, new()
         {
             var param = CreateParam(queue, entity).ToArray();
             var value = DataBase.ExecuteScalar(CommandType.StoredProcedure, queue.Name, param);
-            var t = (T)Convert.ChangeType(value, typeof(T));
+            var t = value.ConvertType(defValue);
 
             SetParamToEntity(queue, entity);
             Clear();
             return t;
-        }
-
-        /// <summary>
-        /// 释放资源
-        /// </summary>
-        /// <param name="disposing">是否释放托管资源</param>
-        private void Dispose(bool disposing)
-        {
-            //释放托管资源
-            if (disposing)
-            {
-                DataBase.Dispose();
-                DataBase = null;
-            }
-        }
-        /// <summary>
-        /// 释放资源
-        /// </summary>
-        public void Dispose()
-        {
-            Dispose(true);
-            GC.SuppressFinalize(this);
         }
     }
 }

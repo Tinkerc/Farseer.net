@@ -30,6 +30,10 @@ namespace FS.Core.Data.View
         /// <param name="commandTimeout">SQL执行超时时间</param>
         protected ViewContext(string connectionString, DataBaseType dbType = DataBaseType.SqlServer, int commandTimeout = 30) : base(connectionString, dbType, commandTimeout) { InstanceProperty(); }
 
+        /// <summary>
+        /// 队列管理
+        /// </summary>
+        protected internal ViewQueueManger QueueManger { get; private set; }
 
         /// <summary>
         /// 实例化子类中，所有Set属性

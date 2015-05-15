@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Text;
+using FS.Core.Data;
 using FS.Core.Infrastructure;
 
 namespace FS.Core.Client.Common.SqlBuilder
@@ -11,9 +12,9 @@ namespace FS.Core.Client.Common.SqlBuilder
         /// </summary>
         /// <param name="queueManger">队列管理模块</param>
         /// <param name="queue">包含数据库SQL操作的队列</param>
-        public SqlOper(IQueueManger queueManger, IQueue queue) : base(queueManger, queue) { }
+        public SqlOper(BaseQueueManger queueManger, Queue queue) : base(queueManger, queue) { }
 
-        public virtual IQueue Delete()
+        public virtual Queue Delete()
         {
             Queue.Sql = new StringBuilder();
             var strWhereSql = Visit.Where(Queue.ExpWhere);
@@ -24,7 +25,7 @@ namespace FS.Core.Client.Common.SqlBuilder
             return Queue;
         }
 
-        public virtual IQueue Insert<TEntity>(TEntity entity) where TEntity : class,new()
+        public virtual Queue Insert<TEntity>(TEntity entity) where TEntity : class,new()
         {
             Queue.Sql = new StringBuilder();
             var strinsertAssemble = Visit.Insert(entity);
@@ -33,7 +34,7 @@ namespace FS.Core.Client.Common.SqlBuilder
             return Queue;
         }
 
-        public virtual IQueue InsertIdentity<TEntity>(TEntity entity) where TEntity : class,new()
+        public virtual Queue InsertIdentity<TEntity>(TEntity entity) where TEntity : class,new()
         {
             Queue.Sql = new StringBuilder();
             var strinsertAssemble = Visit.Insert(entity);
@@ -41,7 +42,7 @@ namespace FS.Core.Client.Common.SqlBuilder
             return Queue;
         }
 
-        public virtual IQueue Update<TEntity>(TEntity entity) where TEntity : class,new()
+        public virtual Queue Update<TEntity>(TEntity entity) where TEntity : class,new()
         {
             Queue.Sql = new StringBuilder();
             var strWhereSql = Visit.Where(Queue.ExpWhere);
@@ -63,7 +64,7 @@ namespace FS.Core.Client.Common.SqlBuilder
             return Queue;
         }
 
-        public virtual IQueue AddUp()
+        public virtual Queue AddUp()
         {
             if (Queue.ExpAssign == null || Queue.ExpAssign.Count == 0) { throw new Exception("赋值的参数不能为空！"); }
             Queue.Sql = new StringBuilder();

@@ -17,37 +17,35 @@ namespace Farseer.Net.Core.Tests
         [TestMethod]
         public void TestTime()
         {
-
+            SpeedTest.Initialize();
             var ID = Table.Data.User.Desc(o => o.ID).ToEntity().ID.GetValueOrDefault();
+            Table.Data.User.Where(o => o.ID == ID).Update(new UserVO() { UserName = "zz" });
 
-
-            var where = Table.Data.User.Where(o => o.ID == ID);
-            SpeedTest.ConsoleTime("xxxxxxxxxxxx", 1, () =>
-            {
-                for (int i = 0; i < 1; i++)
-                {
-                    where.Update(new UserVO() { UserName = "zz" });
-                }
-            });
+//            SpeedTest.ConsoleTime("xxxxxxxxxxxx", 1, () =>
+//            {
+//                for (int i = 0; i < 1; i++)
+//                {
+//                    Table.Data.User.Where(o => o.ID == ID).Update(new UserVO() { UserName = "zz" });
+//                }
+//            });
 
 
             var context = new Table();
-            where = context.User.Where(o => o.ID == ID);
-            SpeedTest.ConsoleTime("IsMergeCommand", 1, () =>
+            SpeedTest.ConsoleTime("批量提交", 1, () =>
             {
                 for (int i = 0; i < 1000; i++)
                 {
-                    where.Update(new UserVO() { UserName = "zz" });
+                    context.User.Where(o => o.ID == ID).Update(new UserVO() { UserName = "zz" });
                 }
                 context.SaveChanges();
             });
 
-            where = Table.Data.User.Where(o => o.ID == ID);
-            SpeedTest.ConsoleTime("NotIsMerge", 1, () =>
+
+            SpeedTest.ConsoleTime("单次提交", 1, () =>
             {
                 for (int i = 0; i < 1000; i++)
                 {
-                    where.Update(new UserVO() { UserName = "zz" });
+                    Table.Data.User.Where(o => o.ID == ID).Update(new UserVO() { UserName = "zz" });
                 }
             });
         }

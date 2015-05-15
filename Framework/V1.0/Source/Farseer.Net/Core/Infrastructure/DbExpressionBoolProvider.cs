@@ -5,6 +5,7 @@ using System.Collections.ObjectModel;
 using System.Data.Common;
 using System.Linq;
 using System.Linq.Expressions;
+using Queue = FS.Core.Data.Queue;
 
 namespace FS.Core.Infrastructure
 {
@@ -32,11 +33,11 @@ namespace FS.Core.Infrastructure
         /// <summary>
         /// 队列管理模块
         /// </summary>
-        protected readonly IQueueManger QueueManger;
+        protected readonly BaseQueueManger QueueManger;
         /// <summary>
         /// 包含数据库SQL操作的队列
         /// </summary>
-        protected readonly IQueue Queue;
+        protected readonly Queue Queue;
 
         /// <summary>
         /// 是否包括Not条件
@@ -48,7 +49,7 @@ namespace FS.Core.Infrastructure
         /// </summary>
         /// <param name="queueManger">队列管理模块</param>
         /// <param name="queue">包含数据库SQL操作的队列</param>
-        public DbExpressionBoolProvider(IQueueManger queueManger, IQueue queue)
+        public DbExpressionBoolProvider(BaseQueueManger queueManger, Queue queue)
         {
             QueueManger = queueManger;
             Queue = queue;

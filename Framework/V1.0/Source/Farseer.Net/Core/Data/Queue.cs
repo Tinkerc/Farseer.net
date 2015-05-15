@@ -10,22 +10,64 @@ using FS.Mapping.Context;
 
 namespace FS.Core.Data
 {
-    public class Queue : IQueue
+    /// <summary>
+    /// 每一次的数据库查询，将生成一个新的实例
+    /// </summary>
+    public class Queue
     {
+        /// <summary>
+        /// 当前队列的ID
+        /// </summary>
         public Guid ID { get; set; }
+        /// <summary>
+        /// 当前组索引
+        /// </summary>
         public int Index { get; private set; }
+        /// <summary>
+        /// 表名/视图名/存储过程名
+        /// </summary>
         public string Name { get; private set; }
-        public FieldMap FieldMap { get; private set; }
-        public Dictionary<Expression, bool> ExpOrderBy { get; private set; }
-        public List<Expression> ExpSelect { get; private set; }
-        public Expression ExpWhere { get; private set; }
-        public StringBuilder Sql { get; set; }
+        /// <summary>
+        /// 当前生成的参数
+        /// </summary>
         public List<DbParameter> Param { get; set; }
-        public IBuilderSqlOper SqlBuilder { get; set; }
-        public Action<IQueue> LazyAct { get; set; }
+        /// <summary>
+        /// 实体类映射
+        /// </summary>
+        public FieldMap FieldMap { get; private set; }
+        /// <summary>
+        /// 当前生成的SQL语句
+        /// </summary>
+        public StringBuilder Sql { get; set; }
+        /// <summary>
+        /// SQL生成器
+        /// </summary>
+        public IBuilderSqlOper SqlBuilder { get; private set; }
+        /// <summary>
+        /// 延迟执行的委托
+        /// </summary>
+        public Action<Queue> LazyAct { get; set; }
+        /// <summary>
+        /// 排序表达式树
+        /// </summary>
+        public Dictionary<Expression, bool> ExpOrderBy { get; private set; }
+        /// <summary>
+        /// 字段筛选表达式树
+        /// </summary>
+        public List<Expression> ExpSelect { get; private set; }
+        /// <summary>
+        /// 条件表达式树
+        /// </summary>
+        public Expression ExpWhere { get; private set; }
+        /// <summary>
+        /// 赋值表达式树
+        /// </summary>
         public Dictionary<Expression, object> ExpAssign { get; private set; }
-        private readonly IQueueManger _queueManger;
-        public Queue(int index, string name, FieldMap map, IQueueManger queueManger)
+        /// <summary>
+        /// 队列管理模块
+        /// </summary>
+        private readonly BaseQueueManger _queueManger;
+        public Queue(int index, string name, FieldMap map, BaseQueueManger queueManger)
         {
             ID = Guid.NewGuid();
             Index = index;
@@ -34,12 +76,6 @@ namespace FS.Core.Data
             FieldMap = map;
             _queueManger = queueManger;
             SqlBuilder = queueManger.DbProvider.CreateBuilderSqlOper(queueManger, this);
-        }
-
-        public void LazyQuery(Action<IQueue> act)
-        {
-            LazyAct = act;
-            _queueManger.Append();
         }
 
         /// <summary>
@@ -85,7 +121,7 @@ namespace FS.Core.Data
         /// 复制条件
         /// </summary>
         /// <param name="queue">队列</param>
-        public void Copy(IQueue queue)
+        public void Copy(Queue queue)
         {
             ExpOrderBy = queue.ExpOrderBy;
             ExpSelect = queue.ExpSelect;

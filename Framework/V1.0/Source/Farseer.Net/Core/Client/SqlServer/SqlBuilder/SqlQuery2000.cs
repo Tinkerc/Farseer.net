@@ -1,4 +1,5 @@
 ﻿using System.Text;
+using FS.Core.Data;
 using FS.Core.Infrastructure;
 
 namespace FS.Core.Client.SqlServer.SqlBuilder
@@ -8,9 +9,9 @@ namespace FS.Core.Client.SqlServer.SqlBuilder
     /// </summary>
     public class SqlQuery2000 : SqlQuery
     {
-        public SqlQuery2000(IQueueManger queueManger, IQueue queue) : base(queueManger, queue) { }
+        public SqlQuery2000(BaseQueueManger queueManger, Queue queue) : base(queueManger, queue) { }
 
-        public override IQueue ToList(int pageSize, int pageIndex, bool isDistinct = false)
+        public override Queue ToList(int pageSize, int pageIndex, bool isDistinct = false)
         {
             // 不分页
             if (pageIndex == 1) { ToList(pageSize, isDistinct); return Queue; }

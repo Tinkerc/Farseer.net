@@ -1,4 +1,5 @@
-﻿using FS.Core.Infrastructure;
+﻿using FS.Core.Data;
+using FS.Core.Infrastructure;
 
 namespace FS.Core.Client.MySql
 {
@@ -9,6 +10,6 @@ namespace FS.Core.Client.MySql
         /// </summary>
         /// <param name="queueManger">队列管理模块</param>
         /// <param name="queue">包含数据库SQL操作的队列</param>
-        public ExpressionNew(IQueueManger queueManger, IQueue queue) : base(queueManger, queue) { }
+        public ExpressionNew(BaseQueueManger queueManger, Queue queue) : base(queueManger, queue) { }
     }
 }

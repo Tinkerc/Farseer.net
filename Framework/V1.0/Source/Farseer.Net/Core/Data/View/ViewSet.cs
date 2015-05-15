@@ -1,11 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Data;
-using System.Linq;
-using System.Linq.Expressions;
-using FS.Core.Infrastructure;
-using FS.Extends;
-using FS.Mapping.Context;
+﻿using FS.Core.Infrastructure;
 
 namespace FS.Core.Data.View
 {
@@ -20,8 +13,8 @@ namespace FS.Core.Data.View
         /// </summary>
         private readonly ViewContext _context;
 
-        private ViewQueueManger QueueManger { get { return (ViewQueueManger)_context.QueueManger; } }
-        protected override IQueue Queue { get { return _context.QueueManger.GetQueue(Name, Map); } }
+        private ViewQueueManger QueueManger { get { return _context.QueueManger; } }
+        protected override Queue Queue { get { return QueueManger.CreateQueue(Name, Map); } }
 
         /// <summary>
         /// 禁止外部实例化

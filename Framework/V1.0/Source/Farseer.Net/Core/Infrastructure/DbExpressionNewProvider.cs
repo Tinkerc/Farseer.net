@@ -1,8 +1,9 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq.Expressions;
-using System.Collections;
+using Queue = FS.Core.Data.Queue;
 
 namespace FS.Core.Infrastructure
 {
@@ -18,11 +19,11 @@ namespace FS.Core.Infrastructure
         /// <summary>
         /// 队列管理模块
         /// </summary>
-        protected readonly IQueueManger QueueManger;
+        protected readonly BaseQueueManger QueueManger;
         /// <summary>
         /// 包含数据库SQL操作的队列
         /// </summary>
-        protected readonly IQueue Queue;
+        protected readonly Queue Queue;
         /// <summary>
         /// 是否是字段筛选
         /// </summary>
@@ -33,7 +34,7 @@ namespace FS.Core.Infrastructure
         /// </summary>
         /// <param name="queueManger">队列管理模块</param>
         /// <param name="queue">包含数据库SQL操作的队列</param>
-        public DbExpressionNewProvider(IQueueManger queueManger, IQueue queue)
+        public DbExpressionNewProvider(BaseQueueManger queueManger, Queue queue)
         {
             QueueManger = queueManger;
             Queue = queue;

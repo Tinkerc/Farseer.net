@@ -1,4 +1,5 @@
 ﻿using System.Text;
+using FS.Core.Data;
 using FS.Core.Infrastructure;
 
 namespace FS.Core.Client.Oracle.SqlBuilder
@@ -10,9 +11,9 @@ namespace FS.Core.Client.Oracle.SqlBuilder
         /// </summary>
         /// <param name="queueManger">队列管理模块</param>
         /// <param name="queue">包含数据库SQL操作的队列</param>
-        public SqlQuery(IQueueManger queueManger, IQueue queue) : base(queueManger, queue) { }
+        public SqlQuery(BaseQueueManger queueManger, Queue queue) : base(queueManger, queue) { }
 
-        public override IQueue ToEntity()
+        public override Queue ToEntity()
         {
             Queue.Sql = new StringBuilder();
             var strSelectSql = Visit.Select(Queue.ExpSelect);
@@ -27,7 +28,7 @@ namespace FS.Core.Client.Oracle.SqlBuilder
             return Queue;
         }
 
-        public override IQueue ToList(int top = 0, bool isDistinct = false, bool isRand = false)
+        public override Queue ToList(int top = 0, bool isDistinct = false, bool isRand = false)
         {
             Queue.Sql = new StringBuilder();
             var strSelectSql = Visit.Select(Queue.ExpSelect);
@@ -56,7 +57,7 @@ namespace FS.Core.Client.Oracle.SqlBuilder
             return Queue;
         }
 
-        public override IQueue ToList(int pageSize, int pageIndex, bool isDistinct = false)
+        public override Queue ToList(int pageSize, int pageIndex, bool isDistinct = false)
         {
             // 不分页
             if (pageIndex == 1) { ToList(pageSize, isDistinct); return Queue; }
@@ -76,7 +77,7 @@ namespace FS.Core.Client.Oracle.SqlBuilder
             return Queue;
         }
 
-        public override IQueue GetValue()
+        public override Queue GetValue()
         {
             Queue.Sql = new StringBuilder();
             var strSelectSql = Visit.Select(Queue.ExpSelect);

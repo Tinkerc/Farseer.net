@@ -37,6 +37,11 @@ namespace FS.Core.Data.Table
         internal protected bool IsMergeCommand { get; set; }
 
         /// <summary>
+        /// 队列管理
+        /// </summary>
+        protected internal TableQueueManger QueueManger { get; private set; }
+
+        /// <summary>
         /// 保存修改
         /// IsMergeCommand=true时：只提交一次SQL到数据库
         /// </summary>
