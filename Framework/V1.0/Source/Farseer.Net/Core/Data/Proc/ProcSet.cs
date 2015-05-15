@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using FS.Core.Infrastructure;
 using FS.Mapping.Context;
 
 namespace FS.Core.Data.Proc
@@ -45,7 +44,7 @@ namespace FS.Core.Data.Proc
         public T GetValue<T>(TEntity entity = null, T t = default(T))
         {
             // 加入委托
-            QueueManger.Append(_name, _map, (queryQueue) => t = QueueManger.ExecuteValue(queryQueue, entity, t), true);
+            QueueManger.Append(_name, _map, (queryQueue) => t = queryQueue.ExecuteValue(entity, t), true);
             return t;
         }
 
@@ -55,7 +54,7 @@ namespace FS.Core.Data.Proc
         public void Execute(TEntity entity = null)
         {
             // 加入委托
-            QueueManger.Append(_name, _map, (queryQueue) => QueueManger.Execute(queryQueue, entity), !_context.IsMergeCommand);
+            QueueManger.Append(_name, _map, (queryQueue) => queryQueue.Execute(entity), !_context.IsMergeCommand);
         }
 
         /// <summary>
@@ -64,7 +63,7 @@ namespace FS.Core.Data.Proc
         public TEntity ToEntity(TEntity entity = null)
         {
             // 加入委托
-            QueueManger.Append(_name, _map, (queryQueue) => entity = QueueManger.ExecuteInfo(queryQueue, entity), true);
+            QueueManger.Append(_name, _map, (queryQueue) => entity = queryQueue.ExecuteInfo(entity), true);
             return entity;
         }
 
@@ -75,7 +74,7 @@ namespace FS.Core.Data.Proc
         {
             List<TEntity> lst = null;
             // 加入委托
-            QueueManger.Append(_name, _map, (queryQueue) => lst = QueueManger.ExecuteList(queryQueue, entity), true);
+            QueueManger.Append(_name, _map, (queryQueue) => lst = queryQueue.ExecuteList(entity), true);
             return lst;
         }
     }

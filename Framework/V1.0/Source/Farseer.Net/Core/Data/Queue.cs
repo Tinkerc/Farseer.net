@@ -2,11 +2,13 @@
 using System.Collections.Generic;
 using System.Data;
 using System.Data.Common;
+using System.Linq;
 using System.Linq.Expressions;
 using System.Text;
 using FS.Core.Infrastructure;
 using FS.Extends;
 using FS.Mapping.Context;
+using FS.Utils;
 
 namespace FS.Core.Data
 {
@@ -128,6 +130,9 @@ namespace FS.Core.Data
             ExpWhere = queue.ExpWhere;
         }
 
+        /// <summary>
+        /// 执行SQL，返回影响行数
+        /// </summary>
         public int Execute()
         {
             var param = Param == null ? null : Param.ToArray();
@@ -136,6 +141,9 @@ namespace FS.Core.Data
             _queueManger.Clear();
             return result;
         }
+        /// <summary>
+        /// 返回DataTable
+        /// </summary>
         public DataTable ExecuteTable()
         {
             var param = Param == null ? null : Param.ToArray();
@@ -143,6 +151,10 @@ namespace FS.Core.Data
             _queueManger.Clear();
             return table;
         }
+        /// <summary>
+        /// 返回单条数据
+        /// </summary>
+        /// <typeparam name="TEntity"></typeparam>
         public TEntity ExecuteInfo<TEntity>() where TEntity : class, new()
         {
             var param = Param == null ? null : Param.ToArray();
@@ -156,11 +168,97 @@ namespace FS.Core.Data
             _queueManger.Clear();
             return t;
         }
+        /// <summary>
+        /// 查询单个字段值
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="defValue"></param>
+        /// <returns></returns>
         public T ExecuteQuery<T>(T defValue = default(T))
         {
             var param = Param == null ? null : Param.ToArray();
             var value = _queueManger.DataBase.ExecuteScalar(CommandType.Text, Sql.ToString(), param);
             var t = value.ConvertType(defValue);
+            _queueManger.Clear();
+            return t;
+        }
+
+        /// <summary>
+        /// 将OutPut参数赋值到实体
+        /// </summary>
+        /// <typeparam name="TEntity">实体类</typeparam>
+        /// <param name="entity">实体类</param>
+        private void SetParamToEntity<TEntity>(TEntity entity) where TEntity : class,new()
+        {
+            if (entity == null) { return; }
+            var map = CacheManger.GetFieldMap(typeof(TEntity));
+            foreach (var kic in map.MapList.Where(o => o.Value.FieldAtt.IsOutParam))
+            {
+                kic.Key.SetValue(entity, ConvertHelper.ConvertType(Param.Find(o => o.ParameterName == _queueManger.DbProvider.ParamsPrefix + kic.Value.FieldAtt.Name).Value, kic.Key.PropertyType), null);
+            }
+        }
+        /// <summary>
+        /// 存储过程创建SQL 输入、输出参数化
+        /// </summary>
+        /// <typeparam name="TEntity"></typeparam>
+        /// <param name="entity"></param>
+        private List<DbParameter> CreateParam<TEntity>(TEntity entity) where TEntity : class,new()
+        {
+            Param = new List<DbParameter>();
+            if (entity == null) { return Param; }
+
+            foreach (var kic in FieldMap.MapList.Where(o => o.Value.FieldAtt.IsInParam || o.Value.FieldAtt.IsOutParam))
+            {
+                var obj = kic.Key.GetValue(entity, null);
+
+                Param.Add(_queueManger.DbProvider.CreateDbParam(kic.Value.FieldAtt.Name, obj, kic.Key.PropertyType, kic.Value.FieldAtt.IsOutParam));
+            }
+            return Param;
+        }
+
+        public int Execute<TEntity>(TEntity entity) where TEntity : class,new()
+        {
+            var param = CreateParam(entity).ToArray();
+            var result = _queueManger.DataBase.ExecuteNonQuery(CommandType.StoredProcedure, Name, param);
+            SetParamToEntity(entity);
+
+            _queueManger.Clear();
+            return result;
+        }
+        public List<TEntity> ExecuteList<TEntity>(TEntity entity) where TEntity : class,new()
+        {
+            var param = CreateParam(entity).ToArray();
+            List<TEntity> lst;
+            using (var reader = _queueManger.DataBase.GetReader(CommandType.StoredProcedure, Name, param))
+            {
+                lst = reader.ToList<TEntity>();
+            }
+            _queueManger.DataBase.Close(false);
+            SetParamToEntity(entity);
+            _queueManger.Clear();
+            return lst;
+        }
+        public TEntity ExecuteInfo<TEntity>(TEntity entity) where TEntity : class,new()
+        {
+            var param = CreateParam(entity).ToArray();
+            TEntity t;
+            using (var reader = _queueManger.DataBase.GetReader(CommandType.StoredProcedure, Name, param))
+            {
+                t = reader.ToInfo<TEntity>();
+            }
+            _queueManger.DataBase.Close(false);
+
+            SetParamToEntity(entity);
+            _queueManger.Clear();
+            return t;
+        }
+        public T ExecuteValue<TEntity, T>(TEntity entity, T defValue = default(T)) where TEntity : class, new()
+        {
+            var param = CreateParam(entity).ToArray();
+            var value = _queueManger.DataBase.ExecuteScalar(CommandType.StoredProcedure, Name, param);
+            var t = value.ConvertType(defValue);
+
+            SetParamToEntity(entity);
             _queueManger.Clear();
             return t;
         }

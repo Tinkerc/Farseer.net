@@ -464,7 +464,7 @@ namespace FS.Core.Infrastructure
         }
         protected virtual Expression VisitInvocation(InvocationExpression iv)
         {
-            IEnumerable<Expression> arguments = VisitExpressionList(iv.Arguments);
+            var arguments = VisitExpressionList(iv.Arguments);
             var expression = Visit(iv.Expression);
             if ((arguments == iv.Arguments) && (expression == iv.Expression))
             {
