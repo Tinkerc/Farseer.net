@@ -43,6 +43,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Component\Mvc\Routing\DomainData.cs" />
+    <Compile Include="Component\Mvc\Routing\DomainRoute.cs" />
+    <Compile Include="Component\Mvc\Routing\LinkExtensions.cs" />
     <Compile Include="Extends\CheckBoxListExtend.cs">
       <SubType>Code</SubType>
     </Compile>
