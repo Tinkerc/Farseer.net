@@ -93,6 +93,9 @@ namespace FS.Core.Infrastructure
         /// <param name="isRand">返回当前条件下随机的数据</param>
         public virtual DataTable ToTable(int top = 0, bool isDistinct = false, bool isRand = false)
         {
+            DataTable dt = null;
+            QueueManger.Append(Name, Map, (queryQueue) => dt = queryQueue.SqlBuilder.ToList(top, isDistinct, isRand).ExecuteTable(), true);
+            return dt;
             return Queue.SqlBuilder.ToList(top, isDistinct, isRand).ExecuteTable();
         }
 

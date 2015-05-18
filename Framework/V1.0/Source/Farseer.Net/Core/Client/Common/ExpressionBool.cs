@@ -80,7 +80,7 @@ namespace FS.Core.Client.Common
         {
             switch (methodName)
             {
-                case "ToShortDate": return true;
+                case "ToDateTime": return true;
                 default: return false;
             }
         }
