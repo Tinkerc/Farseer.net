@@ -15,6 +15,8 @@ namespace FS.Core.Client.Common
         {
             base.VisitMethodCall(m);
             if (ClearCallSql()) { return m; }
+            var methodName = m.Method.Name.ToUpper();
+            if (IsIgnoreMethod(methodName)) { return m; }
 
             #region 字段、参数、值类型
             Type fieldType = null;
@@ -27,8 +29,12 @@ namespace FS.Core.Client.Common
                 // 静态方法 Object = null
                 if (m.Object == null)
                 {
-                    if (!m.Arguments[0].Type.IsGenericType || m.Arguments[0].Type.GetGenericTypeDefinition() == typeof(Nullable<>)) { fieldType = m.Arguments[0].Type; paramType = m.Arguments[1].Type; fieldName = SqlList.Pop(); paramName = SqlList.Pop(); }
-                    else { paramType = m.Arguments[0].Type; fieldType = m.Arguments[1].Type; paramName = SqlList.Pop(); fieldName = SqlList.Pop(); }
+                    if (!m.Arguments[0].Type.IsGenericType || m.Arguments[0].Type.GetGenericTypeDefinition() == typeof(Nullable<>))
+                    {
+                        fieldType = m.Arguments[0].Type; fieldName = SqlList.Pop();
+                        if (m.Arguments.Count > 1) { paramType = m.Arguments[1].Type; paramName = SqlList.Pop(); }
+                    }
+                    else { paramType = m.Arguments[0].Type; paramName = SqlList.Pop(); fieldType = m.Arguments[1].Type; fieldName = SqlList.Pop(); }
                 }
                 else
                 {
@@ -48,13 +54,14 @@ namespace FS.Core.Client.Common
             }
             #endregion
 
-            switch (m.Method.Name.ToUpper())
+            switch (methodName)
             {
                 case "CONTAINS": VisitMethodContains(fieldType, fieldName, paramType, paramName); break;
                 case "STARTSWITH": VisitMethodStartswith(fieldType, fieldName, paramType, paramName); break;
                 case "ENDSWITH": VisitMethodEndswith(fieldType, fieldName, paramType, paramName); break;
                 case "ISEQUALS": VisitMethodIsEquals(fieldType, fieldName, paramType, paramName); break;
                 case "EQUALS": VisitMethodEquals(fieldType, fieldName, paramType, paramName); break;
+                case "TOSHORTDATE": VisitMethodToShortDate(fieldType, fieldName); break;
                 default:
                     {
                         if (m.Arguments.Count == 0 && m.Object != null) { return m; }
@@ -63,6 +70,19 @@ namespace FS.Core.Client.Common
             }
             IsNot = false;
             return m;
+        }
+
+        /// <summary>
+        /// 忽略字段的方法
+        /// </summary>
+        /// <param name="methodName">方法名称（大写）</param>
+        protected virtual bool IsIgnoreMethod(string methodName)
+        {
+            switch (methodName)
+            {
+                case "TODATETIME": return true;
+                default: return false;
+            }
         }
 
         /// <summary>
@@ -152,6 +172,16 @@ namespace FS.Core.Client.Common
         protected virtual void VisitMethodEquals(Type fieldType, string fieldName, Type paramType, string paramName)
         {
             SqlList.Push(String.Format("{0} {1} {2}", fieldName, IsNot ? "<>" : "=", paramName));
+        }
+
+        /// <summary>
+        /// ToShortDate方法解析
+        /// </summary>
+        /// <param name="fieldType"></param>
+        /// <param name="fieldName"></param>
+        protected virtual void VisitMethodToShortDate(Type fieldType, string fieldName)
+        {
+            SqlList.Push(String.Format("CONVERT(varchar(100), {0}, 23)", fieldName));
         }
     }
 }
