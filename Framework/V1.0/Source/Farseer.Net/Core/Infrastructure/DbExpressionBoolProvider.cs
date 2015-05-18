@@ -126,26 +126,32 @@ namespace FS.Core.Infrastructure
         /// 操作符号
         /// </summary>
         /// <param name="nodeType">表达式树类型</param>
-        protected string CreateOperate(ExpressionType nodeType)
+        /// <param name="left">操作符左边的SQL</param>
+        /// <param name="right">操作符右边的SQL</param>
+        protected virtual void CreateOperate(ExpressionType nodeType, string left, string right)
         {
+            string oper;
             switch (nodeType)
             {
-                case ExpressionType.Equal: return "=";
-                case ExpressionType.NotEqual: return "<>";
-                case ExpressionType.GreaterThan: return ">";
-                case ExpressionType.GreaterThanOrEqual: return ">=";
-                case ExpressionType.LessThan: return "<";
-                case ExpressionType.LessThanOrEqual: return "<=";
-                case ExpressionType.AndAlso: return "AND";
-                case ExpressionType.OrElse: return "OR";
-                case ExpressionType.Add: return "+";
-                case ExpressionType.Subtract: return "-";
-                case ExpressionType.Multiply: return "*";
-                case ExpressionType.Divide: return "/";
-                case ExpressionType.And: return "&";
-                case ExpressionType.Or: return "|";
+                case ExpressionType.Equal: oper = CurrentDbParameter != null && CurrentDbParameter.Value != null ? "=" : "IS"; break;
+                case ExpressionType.NotEqual: oper = CurrentDbParameter != null && CurrentDbParameter.Value != null ? "<>" : "IS NOT"; break;
+                case ExpressionType.GreaterThan: oper = ">"; break;
+                case ExpressionType.GreaterThanOrEqual: oper = ">="; break;
+                case ExpressionType.LessThan: oper = "<"; break;
+                case ExpressionType.LessThanOrEqual: oper = "<="; break;
+                case ExpressionType.AndAlso: oper = "AND"; break;
+                case ExpressionType.OrElse: oper = "OR"; break;
+                case ExpressionType.Add: oper = "+"; break;
+                case ExpressionType.Subtract: oper = "-"; break;
+                case ExpressionType.Multiply: oper = "*"; break;
+                case ExpressionType.Divide: oper = "/"; break;
+                case ExpressionType.And: oper = "&"; break;
+                case ExpressionType.Or: oper = "|"; break;
+                default: throw new NotSupportedException(nodeType + "的类型，未定义操作符号！");
             }
-            throw new NotSupportedException(nodeType + "的类型，未定义操作符号！");
+
+            if (CurrentDbParameter != null && CurrentDbParameter.Value == null) { right = "NULL"; }
+            SqlList.Push(String.Format("({0} {1} {2})", left, oper, right));
         }
 
         /// <summary>
@@ -156,27 +162,19 @@ namespace FS.Core.Infrastructure
             if (bexp == null) { return null; }
 
             // 先解析字段
-            if (bexp.Left.NodeType == ExpressionType.MemberAccess || (bexp.Left.NodeType != ExpressionType.MemberAccess && bexp.Right.NodeType != ExpressionType.MemberAccess))
-            {
-                Visit(bexp.Left);
-                Visit(bexp.Right);
-            }
-            else
-            {
-                Visit(bexp.Right);
-                Visit(bexp.Left);
-            }
+            if (bexp.Left.NodeType == ExpressionType.MemberAccess || (bexp.Left.NodeType != ExpressionType.MemberAccess && bexp.Right.NodeType != ExpressionType.MemberAccess)) { Visit(bexp.Left); Visit(bexp.Right); }
+            else { Visit(bexp.Right); Visit(bexp.Left); }
 
             var right = SqlList.Pop();
             var left = SqlList.Pop();
 
-            if (bexp.NodeType == ExpressionType.AndAlso || bexp.NodeType == ExpressionType.OrElse)
-            {
-                right = SqlTrue(right);
-                left = SqlTrue(left);
-            }
+            if (bexp.NodeType == ExpressionType.AndAlso || bexp.NodeType == ExpressionType.OrElse) { right = SqlTrue(right); left = SqlTrue(left); }
 
-            SqlList.Push(String.Format("({0} {1} {2})", left, CreateOperate(bexp.NodeType), right));
+            CreateOperate(bexp.NodeType, left, right);
+
+            // 清除状态
+            _currentFieldName = null;
+            CurrentDbParameter = null;
 
             return bexp;
         }
@@ -201,9 +199,8 @@ namespace FS.Core.Infrastructure
             {
                 _paramsCount++;
                 //  查找组中是否存在已有的参数，有则直接取出
-                var newParam = QueueManger.DbProvider.CreateDbParam(Queue.Index + "_" + _paramsCount + "_" + _currentFieldName, cexp.Value, QueueManger.Param, Queue.Param);
-                CurrentDbParameter = newParam;
-                SqlList.Push(newParam.ParameterName);
+                CurrentDbParameter = QueueManger.DbProvider.CreateDbParam(Queue.Index + "_" + _paramsCount + "_" + _currentFieldName, cexp.Value, QueueManger.Param, Queue.Param);
+                SqlList.Push(CurrentDbParameter.ParameterName);
             }
             _currentFieldName = string.Empty;
             return cexp;

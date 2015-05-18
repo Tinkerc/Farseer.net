@@ -239,7 +239,8 @@ namespace FS.Core.Infrastructure
                 newParam = CreateDbParam(name, valu, type, len);
                 newParam.ParameterName = ParamsPrefix + name;
             }
-            lstQueueParam.Add(newParam);
+            // 为null时不进行SQL参数化
+            if (newValu != null) { lstQueueParam.Add(newParam); }
             return newParam;
         }
         #endregion

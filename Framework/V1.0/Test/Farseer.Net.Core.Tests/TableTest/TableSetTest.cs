@@ -54,7 +54,7 @@ namespace Farseer.Net.Core.Tests.TableTest
                             o.UserName.StartsWith("x") ||
                             o.UserName.EndsWith("x") ||
                             o.UserName.Length > 0 ||
-                            o.GenderType == eumGenderType.Man || 
+                            o.GenderType == eumGenderType.Man ||
                             !o.PassWord.Contains("x"))
                     .Desc(o => new { o.LoginCount, o.GenderType })
                     .Asc(o => o.ID)
@@ -68,7 +68,7 @@ namespace Farseer.Net.Core.Tests.TableTest
         {
             using (var context = new Table())
             {
-                var where = Table.Data.User.Select(o => o.ID).Where(o => o.ID > 0).Asc(o => o.ID);
+                var where = Table.Data.User.Select(o => o.ID).Where(o => o.ID > 0 && o.ID != null).Asc(o => o.ID);
                 where.Where(o => o.UserName.Contains("xx"));
                 where.Where(o => o.ID > 1);
                 where.ToList();
