@@ -189,6 +189,9 @@ namespace Farseer.Net.Core.Tests.TableTest
         }
 
         [TestMethod]
-        public void Statistics() { }
+        public void Statistics()
+        {
+            var result = Table.Data.User.Sum(o => o.ID + o.LoginCount);
+        }
     }
 }

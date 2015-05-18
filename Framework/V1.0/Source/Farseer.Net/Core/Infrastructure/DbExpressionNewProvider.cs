@@ -54,6 +54,30 @@ namespace FS.Core.Infrastructure
 
             switch (exp.NodeType)
             {
+                case ExpressionType.Add:
+                case ExpressionType.AddChecked:
+                case ExpressionType.And:
+                case ExpressionType.AndAlso:
+                case ExpressionType.ArrayIndex:
+                case ExpressionType.Coalesce:
+                case ExpressionType.Divide:
+                case ExpressionType.Equal:
+                case ExpressionType.ExclusiveOr:
+                case ExpressionType.GreaterThan:
+                case ExpressionType.GreaterThanOrEqual:
+                case ExpressionType.LeftShift:
+                case ExpressionType.LessThan:
+                case ExpressionType.LessThanOrEqual:
+                case ExpressionType.Modulo:
+                case ExpressionType.Multiply:
+                case ExpressionType.MultiplyChecked:
+                case ExpressionType.NotEqual:
+                case ExpressionType.Or:
+                case ExpressionType.OrElse:
+                case ExpressionType.Power:
+                case ExpressionType.RightShift:
+                case ExpressionType.Subtract:
+                case ExpressionType.SubtractChecked: return CreateBinary((BinaryExpression)exp);
                 case ExpressionType.Lambda: return VisitLambda((LambdaExpression)exp);
                 case ExpressionType.New: return VisitNew((NewExpression)exp);
                 case ExpressionType.MemberAccess: return CreateFieldName((MemberExpression)exp);
@@ -296,6 +320,55 @@ namespace FS.Core.Infrastructure
                 case ExpressionType.Constant: { return true; }
             }
             return false;
+        }
+
+        /// <summary>
+        ///     将二元符号转换成T-SQL可识别的操作符
+        /// </summary>
+        protected virtual Expression CreateBinary(BinaryExpression bexp)
+        {
+            if (bexp == null) { return null; }
+
+            // 先解析字段
+            if (bexp.Left.NodeType == ExpressionType.MemberAccess || (bexp.Left.NodeType != ExpressionType.MemberAccess && bexp.Right.NodeType != ExpressionType.MemberAccess)) { Visit(bexp.Left); Visit(bexp.Right); }
+            else { Visit(bexp.Right); Visit(bexp.Left); }
+
+            var right = SqlList.Pop();
+            var left = SqlList.Pop();
+
+            CreateOperate(bexp.NodeType, left, right);
+
+            return bexp;
+        }
+
+        /// <summary>
+        /// 操作符号
+        /// </summary>
+        /// <param name="nodeType">表达式树类型</param>
+        /// <param name="left">操作符左边的SQL</param>
+        /// <param name="right">操作符右边的SQL</param>
+        protected virtual void CreateOperate(ExpressionType nodeType, string left, string right)
+        {
+            string oper;
+            switch (nodeType)
+            {
+                case ExpressionType.Equal: oper = "="; break;
+                case ExpressionType.NotEqual: oper = "<>"; break;
+                case ExpressionType.GreaterThan: oper = ">"; break;
+                case ExpressionType.GreaterThanOrEqual: oper = ">="; break;
+                case ExpressionType.LessThan: oper = "<"; break;
+                case ExpressionType.LessThanOrEqual: oper = "<="; break;
+                case ExpressionType.AndAlso: oper = "AND"; break;
+                case ExpressionType.OrElse: oper = "OR"; break;
+                case ExpressionType.Add: oper = "+"; break;
+                case ExpressionType.Subtract: oper = "-"; break;
+                case ExpressionType.Multiply: oper = "*"; break;
+                case ExpressionType.Divide: oper = "/"; break;
+                case ExpressionType.And: oper = "&"; break;
+                case ExpressionType.Or: oper = "|"; break;
+                default: throw new NotSupportedException(nodeType + "的类型，未定义操作符号！");
+            }
+            SqlList.Push(String.Format("({0} {1} {2})", left, oper, right));
         }
     }
 }
