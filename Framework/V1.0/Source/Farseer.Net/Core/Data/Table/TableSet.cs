@@ -16,8 +16,7 @@ namespace FS.Core.Data.Table
         /// 数据库上下文
         /// </summary>
         private readonly TableContext _context;
-        private TableQueueManger QueueManger { get { return _context.QueueManger; } }
-        protected override Queue Queue { get { return QueueManger.CreateQueue(Name, Map); } }
+        protected override BaseQueueManger QueueManger { get { return _context.QueueManger; } }
 
         /// <summary>
         /// 禁止外部实例化
@@ -26,7 +25,6 @@ namespace FS.Core.Data.Table
         public TableSet(TableContext context)
         {
             _context = context;
-            Map = typeof(TEntity);
             SetState = _context.ContextMap.GetState(this.GetType()).Value;
             Name = SetState.SetAtt.Name;
         }

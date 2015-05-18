@@ -13,7 +13,7 @@ namespace FS.Core.Infrastructure
         where TSet : DbReadSet<TSet, TEntity>
         where TEntity : class, new()
     {
-        protected abstract Queue Queue { get; }
+        protected Queue Queue { get { return QueueManger.CreateQueue(Name, Map); } }
         /// <summary>
         /// 表名/视图名/存储过程名
         /// </summary>
@@ -21,11 +21,17 @@ namespace FS.Core.Infrastructure
         /// <summary>
         /// 实体类映射
         /// </summary>
-        protected FieldMap Map;
+        protected readonly FieldMap Map;
         /// <summary>
         /// 保存字段映射的信息
         /// </summary>
         protected SetState SetState;
+        protected abstract BaseQueueManger QueueManger { get; }
+
+        public DbReadSet()
+        {
+            Map = typeof(TEntity);
+        }
 
         #region 条件筛选器
         /// <summary>
@@ -119,7 +125,6 @@ namespace FS.Core.Infrastructure
         #endregion
 
         #region ToList
-
         /// <summary>
         /// 查询多条记录（不支持延迟加载）
         /// </summary>
@@ -331,7 +336,6 @@ namespace FS.Core.Infrastructure
         #endregion
 
         #region 聚合
-
         /// <summary>
         /// 累计和（不支持延迟加载）
         /// </summary>

@@ -15,7 +15,7 @@ namespace FS.Core.Client.Common
         {
             base.VisitMethodCall(m);
             if (ClearCallSql()) { return m; }
-            var methodName = m.Method.Name.ToUpper();
+            var methodName = m.Method.Name;
             if (IsIgnoreMethod(methodName)) { return m; }
 
             #region 字段、参数、值类型
@@ -56,12 +56,12 @@ namespace FS.Core.Client.Common
 
             switch (methodName)
             {
-                case "CONTAINS": VisitMethodContains(fieldType, fieldName, paramType, paramName); break;
-                case "STARTSWITH": VisitMethodStartswith(fieldType, fieldName, paramType, paramName); break;
-                case "ENDSWITH": VisitMethodEndswith(fieldType, fieldName, paramType, paramName); break;
-                case "ISEQUALS": VisitMethodIsEquals(fieldType, fieldName, paramType, paramName); break;
-                case "EQUALS": VisitMethodEquals(fieldType, fieldName, paramType, paramName); break;
-                case "TOSHORTDATE": VisitMethodToShortDate(fieldType, fieldName); break;
+                case "Contains": VisitMethodContains(fieldType, fieldName, paramType, paramName); break;
+                case "StartsWith": VisitMethodStartswith(fieldType, fieldName, paramType, paramName); break;
+                case "EndsWith": VisitMethodEndswith(fieldType, fieldName, paramType, paramName); break;
+                case "IsEquals": VisitMethodIsEquals(fieldType, fieldName, paramType, paramName); break;
+                case "Equals": VisitMethodEquals(fieldType, fieldName, paramType, paramName); break;
+                case "ToShortDate": VisitMethodToShortDate(fieldType, fieldName); break;
                 default:
                     {
                         if (m.Arguments.Count == 0 && m.Object != null) { return m; }
@@ -80,7 +80,7 @@ namespace FS.Core.Client.Common
         {
             switch (methodName)
             {
-                case "TODATETIME": return true;
+                case "ToShortDate": return true;
                 default: return false;
             }
         }

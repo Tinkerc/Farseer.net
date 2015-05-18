@@ -12,9 +12,7 @@ namespace FS.Core.Data.View
         /// 数据库上下文
         /// </summary>
         private readonly ViewContext _context;
-
-        private ViewQueueManger QueueManger { get { return _context.QueueManger; } }
-        protected override Queue Queue { get { return QueueManger.CreateQueue(Name, Map); } }
+        protected override BaseQueueManger QueueManger { get { return _context.QueueManger; } }
 
         /// <summary>
         /// 禁止外部实例化
@@ -23,9 +21,8 @@ namespace FS.Core.Data.View
         public ViewSet(ViewContext context)
         {
             _context = context;
-            Map = typeof(TEntity);
-            var contextState = _context.ContextMap.GetState(this.GetType());
-            Name = contextState.Value.SetAtt.Name;
+            SetState = _context.ContextMap.GetState(this.GetType()).Value;
+            Name = SetState.SetAtt.Name;
         }
     }
 }

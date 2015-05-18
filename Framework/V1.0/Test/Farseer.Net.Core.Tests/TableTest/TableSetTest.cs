@@ -5,6 +5,7 @@ using System.Linq.Expressions;
 using Demo.Common;
 using Demo.PO;
 using Demo.VO.Members;
+using FS.Extends;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Farseer.Net.Core.Tests.TableTest
@@ -68,10 +69,10 @@ namespace Farseer.Net.Core.Tests.TableTest
         {
             using (var context = new Table())
             {
-                var where = Table.Data.User.Select(o => o.ID).Where(o => o.ID > 0 && o.ID != null).Asc(o => o.ID);
+                var where = Table.Data.User.Where(o => o.ID > 0 && o.ID != null).Asc(o => o.ID);
                 where.Where(o => o.UserName.Contains("xx"));
                 where.Where(o => o.ID > 1);
-                where.ToList();
+                where.ToSelectList(o => o.ID.ConvertType(0));
             }
         }
 
