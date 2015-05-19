@@ -185,6 +185,20 @@ namespace FS.Core.Infrastructure
         }
 
         /// <summary>
+        ///     创建一个数据库参数对象
+        /// </summary>
+        /// <param name="name">参数名称</param>
+        /// <param name="valu">参数值</param>
+        /// <param name="valType">值类型</param>
+        /// <param name="output">是否是输出值</param>
+        public DbParameter CreateDbParam(string name, object valu, Type valType, bool output = false)
+        {
+            int len;
+            var type = GetDbType(valType, out len);
+            return CreateDbParam(name, valu, type, len, output);
+        }
+
+        /// <summary>
         ///     获取该实体类的参数
         /// </summary>
         /// <param name="entity">实体类</param>

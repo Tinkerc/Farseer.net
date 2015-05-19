@@ -210,8 +210,7 @@ namespace FS.Core.Data
             foreach (var kic in FieldMap.MapList.Where(o => o.Value.FieldAtt.IsInParam || o.Value.FieldAtt.IsOutParam))
             {
                 var obj = kic.Key.GetValue(entity, null);
-
-                Param.Add(_queueManger.DbProvider.CreateDbParam(kic.Value.FieldAtt.Name, obj, kic.Value.FieldAtt.IsOutParam));
+                Param.Add(_queueManger.DbProvider.CreateDbParam(kic.Value.FieldAtt.Name, obj, kic.Key.PropertyType, kic.Value.FieldAtt.IsOutParam));
             }
             return Param;
         }
@@ -275,12 +274,10 @@ namespace FS.Core.Data
             {
                 if (Sql != null) { Sql.Clear(); Sql = null; }
 
-                ExpOrderBy.Clear();
                 ExpOrderBy = null;
-                ExpSelect.Clear();
                 ExpSelect = null;
                 ExpWhere = null;
-                Param.Clear();
+                if (Param != null) { Param.Clear(); }
             }
         }
         /// <summary>
