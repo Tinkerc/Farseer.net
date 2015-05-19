@@ -1,7 +1,5 @@
-﻿using System;
-using System.ComponentModel;
+﻿using System.ComponentModel;
 using System.Data;
-using System.Linq;
 using FS.Core.Infrastructure;
 
 namespace FS.Core.Data.Table

@@ -72,7 +72,8 @@ namespace FS.Core.Client
                 if (obj == null || obj is TableSet<TEntity>) { continue; }
 
                 //  查找组中是否存在已有的参数，有则直接取出
-                var newParam = QueueManger.DbProvider.CreateDbParam(Queue.Index + "_" + kic.Value.FieldAtt.Name, obj, QueueManger.Param, Queue.Param);
+                var newParam = QueueManger.DbProvider.CreateDbParam(Queue.Index + "_" + kic.Value.FieldAtt.Name, obj);
+                Queue.Param.Add(newParam);
 
                 //  添加参数到列表
                 sb.AppendFormat("{0} = {1} ,", QueueManger.DbProvider.KeywordAegis(kic.Key.Name), newParam.ParameterName);
@@ -114,7 +115,8 @@ namespace FS.Core.Client
                 if (obj == null || obj is TableSet<TEntity>) { continue; }
 
                 //  查找组中是否存在已有的参数，有则直接取出
-                var newParam = QueueManger.DbProvider.CreateDbParam(Queue.Index + "_" + kic.Value.FieldAtt.Name, obj, QueueManger.Param, Queue.Param);
+                var newParam = QueueManger.DbProvider.CreateDbParam(Queue.Index + "_" + kic.Value.FieldAtt.Name, obj);
+                Queue.Param.Add(newParam);
 
                 //  添加参数到列表
                 strFields.AppendFormat("{0},", QueueManger.DbProvider.KeywordAegis(kic.Key.Name));

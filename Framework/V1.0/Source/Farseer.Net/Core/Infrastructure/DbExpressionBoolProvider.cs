@@ -199,7 +199,8 @@ namespace FS.Core.Infrastructure
             {
                 _paramsCount++;
                 //  查找组中是否存在已有的参数，有则直接取出
-                CurrentDbParameter = QueueManger.DbProvider.CreateDbParam(Queue.Index + "_" + _paramsCount + "_" + _currentFieldName, cexp.Value, QueueManger.Param, Queue.Param);
+                CurrentDbParameter = QueueManger.DbProvider.CreateDbParam(Queue.Index + "_" + _paramsCount + "_" + _currentFieldName, cexp.Value);
+                Queue.Param.Add(CurrentDbParameter);
                 SqlList.Push(CurrentDbParameter.ParameterName);
             }
             _currentFieldName = string.Empty;

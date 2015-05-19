@@ -96,7 +96,6 @@ namespace FS.Core.Infrastructure
             DataTable dt = null;
             QueueManger.Append(Name, Map, (queryQueue) => dt = queryQueue.SqlBuilder.ToList(top, isDistinct, isRand).ExecuteTable(), true);
             return dt;
-            return Queue.SqlBuilder.ToList(top, isDistinct, isRand).ExecuteTable();
         }
 
         /// <summary>

@@ -13,7 +13,7 @@ namespace FS.Utils.Common
         /// <summary>
         /// 队列
         /// </summary>
-        private static List<Action> lstQue = new List<Action>();
+        private static readonly List<Action> lstQue = new List<Action>();
         /// <summary>
         /// 是否工作
         /// </summary>

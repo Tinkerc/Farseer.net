@@ -185,20 +185,6 @@ namespace FS.Core.Infrastructure
         }
 
         /// <summary>
-        ///     创建一个数据库参数对象
-        /// </summary>
-        /// <param name="name">参数名称</param>
-        /// <param name="valu">参数值</param>
-        /// <param name="output">是否是输出值</param>
-        public DbParameter CreateDbParam(string name, object valu, Type valueType, bool output = false)
-        {
-            int len;
-            var type = GetDbType(valueType, out len);
-            return CreateDbParam(name, valu, type, len, output);
-
-        }
-
-        /// <summary>
         ///     获取该实体类的参数
         /// </summary>
         /// <param name="entity">实体类</param>
@@ -217,31 +203,6 @@ namespace FS.Core.Infrastructure
             }
 
             return lst;
-        }
-
-        /// <summary>
-        /// 从已有的参数列表中取出参数，如果不存在则创建。
-        /// </summary>
-        /// <param name="name">参数名称</param>
-        /// <param name="valu">参数值</param>
-        /// <param name="lstQueueMangerParam">已加入的参数</param>
-        /// <param name="lstQueueParam">当前加入的参数</param>
-        public DbParameter CreateDbParam(string name, object valu, List<DbParameter> lstQueueMangerParam, List<DbParameter> lstQueueParam)
-        {
-            int len;
-            var type = GetDbType(valu, out len);
-            var newValu = ParamConvertValue(valu, type);
-
-            //  查找组中是否存在已有的参数，没有则创建新的
-            var newParam = (lstQueueMangerParam == null ? null : lstQueueMangerParam.Find(o => o.DbType == type && o.Value.GetType() == newValu.GetType() && o.Value.ToString() == newValu.ToString()));// ?? lstNewParam.ToList().Find(o => o.Value == valu && o.DbType == type);
-            if (newParam == null)
-            {
-                newParam = CreateDbParam(name, valu, type, len);
-                newParam.ParameterName = ParamsPrefix + name;
-            }
-            // 为null时不进行SQL参数化
-            if (newValu != null) { lstQueueParam.Add(newParam); }
-            return newParam;
         }
         #endregion
 

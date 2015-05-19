@@ -10,8 +10,8 @@ namespace FS.Utils.Component
     public class OLog : IDisposable
     {
         public bool IsSuccess = true;
-        private Timer timer;
-        private ConsoleColor ErrorColor;
+        private readonly Timer timer;
+        private readonly ConsoleColor ErrorColor;
 
         public OLog(int millisecond = 500, ConsoleColor errorColor = ConsoleColor.Red)
         {

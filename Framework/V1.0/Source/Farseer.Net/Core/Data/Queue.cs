@@ -211,7 +211,7 @@ namespace FS.Core.Data
             {
                 var obj = kic.Key.GetValue(entity, null);
 
-                Param.Add(_queueManger.DbProvider.CreateDbParam(kic.Value.FieldAtt.Name, obj, kic.Key.PropertyType, kic.Value.FieldAtt.IsOutParam));
+                Param.Add(_queueManger.DbProvider.CreateDbParam(kic.Value.FieldAtt.Name, obj, kic.Value.FieldAtt.IsOutParam));
             }
             return Param;
         }
@@ -275,9 +275,12 @@ namespace FS.Core.Data
             {
                 if (Sql != null) { Sql.Clear(); Sql = null; }
 
+                ExpOrderBy.Clear();
                 ExpOrderBy = null;
+                ExpSelect.Clear();
                 ExpSelect = null;
                 ExpWhere = null;
+                Param.Clear();
             }
         }
         /// <summary>

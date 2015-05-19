@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Web;
 using FS.Core.Data.Proc;
 using FS.Core.Data.Table;
-using FS.Core.Infrastructure;
 using FS.Utils.Web.Common;
 
 // ReSharper disable once CheckNamespace
