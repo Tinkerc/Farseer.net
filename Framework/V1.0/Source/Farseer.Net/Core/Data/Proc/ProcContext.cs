@@ -73,6 +73,20 @@ namespace FS.Core.Data.Proc
             InstanceProperty(this, "ProcSet`1");
         }
 
+
+
+        /// <summary>
+        /// 动态返回TableSet类型
+        /// </summary>
+        /// <param name="propertyName">当有多个相同类型TEntity时，须使用propertyName来寻找唯一</param>
+        /// <typeparam name="TEntity"></typeparam>
+        public ProcSet<TEntity> Set<TEntity>(string propertyName = null) where TEntity : class, new()
+        {
+            var pInfo = GetSetPropertyInfo<TEntity>(typeof(ProcSet<TEntity>), propertyName);
+            // 找到存在的属性后，返回属性
+            return new ProcSet<TEntity>(this, pInfo);
+        }
+
         /// <summary>
         /// 释放资源
         /// </summary>

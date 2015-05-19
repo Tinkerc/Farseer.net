@@ -75,9 +75,15 @@ namespace FS.Core.Infrastructure
         /// <param name="isExecute">是否立即执行</param>
         public virtual void Append(string name, FieldMap map, Action<Queue> act, bool isExecute)
         {
-            if (isExecute) { act(CreateQueue(name, map)); return; }
-            Queue.LazyAct = act;
-            Clear();
+            try
+            {
+                if (isExecute) { act(CreateQueue(name, map)); return; }
+                Queue.LazyAct = act;
+            }
+            finally
+            {
+                Clear();
+            }
         }
 
         /// <summary>

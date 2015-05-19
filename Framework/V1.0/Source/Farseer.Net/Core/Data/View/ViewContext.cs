@@ -1,4 +1,6 @@
-﻿using System.ComponentModel;
+﻿using System;
+using System.ComponentModel;
+using System.Linq;
 using FS.Core.Infrastructure;
 
 namespace FS.Core.Data.View
@@ -42,6 +44,19 @@ namespace FS.Core.Data.View
         {
             QueueManger = new ViewQueueManger(DataBase, ContextMap);
             InstanceProperty(this, "ViewSet`1");
+        }
+
+
+        /// <summary>
+        /// 动态返回TableSet类型
+        /// </summary>
+        /// <param name="propertyName">当有多个相同类型TEntity时，须使用propertyName来寻找唯一</param>
+        /// <typeparam name="TEntity"></typeparam>
+        public ViewSet<TEntity> Set<TEntity>(string propertyName = null) where TEntity : class, new()
+        {
+            var pInfo = GetSetPropertyInfo<TEntity>(typeof(ViewSet<TEntity>), propertyName);
+            // 找到存在的属性后，返回属性
+            return new ViewSet<TEntity>(this, pInfo);
         }
 
         /// <summary>

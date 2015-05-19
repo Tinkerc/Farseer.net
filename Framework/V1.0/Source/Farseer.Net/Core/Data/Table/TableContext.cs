@@ -1,5 +1,7 @@
-﻿using System.ComponentModel;
+﻿using System;
+using System.ComponentModel;
 using System.Data;
+using System.Linq;
 using FS.Core.Infrastructure;
 
 namespace FS.Core.Data.Table
@@ -30,7 +32,7 @@ namespace FS.Core.Data.Table
         /// <param name="dbType">数据库类型</param>
         /// <param name="commandTimeout">SQL执行超时时间</param>
         protected TableContext(string connectionString, DataBaseType dbType = DataBaseType.SqlServer, int commandTimeout = 30) : base(connectionString, dbType, commandTimeout) { InstanceProperty(); }
-        
+
         /// <summary>
         /// true:启用合并执行命令、并延迟加载
         /// </summary>
@@ -85,6 +87,18 @@ namespace FS.Core.Data.Table
             {
                 QueueManger.Dispose();
             }
+        }
+
+        /// <summary>
+        /// 动态返回TableSet类型
+        /// </summary>
+        /// <param name="propertyName">当有多个相同类型TEntity时，须使用propertyName来寻找唯一</param>
+        /// <typeparam name="TEntity"></typeparam>
+        public TableSet<TEntity> Set<TEntity>(string propertyName = null) where TEntity : class, new()
+        {
+            var pInfo = GetSetPropertyInfo<TEntity>(typeof(TableSet<TEntity>), propertyName);
+            // 找到存在的属性后，返回属性
+            return new TableSet<TEntity>(this, pInfo);
         }
     }
 }

@@ -88,10 +88,10 @@ namespace FS.Mapping.Context
         ///     获取标注的名称
         /// </summary>
         /// <param name="setType">属性变量</param>
-        /// <returns></returns>
-        public KeyValuePair<PropertyInfo, SetState> GetState(Type setType)
+        /// <param name="propertyName">属性名称</param>
+        public KeyValuePair<PropertyInfo, SetState> GetState(Type setType, string propertyName)
         {
-            return MapList.Single(o => o.Key.PropertyType == setType);
+            return MapList.Single(o => o.Key.PropertyType == setType && o.Key.Name == propertyName);
         }
     }
 }

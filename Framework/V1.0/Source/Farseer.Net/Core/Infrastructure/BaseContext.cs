@@ -1,5 +1,7 @@
 ﻿using System;
 using System.ComponentModel;
+using System.Linq;
+using System.Reflection;
 using FS.Configs;
 using FS.Core.Data;
 using FS.Mapping.Context;
@@ -47,7 +49,7 @@ namespace FS.Core.Infrastructure
                 if (!propertyInfo.CanWrite || propertyInfo.PropertyType.Name != propertyName) { continue; }
                 // 动态实例化属性
                 //#warning 需要使用缓存
-                var set = Activator.CreateInstance(propertyInfo.PropertyType, context);
+                var set = Activator.CreateInstance(propertyInfo.PropertyType, context, propertyInfo);
                 propertyInfo.SetValue(context, set, null);
             }
         }
@@ -61,6 +63,21 @@ namespace FS.Core.Infrastructure
         /// TableContext、ProcContext、ViewContext 映射关系
         /// </summary>
         protected internal ContextMap ContextMap { get; private set; }
+
+        /// <summary>
+        /// 动态返回TableSet类型
+        /// </summary>
+        /// <param name="setType">Set的类型</param>
+        /// <param name="propertyName">当有多个相同类型TEntity时，须使用propertyName来寻找唯一</param>
+        /// <typeparam name="TEntity"></typeparam>
+        protected PropertyInfo GetSetPropertyInfo<TEntity>(Type setType, string propertyName = null) where TEntity : class, new()
+        {
+            var lstPropertyInfo = this.GetType().GetProperties();
+            var lst = lstPropertyInfo.Where(propertyInfo => propertyInfo.CanWrite && propertyInfo.PropertyType == setType).Where(propertyInfo => propertyName == null || propertyInfo.Name == propertyName);
+            if (lst == null) { throw new Exception("未找到当前类型的Set属性：" + typeof(TEntity)); }
+            if (lst.Count() > 1) { throw new Exception("找到多个Set属性，请指定propertyName确定唯一。：" + typeof(TEntity)); }
+            return lst.FirstOrDefault();
+        }
 
         #region 禁用智能提示
         [EditorBrowsable(EditorBrowsableState.Never)]

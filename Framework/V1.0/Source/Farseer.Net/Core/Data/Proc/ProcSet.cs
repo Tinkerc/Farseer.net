@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Reflection;
 using FS.Mapping.Context;
 
 namespace FS.Core.Data.Proc
@@ -30,11 +31,24 @@ namespace FS.Core.Data.Proc
         /// 禁止外部实例化
         /// </summary>
         private ProcSet() { }
-        public ProcSet(ProcContext context)
+
+        /// <summary>
+        /// 使用属性类型的创建
+        /// </summary>
+        /// <param name="context">上下文</param>
+        /// <param name="pInfo">属性类型</param>
+        public ProcSet(ProcContext context, PropertyInfo pInfo) : this(context, pInfo.Name) { }
+
+        /// <summary>
+        /// 使用属性名称的创建
+        /// </summary>
+        /// <param name="context">上下文</param>
+        /// <param name="propertyName">属性名称</param>
+        public ProcSet(ProcContext context, string propertyName)
         {
             _context = context;
             _map = typeof(TEntity);
-            var contextState = _context.ContextMap.GetState(this.GetType());
+            var contextState = _context.ContextMap.GetState(this.GetType(), propertyName);
             _name = contextState.Value.SetAtt.Name;
         }
 

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
+using System.Reflection;
 using FS.Core.Infrastructure;
 using FS.Utils;
 
@@ -22,10 +23,21 @@ namespace FS.Core.Data.Table
         /// 禁止外部实例化
         /// </summary>
         private TableSet() { }
-        public TableSet(TableContext context)
+        /// <summary>
+        /// 使用属性类型的创建
+        /// </summary>
+        /// <param name="context">上下文</param>
+        /// <param name="pInfo">属性类型</param>
+        public TableSet(TableContext context, PropertyInfo pInfo) : this(context, pInfo.Name) { }
+        /// <summary>
+        /// 使用属性名称的创建
+        /// </summary>
+        /// <param name="context">上下文</param>
+        /// <param name="propertyName">属性名称</param>
+        public TableSet(TableContext context, string propertyName)
         {
             _context = context;
-            SetState = _context.ContextMap.GetState(this.GetType()).Value;
+            SetState = _context.ContextMap.GetState(this.GetType(), propertyName).Value;
             Name = SetState.SetAtt.Name;
         }
 
@@ -234,7 +246,7 @@ namespace FS.Core.Data.Table
         /// <param name="select"></param>
         /// <param name="fieldValue">要更新的值</param>
         /// <param name="ID">o => o.ID.Equals(ID)</param>
-        public void AddUp<T>(int? ID, Expression<Func<TEntity, T>> select, T fieldValue)where T : struct
+        public void AddUp<T>(int? ID, Expression<Func<TEntity, T>> select, T fieldValue) where T : struct
         {
             Where<T>(o => o.ID.Equals(ID)).AddUp(select, fieldValue);
         }

@@ -1,5 +1,6 @@
 ﻿using System;
 using Demo.PO;
+using Demo.VO.Members;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Farseer.Net.Core.Tests.TableTest
@@ -15,6 +16,7 @@ namespace Farseer.Net.Core.Tests.TableTest
             new Table().User.Where(o => o.ID > 0).ToList();
             Table.Data.User.AddUp(o => o.LoginCount, 1);
             Table.Data.User.Where(o => o.ID > 0).ToList();
+            Table.Data.Set<UserVO>().Where(o => o.ID > 0).ToList();
         }
 
         [TestMethod]

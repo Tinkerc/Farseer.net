@@ -62,11 +62,17 @@ namespace FS.Core.Data.Table
         /// <param name="isExecute">是否立即执行</param>
         public override void Append(string name, FieldMap map, Action<Queue> act, bool isExecute)
         {
-            CreateQueue(name, map);
-            if (isExecute) { act(Queue); return; }
-            Queue.LazyAct = act;
-            if (Queue != null) { _groupQueueList.Add(Queue); }
-            Clear();
+            try
+            {
+                CreateQueue(name, map);
+                if (isExecute) { act(Queue); return; }
+                Queue.LazyAct = act;
+                if (Queue != null) { _groupQueueList.Add(Queue); }
+            }
+            finally
+            {
+                Clear();
+            }
         }
 
         /// <summary>
@@ -74,16 +80,22 @@ namespace FS.Core.Data.Table
         /// </summary>
         public int Commit()
         {
-            foreach (var queryQueue in _groupQueueList)
+            try
             {
-                // 查看是否延迟执行
-                if (queryQueue.LazyAct != null) { queryQueue.LazyAct(queryQueue); }
-                // 清除队列
-                queryQueue.Dispose();
+                foreach (var queryQueue in _groupQueueList)
+                {
+                    // 查看是否延迟执行
+                    if (queryQueue.LazyAct != null) { queryQueue.LazyAct(queryQueue); }
+                    // 清除队列
+                    queryQueue.Dispose();
+                }
             }
-
-            _groupQueueList.Clear();
-            Clear();
+            finally
+            {
+                // 清除队列
+                _groupQueueList.Clear();
+                Clear();
+            }
             return 0;
         }
     }

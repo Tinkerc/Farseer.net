@@ -1,4 +1,5 @@
-﻿using FS.Core.Infrastructure;
+﻿using System.Reflection;
+using FS.Core.Infrastructure;
 
 namespace FS.Core.Data.View
 {
@@ -18,10 +19,22 @@ namespace FS.Core.Data.View
         /// 禁止外部实例化
         /// </summary>
         private ViewSet() { }
-        public ViewSet(ViewContext context)
+
+        /// <summary>
+        /// 使用属性类型的创建
+        /// </summary>
+        /// <param name="context">上下文</param>
+        /// <param name="pInfo">属性类型</param>
+        public ViewSet(ViewContext context, PropertyInfo pInfo) : this(context, pInfo.Name) { }
+        /// <summary>
+        /// 使用属性名称的创建
+        /// </summary>
+        /// <param name="context">上下文</param>
+        /// <param name="propertyName">属性名称</param>
+        public ViewSet(ViewContext context, string propertyName)
         {
             _context = context;
-            SetState = _context.ContextMap.GetState(this.GetType()).Value;
+            SetState = _context.ContextMap.GetState(this.GetType(), propertyName).Value;
             Name = SetState.SetAtt.Name;
         }
     }
