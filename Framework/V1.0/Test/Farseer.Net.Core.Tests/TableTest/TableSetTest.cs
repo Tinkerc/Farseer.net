@@ -29,7 +29,9 @@ namespace Farseer.Net.Core.Tests.TableTest
                 // 只取ID
                 var ID = context.User.Select(o => new { o.ID }).ToList(1)[0].ID.GetValueOrDefault();
                 // 筛选字段、条件、正序、倒序
-                var lst = context.User.Select(o => new { o.ID, o.PassWord, o.GetDate }).Where(o => o.ID == ID).Desc(o => new { o.LoginCount, o.GenderType }).Asc(o => o.ID).Desc(o => o.GetDate).ToList();
+
+                Expression<Func<UserVO, bool>> where = o => o.ID == ID;
+                var lst = context.User.Select(o => new { o.ID, o.PassWord, o.GetDate }).Where(where).Desc(o => new { o.LoginCount, o.GenderType }).Asc(o => o.ID).Desc(o => o.GetDate).ToList();
                 Assert.IsTrue(lst.Count == 1);
                 Assert.IsTrue(lst[0].PassWord != null && lst[0].GenderType == null && lst[0].LoginIP == null && lst[0].UserName == null && lst[0].ID != null && lst[0].LoginCount == null && lst[0].ID == ID);
                 // 取第2页的数据（每页显示3条数据）
@@ -81,6 +83,8 @@ namespace Farseer.Net.Core.Tests.TableTest
         [TestMethod]
         public void ToEntity()
         {
+            Table.Data.User.Select(o => o.ID).Where(o => o.ID > 1).ToEntity(1);
+
             var lst = Table.Data.User.Select(o => o.ID).Where(o => o.ID > 0).Asc(o => o.ID).ToList();
 
             var info = Table.Data.User.Select(o => o.ID).Select(o => o.LoginCount).Where(o => o.ID > 1 || o.UserName.IsEquals("xx")).ToEntity();

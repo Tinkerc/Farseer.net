@@ -493,6 +493,7 @@ namespace FS.Core.Infrastructure
         {
             if (Queue.Param != null && Queue.Param.Count > 0 && (Queue.Param.Last().Value == null || string.IsNullOrWhiteSpace(Queue.Param.Last().Value.ToString())))
             {
+                CurrentDbParameter = null;
                 Queue.Param.RemoveAt(Queue.Param.Count - 1);
                 SqlList.Pop();
                 SqlList.Pop();

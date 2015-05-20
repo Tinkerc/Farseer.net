@@ -28,7 +28,7 @@ namespace Farseer.Net.Core.Tests.TableTest
                 info.PassWord = "77777";
                 context.User.Where(o => o.ID == 1).Update(info);
 
-                info.ID = null;
+               // info.ID = null;
                 info.PassWord = "00000New";
                 context.User.Insert(info);
 

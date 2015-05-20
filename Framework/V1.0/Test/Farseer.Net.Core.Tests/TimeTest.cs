@@ -18,7 +18,7 @@ namespace Farseer.Net.Core.Tests
         public void TestTime()
         {
             SpeedTest.Initialize();
-            var ID = Table.Data.User.Desc(o => o.ID).ToEntity().ID.GetValueOrDefault();
+            var ID = Table.Data.User.Desc(o => o.ID).ToEntity().ID;
             Table.Data.User.Where(o => o.ID == ID).Update(new UserVO() { UserName = "zz" });
 
             SpeedTest.ConsoleTime("x1", 1, () =>

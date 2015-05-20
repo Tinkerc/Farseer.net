@@ -81,8 +81,26 @@ namespace FS.Extends
             if (left == null) { return right; }
             if (right == null) { return left; }
 
-            var param = left.Parameters[0];
-            return Expression.Lambda<Func<TEntity, bool>>(ReferenceEquals(param, right.Parameters[0]) ? Expression.AndAlso(left.Body, right.Body) : Expression.AndAlso(left.Body, Expression.Invoke(right, param)), param);
+            var leftParam = left.Parameters[0];
+            var rightParam = right.Parameters[0];
+            return Expression.Lambda<Func<TEntity, bool>>(ReferenceEquals(leftParam, rightParam) ? Expression.AndAlso(left.Body, right.Body) : Expression.AndAlso(left.Body, Expression.Invoke(right, leftParam)), leftParam);
+        }
+
+        /// <summary>
+        ///     And 操作
+        /// </summary>
+        /// <typeparam name="TEntity">实体类</typeparam>
+        /// <param name="left">左树</param>
+        /// <param name="right">右树</param>
+        public static Expression AndAlso<TEntity>(this Expression left, Expression right) where TEntity : class
+        {
+            if (left == null) { return right; }
+            if (right == null) { return left; }
+
+            var leftParam = ((LambdaExpression)left).Parameters[0];
+            var rightParam = ((LambdaExpression)right).Parameters[0];
+
+            return Expression.Lambda<Func<TEntity, bool>>(ReferenceEquals(leftParam, rightParam) ? Expression.AndAlso(left, right) : Expression.AndAlso(left, Expression.Invoke(right, leftParam)), leftParam);
         }
     }
 }

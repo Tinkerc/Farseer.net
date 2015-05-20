@@ -5,7 +5,7 @@ using FS.Mapping.Context.Attribute;
 
 namespace Demo.VO.Members
 {
-    public class UserVO : IEntity
+    public class UserVO : IEntity<int?>
     {
         /// <summary>
         /// 用户ID
