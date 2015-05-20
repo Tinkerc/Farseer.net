@@ -118,6 +118,7 @@ namespace FS.Core.Infrastructure
                 case ExpressionType.TypeAs: return VisitUnary((UnaryExpression)exp);
                 case ExpressionType.Invoke: return VisitInvocation((InvocationExpression)exp);
                 case ExpressionType.Parameter: return VisitParameter((ParameterExpression)exp);
+                case ExpressionType.New: return VisitNew((NewExpression)exp);
             }
             throw new Exception(string.Format("类型：(ExpressionType){0}，不存在。", exp.NodeType));
         }
@@ -185,7 +186,7 @@ namespace FS.Core.Infrastructure
         protected virtual Expression CreateDbParam(ConstantExpression cexp)
         {
             if (cexp == null) return null;
-            if (string.IsNullOrWhiteSpace(_currentFieldName)) { throw new Exception("当前字段名称为空，无法生成字段参数"); }
+            //if (string.IsNullOrWhiteSpace(_currentFieldName)) { throw new Exception("当前字段名称为空，无法生成字段参数"); }
 
             // 非字符串，不使用参数
             //if (!(cexp.Value is string))
@@ -203,7 +204,7 @@ namespace FS.Core.Infrastructure
                 Queue.Param.Add(CurrentDbParameter);
                 SqlList.Push(CurrentDbParameter.ParameterName);
             }
-            _currentFieldName = string.Empty;
+            _currentFieldName = null;
             return cexp;
         }
 
@@ -473,6 +474,16 @@ namespace FS.Core.Infrastructure
         protected virtual Expression VisitParameter(ParameterExpression p)
         {
             return p;
+        }
+
+        protected virtual NewExpression VisitNew(NewExpression nex)
+        {
+            if (nex.Arguments.Count == 0 && nex.Type.IsGenericType)
+            {
+                CreateDbParam(Expression.Constant(null));
+            }
+            VisitExpressionList(nex.Arguments);
+            return nex;
         }
 
         /// <summary>

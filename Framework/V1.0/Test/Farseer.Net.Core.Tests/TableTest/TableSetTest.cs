@@ -37,7 +37,7 @@ namespace Farseer.Net.Core.Tests.TableTest
 
                 var recordCount = 0;
                 // 取前99999条数据，并返回总数据
-                Assert.IsTrue(context.User.Where(o => o.ID > 10).ToList(99999, 1, out recordCount).ToList().Count == recordCount);
+                Assert.IsTrue(context.User.Select(o => o.ID).Where(o => o.ID > 10).ToList(99999, 1, out recordCount).ToList().Count == recordCount);
                 // 取ID为：1、2、3 的数据
                 Assert.IsTrue(context.User.ToList(new List<int> { 1, 2, 3 }).Count <= 3);
                 var lstIDs = new List<int> { 1, 2, 3 };
@@ -47,16 +47,18 @@ namespace Farseer.Net.Core.Tests.TableTest
                 context.User.Select(o => new { o.ID, o.PassWord, o.GetDate })
                     .Where(
                         o =>
-                            o.ID == ID ||
-                            o.LoginCount < 1 ||
-                            o.CreateAt < DateTime.Now ||
-                            o.CreateAt > DateTime.Now.AddDays(-365) ||
-                            o.UserName.Contains("x") ||
-                            o.UserName.StartsWith("x") ||
-                            o.UserName.EndsWith("x") ||
-                            o.UserName.Length > 0 ||
-                            o.GenderType == eumGenderType.Man ||
-                            !o.PassWord.Contains("x"))
+                            //o.ID == ID ||
+                            //o.LoginCount < 1 ||
+                            //o.CreateAt < DateTime.Now ||
+                            //o.CreateAt > DateTime.Now.AddDays(-365) ||
+                            //o.UserName.Contains("x") ||
+                            //o.UserName.StartsWith("x") ||
+                            //o.UserName.EndsWith("x") ||
+                            //o.UserName.Length > 0 ||
+                            //o.GenderType == eumGenderType.Man ||
+                            //!o.PassWord.Contains("x") ||
+                            lstIDs.Contains(o.ID) ||
+                            new List<int>().Contains(o.ID))
                     .Desc(o => new { o.LoginCount, o.GenderType })
                     .Asc(o => o.ID)
                     .Desc(o => o.GetDate)
@@ -81,7 +83,7 @@ namespace Farseer.Net.Core.Tests.TableTest
         {
             var lst = Table.Data.User.Select(o => o.ID).Where(o => o.ID > 0).Asc(o => o.ID).ToList();
 
-            var info = Table.Data.User.Select(o => o.ID).Select(o => o.LoginCount).Where(o => o.ID > 1).ToEntity();
+            var info = Table.Data.User.Select(o => o.ID).Select(o => o.LoginCount).Where(o => o.ID > 1 || o.UserName.IsEquals("xx")).ToEntity();
             Assert.IsNotNull(info);
             Assert.IsTrue(info.ID > 1);
             Assert.IsTrue(info.PassWord == null && info.GenderType == null && info.LoginIP == null && info.UserName == null && info.ID != null && info.LoginCount != null);
@@ -193,6 +195,12 @@ namespace Farseer.Net.Core.Tests.TableTest
         public void Statistics()
         {
             var result = Table.Data.User.Sum(o => o.ID + o.LoginCount);
+        }
+
+        [TestMethod]
+        public void GetValue()
+        {
+            Table.Data.User.Where(o => o.ID > 1 && o.ID > 2).GetValue(o => o.UserName).ToList();
         }
     }
 }
