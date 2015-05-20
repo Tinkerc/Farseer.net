@@ -63,9 +63,9 @@ namespace FS.Core.Data.Table
         /// <param name="act">对新职的赋值</param>
         /// <typeparam name="T">ID</typeparam>
         /// <param name="ID">o => o.ID.Equals(ID)</param>
-        public void Copy<T>(int? ID, Action<TEntity> act = null)
+        public void Copy<T>(T ID, Action<TEntity> act = null)
         {
-            Where<T>(o => o.ID.Equals(ID));
+            Where(ConvertHelper.CreateBinaryExpression<TEntity>(ID));
             Copy(act);
         }
 
@@ -77,7 +77,7 @@ namespace FS.Core.Data.Table
         /// <param name="lstIDs">o => IDs.Contains(o.ID)</param>
         public void Copy<T>(List<T> lstIDs, Action<TEntity> act = null)
         {
-            Where<T>(o => lstIDs.Contains((T)o.ID));
+            Where(ConvertHelper.CreateContainsBinaryExpression<TEntity>(lstIDs));
             Copy(act);
         }
 
@@ -106,7 +106,8 @@ namespace FS.Core.Data.Table
         /// <param name="ID">条件，等同于：o=>o.ID == ID 的操作</param>
         public void Update<T>(TEntity info, T ID)
         {
-            Where<T>(o => o.ID.Equals(ID)).Update(info);
+            Where(ConvertHelper.CreateBinaryExpression<TEntity>(ID));
+            Update(info);
         }
 
         /// <summary>
@@ -117,7 +118,8 @@ namespace FS.Core.Data.Table
         /// <param name="lstIDs">条件，等同于：o=> IDs.Contains(o.ID) 的操作</param>
         public void Update<T>(TEntity info, List<T> lstIDs)
         {
-            Where<T>(o => lstIDs.Contains(o.ID)).Update(info);
+            Where(ConvertHelper.CreateContainsBinaryExpression<TEntity>(lstIDs));
+            Update(info);
         }
 
         /// <summary>
@@ -190,9 +192,10 @@ namespace FS.Core.Data.Table
         /// </summary>
         /// <param name="ID">条件，等同于：o=>o.ID.Equals(ID) 的操作</param>
         /// <typeparam name="T">ID</typeparam>
-        public void Delete<T>(int? ID)
+        public void Delete<T>(T ID)
         {
-            Where<T>(o => o.ID.Equals(ID)).Delete();
+            Where(ConvertHelper.CreateBinaryExpression<TEntity>(ID));
+            Delete();
         }
 
         /// <summary>
@@ -202,7 +205,8 @@ namespace FS.Core.Data.Table
         /// <typeparam name="T">ID</typeparam>
         public void Delete<T>(List<T> lstIDs)
         {
-            Where<T>(o => lstIDs.Contains(o.ID)).Delete();
+            Where(ConvertHelper.CreateContainsBinaryExpression<TEntity>(lstIDs));
+            Delete();
         }
         #endregion
 
@@ -246,9 +250,10 @@ namespace FS.Core.Data.Table
         /// <param name="select"></param>
         /// <param name="fieldValue">要更新的值</param>
         /// <param name="ID">o => o.ID.Equals(ID)</param>
-        public void AddUp<T>(int? ID, Expression<Func<TEntity, T>> select, T fieldValue) where T : struct
+        public void AddUp<T>(T? ID, Expression<Func<TEntity, T>> select, T fieldValue) where T : struct
         {
-            Where<T>(o => o.ID.Equals(ID)).AddUp(select, fieldValue);
+            Where(ConvertHelper.CreateBinaryExpression<TEntity>(ID));
+            AddUp(select, fieldValue);
         }
 
         /// <summary>
@@ -258,10 +263,11 @@ namespace FS.Core.Data.Table
         /// <param name="select"></param>
         /// <param name="fieldValue">要更新的值</param>
         /// <param name="ID">o => o.ID.Equals(ID)</param>
-        public void AddUp<T>(int? ID, Expression<Func<TEntity, T?>> select, T fieldValue)
+        public void AddUp<T>(T ID, Expression<Func<TEntity, T?>> select, T fieldValue)
             where T : struct
         {
-            Where<T>(o => o.ID.Equals(ID)).AddUp(select, fieldValue);
+            Where(ConvertHelper.CreateBinaryExpression<TEntity>(ID));
+            AddUp(select, fieldValue);
         }
 
         /// <summary>
@@ -270,10 +276,10 @@ namespace FS.Core.Data.Table
         /// <param name="fieldValue">要更新的值</param>
         /// <typeparam name="T">ID</typeparam>
         /// <param name="ID">o => o.ID.Equals(ID)</param>
-        public void AddUp<T>(int? ID, T fieldValue)
+        public void AddUp<T>(T? ID, T fieldValue)
             where T : struct
         {
-            AddUp<T>(ID, (Expression<Func<TEntity, T>>)null, fieldValue);
+            AddUp<T>(ID, null, fieldValue);
         }
         #endregion
     }

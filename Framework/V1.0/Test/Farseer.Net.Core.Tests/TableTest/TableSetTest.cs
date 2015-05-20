@@ -5,6 +5,7 @@ using System.Linq.Expressions;
 using Demo.Common;
 using Demo.PO;
 using Demo.VO.Members;
+using FS.Core.Infrastructure;
 using FS.Extends;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -41,6 +42,8 @@ namespace Farseer.Net.Core.Tests.TableTest
                 // 取前99999条数据，并返回总数据
                 Assert.IsTrue(context.User.Select(o => o.ID).Where(o => o.ID > 10).ToList(99999, 1, out recordCount).ToList().Count == recordCount);
                 // 取ID为：1、2、3 的数据
+                context.User.Where(o => new List<int> { 1, 2, 3 }.Contains(o.ID)).ToList();
+
                 Assert.IsTrue(context.User.ToList(new List<int> { 1, 2, 3 }).Count <= 3);
                 var lstIDs = new List<int> { 1, 2, 3 };
                 Assert.IsTrue(context.User.ToList(lstIDs).Count <= 3);
@@ -49,16 +52,16 @@ namespace Farseer.Net.Core.Tests.TableTest
                 context.User.Select(o => new { o.ID, o.PassWord, o.GetDate })
                     .Where(
                         o =>
-                            //o.ID == ID ||
-                            //o.LoginCount < 1 ||
-                            //o.CreateAt < DateTime.Now ||
-                            //o.CreateAt > DateTime.Now.AddDays(-365) ||
-                            //o.UserName.Contains("x") ||
-                            //o.UserName.StartsWith("x") ||
-                            //o.UserName.EndsWith("x") ||
-                            //o.UserName.Length > 0 ||
-                            //o.GenderType == eumGenderType.Man ||
-                            //!o.PassWord.Contains("x") ||
+                            o.ID == ID ||
+                            o.LoginCount < 1 ||
+                            o.CreateAt < DateTime.Now ||
+                            o.CreateAt > DateTime.Now.AddDays(-365) ||
+                            o.UserName.Contains("x") ||
+                            o.UserName.StartsWith("x") ||
+                            o.UserName.EndsWith("x") ||
+                            o.UserName.Length > 0 ||
+                            o.GenderType == eumGenderType.Man ||
+                            !o.PassWord.Contains("x") ||
                             lstIDs.Contains(o.ID) ||
                             new List<int>().Contains(o.ID))
                     .Desc(o => new { o.LoginCount, o.GenderType })
@@ -83,6 +86,7 @@ namespace Farseer.Net.Core.Tests.TableTest
         [TestMethod]
         public void ToEntity()
         {
+            Table.Data.User.Select(o => o.ID).ToEntity(1);
             Table.Data.User.Select(o => o.ID).Where(o => o.ID > 1).ToEntity(1);
 
             var lst = Table.Data.User.Select(o => o.ID).Where(o => o.ID > 0).Asc(o => o.ID).ToList();
@@ -116,7 +120,15 @@ namespace Farseer.Net.Core.Tests.TableTest
         }
 
         [TestMethod]
-        public void Count() { }
+        public void Count()
+        {
+            Expression<Func<UserVO, int?>> memberAccess = (oo) => oo.ID;
+
+            var o = Expression.Parameter(typeof(UserVO), "o");
+            var x = Expression.MakeMemberAccess(o, typeof(IEntity<int?>).GetMember("ID")[0]);
+            var value = Expression.Constant(1, typeof(int?));
+            var last = Expression.Equal(x, value);
+        }
 
         [TestMethod]
         public void Copy() { }

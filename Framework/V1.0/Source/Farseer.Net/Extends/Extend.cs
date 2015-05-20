@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Linq;
 using System.Linq.Expressions;
 using FS.Utils;
 
@@ -87,20 +88,14 @@ namespace FS.Extends
         }
 
         /// <summary>
-        ///     And 操作
+        ///     判断value是否存在于列表中
         /// </summary>
-        /// <typeparam name="TEntity">实体类</typeparam>
-        /// <param name="left">左树</param>
-        /// <param name="right">右树</param>
-        public static Expression AndAlso<TEntity>(this Expression left, Expression right) where TEntity : class
+        /// <param name="lst">数据源</param>
+        /// <param name="value">要判断的值</param>
+        /// <returns></returns>
+        public static bool Contains(this IEnumerable<int> lst, int? value)
         {
-            if (left == null) { return right; }
-            if (right == null) { return left; }
-
-            var leftParam = ((LambdaExpression)left).Parameters[0];
-            var rightParam = ((LambdaExpression)right).Parameters[0];
-
-            return Expression.Lambda<Func<TEntity, bool>>(ReferenceEquals(leftParam, rightParam) ? Expression.AndAlso(left, right) : Expression.AndAlso(left, Expression.Invoke(right, leftParam)), leftParam);
+            return Enumerable.Contains(lst, value.GetValueOrDefault());
         }
     }
 }

@@ -6,6 +6,7 @@ using System.Linq.Expressions;
 using FS.Core.Data;
 using FS.Extends;
 using FS.Mapping.Context;
+using FS.Utils;
 
 namespace FS.Core.Infrastructure
 {
@@ -53,15 +54,16 @@ namespace FS.Core.Infrastructure
             Queue.AddWhere(where);
             return (TSet)this;
         }
+
         /// <summary>
         ///     查询条件
         /// </summary>
         /// <param name="where">查询条件</param>
-        public virtual TSet Where<T>(Expression<Func<IEntity<T>, bool>> where)
-        {
-            Queue.AddWhere(where);
-            return (TSet)this;
-        }
+        //public virtual TSet Where<T>(Expression<Func<IEntity<T>, bool>> where)
+        //{
+        //    Queue.AddWhere(where);
+        //    return (TSet)this;
+        //}
 
         /// <summary>
         /// 倒序查询
@@ -169,7 +171,8 @@ namespace FS.Core.Infrastructure
         /// <typeparam name="T">ID</typeparam>
         public virtual List<TEntity> ToList<T>(List<T> lstIDs)
         {
-            return Where<T>(o => lstIDs.Contains(o.ID)).ToList(0);
+            Where(ConvertHelper.CreateContainsBinaryExpression<TEntity>(lstIDs));
+            return ToList(0);
         }
 
         #endregion
@@ -207,7 +210,8 @@ namespace FS.Core.Infrastructure
         /// <typeparam name="T">实体类的属性</typeparam>
         public virtual List<T> ToSelectList<T>(List<T> lstIDs, Expression<Func<TEntity, T>> select)
         {
-            return Where<T>(o => lstIDs.Contains(o.ID)).ToSelectList(select);
+            Where(ConvertHelper.CreateContainsBinaryExpression<TEntity>(lstIDs));
+            return ToSelectList(select);
         }
 
         /// <summary>
@@ -220,7 +224,8 @@ namespace FS.Core.Infrastructure
         /// <typeparam name="T">实体类的属性</typeparam>
         public virtual List<T> ToSelectList<T>(List<T> lstIDs, int top, Expression<Func<TEntity, T>> select)
         {
-            return Where<T>(o => lstIDs.Contains(o.ID)).ToSelectList(top, select);
+            Where(ConvertHelper.CreateContainsBinaryExpression<TEntity>(lstIDs));
+            return ToSelectList(top, select);
         }
         #endregion
 
@@ -241,7 +246,8 @@ namespace FS.Core.Infrastructure
         /// <param name="ID">条件，等同于：o=>o.ID.Equals(ID) 的操作</param>
         public virtual TEntity ToEntity<T>(T ID)
         {
-            return Where<T>(o => o.ID.Equals(ID)).ToEntity();
+            Where(ConvertHelper.CreateBinaryExpression<TEntity>(ID));
+            return ToEntity();
         }
         #endregion
 
@@ -262,7 +268,8 @@ namespace FS.Core.Infrastructure
         /// <param name="ID">条件，等同于：o=>o.ID.Equals(ID) 的操作</param>
         public virtual int Count<T>(T ID)
         {
-            return Where<T>(o => o.ID.Equals(ID)).Count();
+            Where(ConvertHelper.CreateBinaryExpression<TEntity>(ID));
+            return Count();
         }
 
         /// <summary>
@@ -272,7 +279,8 @@ namespace FS.Core.Infrastructure
         /// <param name="lstIDs">条件，等同于：o=> IDs.Contains(o.ID) 的操作</param>
         public virtual int Count<T>(List<T> lstIDs)
         {
-            return Where<T>(o => lstIDs.Contains(o.ID)).Count();
+            Where(ConvertHelper.CreateContainsBinaryExpression<TEntity>(lstIDs)); 
+            return Count();
         }
 
         #endregion
@@ -294,7 +302,8 @@ namespace FS.Core.Infrastructure
         /// <param name="ID">条件，等同于：o=>o.ID == ID 的操作</param>
         public virtual bool IsHaving<T>(T ID)
         {
-            return Where<T>(o => o.ID.Equals(ID)).IsHaving();
+            Where(ConvertHelper.CreateBinaryExpression<TEntity>(ID));
+            return  IsHaving();
         }
 
         /// <summary>
@@ -304,7 +313,8 @@ namespace FS.Core.Infrastructure
         /// <param name="lstIDs">条件，等同于：o=> IDs.Contains(o.ID) 的操作</param>
         public virtual bool IsHaving<T>(List<T> lstIDs)
         {
-            return Where<T>(o => lstIDs.Contains(o.ID)).IsHaving();
+            Where(ConvertHelper.CreateContainsBinaryExpression<TEntity>(lstIDs)); 
+            return IsHaving();
         }
 
         #endregion
@@ -332,7 +342,8 @@ namespace FS.Core.Infrastructure
         /// <param name="defValue">不存在时默认值</param>
         public virtual T2 GetValue<T1, T2>(T1 ID, Expression<Func<TEntity, T2>> fieldName, T2 defValue = default(T2))
         {
-            return Where<T1>(o => o.ID.Equals(ID)).GetValue(fieldName, defValue);
+            Where(ConvertHelper.CreateBinaryExpression<TEntity>(ID));
+            return GetValue(fieldName, defValue);
         }
 
         #endregion

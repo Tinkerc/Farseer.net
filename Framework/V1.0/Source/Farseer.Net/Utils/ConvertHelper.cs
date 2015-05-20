@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
+using System.Linq.Expressions;
 using FS.Core.Infrastructure;
 using FS.Extends;
 
@@ -377,6 +378,48 @@ namespace FS.Utils
                 if (reader.GetName(i).Equals(name)) { return true; }
             }
             return false;
+        }
+
+        /// <summary>
+        /// 动态创建一个 o.ID == value的表达式树
+        /// </summary>
+        /// <typeparam name="TEntity">实体</typeparam>
+        /// <param name="val">右值</param>
+        /// <param name="expType">匹配符号类型</param>
+        /// <param name="memberName">左边ID成员名称</param>
+        public static Expression<Func<TEntity, bool>> CreateBinaryExpression<TEntity>(object val, ExpressionType expType = ExpressionType.Equal, string memberName = "ID") where TEntity : class, new()
+        {
+            var oParam = Expression.Parameter(typeof(TEntity), "o");
+            var left = Expression.MakeMemberAccess(oParam, typeof(TEntity).GetMember(memberName)[0]);
+            var right = Expression.Constant(val, left.Type);
+            BinaryExpression where = null;
+            switch (expType)
+            {
+                case ExpressionType.Equal: where = Expression.Equal(left, right); break;
+                case ExpressionType.NotEqual: where = Expression.NotEqual(left, right); break;
+                case ExpressionType.GreaterThan: where = Expression.GreaterThan(left, right); break;
+                case ExpressionType.GreaterThanOrEqual: where = Expression.GreaterThanOrEqual(left, right); break;
+                case ExpressionType.LessThan: where = Expression.LessThan(left, right); break;
+                case ExpressionType.LessThanOrEqual: where = Expression.LessThanOrEqual(left, right); break;
+            }
+            return (Expression<Func<TEntity, bool>>)Expression.Lambda(where, oParam);
+        }
+
+        /// <summary>
+        /// 动态创建一个 List.Contains(o.ID)的表达式树
+        /// </summary>
+        /// <typeparam name="TEntity">实体</typeparam>
+        /// <param name="val">右值</param>
+        /// <param name="memberName">左边ID成员名称</param>
+        public static Expression<Func<TEntity, bool>> CreateContainsBinaryExpression<TEntity>(object val, string memberName = "ID") where TEntity : class, new()
+        {
+            var oParam = Expression.Parameter(typeof(TEntity), "o");
+            var left = Expression.MakeMemberAccess(oParam, typeof(TEntity).GetMember(memberName)[0]);
+            var leftx = Expression.Call(left, left.Type.GetMethod("GetValueOrDefault", new Type[] { }));
+
+            var right = Expression.Constant(val, val.GetType());
+            var where = Expression.Call(right, right.Type.GetMethod("Contains"), leftx);
+            return (Expression<Func<TEntity, bool>>)Expression.Lambda(where, oParam);
         }
     }
 }

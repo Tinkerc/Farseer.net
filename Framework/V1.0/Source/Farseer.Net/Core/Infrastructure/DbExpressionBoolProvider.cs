@@ -72,6 +72,7 @@ namespace FS.Core.Infrastructure
             if (exp == null) { return null; }
             switch (exp.NodeType)
             {
+                case ExpressionType.ListInit:
                 case ExpressionType.Call:
                 case ExpressionType.Constant:
                 case ExpressionType.MemberAccess: exp = VisitConvertExp(exp); break;
