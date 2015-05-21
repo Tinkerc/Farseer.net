@@ -223,19 +223,19 @@ namespace FS.Core.Bean
                         {
                             case "3.0":
                                 {
-                                    connString = string.Format("Provider=Microsoft.Jet.OLEDB.4.0;Extended Properties=Excel 3.0;"); break;
+                                    connString = string.Format("Provider=Microsoft.Jet.OLEDB.4.0;"); break;//Extended Properties=Excel 3.0;
                                 }
                             case "4.0":
                                 {
-                                    connString = string.Format("Provider=Microsoft.Jet.OLEDB.4.0;Extended Properties=Excel 4.0;"); break;
+                                    connString = string.Format("Provider=Microsoft.Jet.OLEDB.4.0;"); break;//Extended Properties=Excel 4.0;
                                 }
                             case "5.0":
                                 {
-                                    connString = string.Format("Provider=Microsoft.Jet.OLEDB.4.0;Extended Properties=Excel 5.0;"); break;
+                                    connString = string.Format("Provider=Microsoft.Jet.OLEDB.4.0;"); break;//Extended Properties=Excel 5.0;
                                 }
                             case "95":
                                 {
-                                    connString = string.Format("Provider=Microsoft.Jet.OLEDB.4.0;Extended Properties=Excel 5.0;"); break;
+                                    connString = string.Format("Provider=Microsoft.Jet.OLEDB.4.0;"); break;//Extended Properties=Excel 5.0;
                                 }
                             case "97":
                                 {
@@ -243,12 +243,12 @@ namespace FS.Core.Bean
                                 }
                             case "2003":
                                 {
-                                    connString = string.Format("Provider=Microsoft.Jet.OLEDB.4.0;Extended Properties=Excel 8.0;"); break;
+                                    connString = string.Format("Provider=Microsoft.Jet.OLEDB.4.0;"); break;//Extended Properties=Excel 8.0;
                                 }
                             default://2007+
                                 {
                                     //DR=YES
-                                    connString = string.Format("Provider=Microsoft.ACE.OLEDB.12.0;Extended Properties=Excel 12.0;"); break;
+                                    connString = string.Format("Provider=Microsoft.ACE.OLEDB.12.0;"); break;//Extended Properties=Excel 12.0;
                                 }
                         }
                         connString += string.Format("Data Source={0};", GetFilePath(server));

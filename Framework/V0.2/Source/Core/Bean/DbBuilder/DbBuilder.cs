@@ -208,7 +208,7 @@ namespace FS.Core.Bean
 
         public virtual string LastIdentity()
         {
-            return "SELECT @@IDENTITY;";
+            return string.Format(" SELECT Max({0}) FROM {1}", Map.IndexName, TableName);
         }
 
         public virtual string Count()
