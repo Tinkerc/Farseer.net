@@ -50,7 +50,7 @@ namespace FS.Core.Bean
 
         public override string LastIdentity()
         {
-            return "SELECT last_insert_rowid();";
+            return ";SELECT last_insert_rowid();";
         }
     }
 }
