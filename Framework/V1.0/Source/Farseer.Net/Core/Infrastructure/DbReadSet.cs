@@ -109,6 +109,11 @@ namespace FS.Core.Infrastructure
         /// <returns></returns>
         public virtual DataTable ToTable(int pageSize, int pageIndex, bool isDistinct = false)
         {
+            #region 计算总页数
+            if (pageIndex < 1) { pageIndex = 1; }
+            if (pageSize < 0) { pageSize = 20; }
+            #endregion
+
             return Queue.SqlBuilder.ToList(pageSize, pageIndex, isDistinct).ExecuteTable();
         }
 
@@ -124,6 +129,21 @@ namespace FS.Core.Infrastructure
             var queue = Queue;
             recordCount = Count();
             Queue.Copy(queue);
+
+            #region 计算总页数
+            var allCurrentPage = 1;
+
+            if (pageIndex < 1) { pageIndex = 1; }
+            if (pageSize < 0) { pageSize = 0; }
+            if (pageSize != 0)
+            {
+                allCurrentPage = (recordCount / pageSize);
+                allCurrentPage = ((recordCount % pageSize) != 0 ? allCurrentPage + 1 : allCurrentPage);
+                allCurrentPage = (allCurrentPage == 0 ? 1 : allCurrentPage);
+            }
+            if (pageIndex > allCurrentPage) { pageIndex = allCurrentPage; }
+            #endregion
+
             return ToTable(pageSize, pageIndex, isDistinct);
         }
         #endregion
@@ -279,7 +299,7 @@ namespace FS.Core.Infrastructure
         /// <param name="lstIDs">条件，等同于：o=> IDs.Contains(o.ID) 的操作</param>
         public virtual int Count<T>(List<T> lstIDs)
         {
-            Where(ConvertHelper.CreateContainsBinaryExpression<TEntity>(lstIDs)); 
+            Where(ConvertHelper.CreateContainsBinaryExpression<TEntity>(lstIDs));
             return Count();
         }
 
@@ -303,7 +323,7 @@ namespace FS.Core.Infrastructure
         public virtual bool IsHaving<T>(T ID)
         {
             Where(ConvertHelper.CreateBinaryExpression<TEntity>(ID));
-            return  IsHaving();
+            return IsHaving();
         }
 
         /// <summary>
@@ -313,7 +333,7 @@ namespace FS.Core.Infrastructure
         /// <param name="lstIDs">条件，等同于：o=> IDs.Contains(o.ID) 的操作</param>
         public virtual bool IsHaving<T>(List<T> lstIDs)
         {
-            Where(ConvertHelper.CreateContainsBinaryExpression<TEntity>(lstIDs)); 
+            Where(ConvertHelper.CreateContainsBinaryExpression<TEntity>(lstIDs));
             return IsHaving();
         }
 
