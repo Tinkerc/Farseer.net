@@ -15,6 +15,7 @@ namespace Demo.VO.Members
         /// <summary>
         /// 用户名
         /// </summary>
+        [Field()]
         public string UserName { get; set; }
 
         /// <summary>

@@ -6,6 +6,7 @@ using FS.Core.Client.SqlServer;
 using FS.Core.Data;
 using FS.Core.Data.Table;
 using FS.Core.Infrastructure;
+using FS.Mapping.Context.Attribute;
 using FS.Utils;
 
 namespace FS.Core.Client
@@ -13,7 +14,7 @@ namespace FS.Core.Client
     /// <summary>
     /// 数据库字段解析器总入口，根据要解析的类型，再分散到各自负责的解析器
     /// </summary>
-    public class ExpressionVisit 
+    public class ExpressionVisit
     {
         /// <summary>
         /// 提供ExpressionNew表达式树的解析
@@ -53,6 +54,28 @@ namespace FS.Core.Client
         }
 
         /// <summary>
+        /// 主键如果有值、或者设置成只读条件，则自动转成条件
+        /// </summary>
+        /// <typeparam name="TEntity">实体类</typeparam>
+        /// <param name="entity">实体类</param>
+        public string ReadCondition<TEntity>(TEntity entity) where TEntity : class, new()
+        {
+            var strWhereSql = new StringBuilder();
+            // 主键如果有值、或者设置成只读条件，则自动转成条件
+            foreach (var source in Queue.FieldMap.MapList.Where(o => o.Value.FieldAtt.IsPrimaryKey || o.Value.FieldAtt.UpdateStatusType == StatusType.ReadCondition))
+            {
+                var value = source.Key.GetValue(entity, null);
+                if (value == null) { continue; }
+
+                if (strWhereSql.Length > 0) { strWhereSql.Append(" AND "); }
+                var param = QueueManger.DbProvider.CreateDbParam("ReadCondition_" + source.Value.FieldAtt.Name, value);
+                strWhereSql.Append(string.Format("{0} = {1}", source.Value.FieldAtt.Name, param.ParameterName));
+                Queue.Param.Add(param);
+            }
+            return strWhereSql.ToString();
+        }
+
+        /// <summary>
         /// 赋值解析器
         /// </summary>
         /// <param name="entity">实体类</param>
@@ -64,7 +87,7 @@ namespace FS.Core.Client
             var sb = new StringBuilder();
 
             //  迭代实体赋值情况
-            foreach (var kic in map.MapList.Where(o => o.Value.FieldAtt.IsMap))
+            foreach (var kic in map.MapList.Where(o => o.Value.FieldAtt.IsMap && o.Value.FieldAtt.UpdateStatusType == StatusType.CanWrite))
             {
                 // 如果主键有值，则取消修改主键的SQL
                 if (kic.Value.FieldAtt.IsPrimaryKey) { continue; }
@@ -109,7 +132,7 @@ namespace FS.Core.Client
             var strValues = new StringBuilder();
 
             //  迭代实体赋值情况
-            foreach (var kic in map.MapList.Where(o => o.Value.FieldAtt.IsMap))
+            foreach (var kic in map.MapList.Where(o => o.Value.FieldAtt.IsMap && o.Value.FieldAtt.InsertStatusType == StatusType.CanWrite))
             {
                 var obj = kic.Key.GetValue(entity, null);
                 if (obj == null || obj is TableSet<TEntity>) { continue; }

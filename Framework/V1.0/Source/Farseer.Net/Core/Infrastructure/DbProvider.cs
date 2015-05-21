@@ -91,7 +91,7 @@ namespace FS.Core.Infrastructure
                         while (enumerator.MoveNext()) { sb.Append(enumerator.Current.GetValueOrDefault() + ","); }
                     }
                 }
-                valu = sb.Length > 0 ? sb.Remove(sb.Length - 1, 1).ToString() : null;
+                valu = sb.Length > 0 ? sb.Remove(sb.Length - 1, 1).ToString() : "";
             }
             return valu;
         }

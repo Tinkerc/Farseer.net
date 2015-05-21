@@ -28,6 +28,16 @@ namespace FS.Mapping.Context.Attribute
         public bool IsPrimaryKey { get; set; }
 
         /// <summary>
+        /// 插入时字段状态（默认允许修改）
+        /// </summary>
+        public StatusType InsertStatusType { get; set; }
+
+        /// <summary>
+        /// 修改时字段状态（默认允许修改）
+        /// </summary>
+        public StatusType UpdateStatusType { get; set; }
+
+        /// <summary>
         /// 是否映射到数据库字段中(默认为true)
         /// </summary>
         public bool IsMap { get; set; }
@@ -43,5 +53,24 @@ namespace FS.Mapping.Context.Attribute
         /// （默认为false)
         /// </summary>
         public bool IsInParam { get; set; }
+    }
+
+    /// <summary>
+    /// 字段状态
+    /// </summary>
+    public enum StatusType
+    {
+        /// <summary>
+        /// 允许修改
+        /// </summary>
+        CanWrite,
+        /// <summary>
+        /// 只读状态，不作任何设置
+        /// </summary>
+        ReadOnly,
+        /// <summary>
+        /// 只读状态，但如果存在值时，将转换成==条件
+        /// </summary>
+        ReadCondition,
     }
 }

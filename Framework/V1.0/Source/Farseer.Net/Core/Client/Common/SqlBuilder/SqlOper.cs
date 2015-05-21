@@ -1,7 +1,11 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using FS.Core.Data;
 using FS.Core.Infrastructure;
+using FS.Mapping.Context.Attribute;
+using FS.Utils;
 
 namespace FS.Core.Client.Common.SqlBuilder
 {
@@ -47,17 +51,12 @@ namespace FS.Core.Client.Common.SqlBuilder
             Queue.Sql = new StringBuilder();
             var strWhereSql = Visit.Where(Queue.ExpWhere);
             var strAssemble = Visit.Assign(entity);
+            var readCondition = Visit.ReadCondition(entity);
 
-            // 主键如果有值，则需要 去掉主键的赋值、并且加上主键的条件
-            if (Queue.FieldMap.PrimaryState.Key != null)
-            {
-                var value = Queue.FieldMap.PrimaryState.Key.GetValue(entity, null);
-                if (value != null)
-                {
-                    if (!string.IsNullOrWhiteSpace(strWhereSql)) { strWhereSql += " AND "; }
-                    strWhereSql += string.Format("{0} = {1}", Queue.FieldMap.PrimaryState.Value.FieldAtt.Name, value);
-                }
-            }
+            Check.NotEmpty(strAssemble, "更新操作时，当前实体没有要更新的字段。" + typeof (TEntity));
+
+            // 主键如果有值、或者设置成只读条件，则自动转成条件
+            if (!string.IsNullOrWhiteSpace(readCondition)) { strWhereSql += string.IsNullOrWhiteSpace(strWhereSql) ? readCondition : " AND " + readCondition; }
             if (!string.IsNullOrWhiteSpace(strWhereSql)) { strWhereSql = "WHERE " + strWhereSql; }
 
             Queue.Sql.AppendFormat("UPDATE {0} SET {1} {2}", QueueManger.DbProvider.KeywordAegis(Queue.Name), strAssemble, strWhereSql);
@@ -66,7 +65,8 @@ namespace FS.Core.Client.Common.SqlBuilder
 
         public virtual Queue AddUp()
         {
-            if (Queue.ExpAssign == null || Queue.ExpAssign.Count == 0) { throw new Exception("赋值的参数不能为空！"); }
+            Check.IsTure(Queue.ExpAssign == null || Queue.ExpAssign.Count == 0, "赋值的参数不能为空！");
+
             Queue.Sql = new StringBuilder();
             var strWhereSql = Visit.Where(Queue.ExpWhere);
 

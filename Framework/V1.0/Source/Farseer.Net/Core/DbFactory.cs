@@ -114,14 +114,14 @@ namespace FS.Core
                     {
                         switch (dataVer)
                         {
-                            case "3.0": { sb.Append(string.Format("Provider=Microsoft.Jet.OLEDB.4.0;Extended Properties=Excel 3.0;")); break; }
-                            case "4.0": { sb.Append(string.Format("Provider=Microsoft.Jet.OLEDB.4.0;Extended Properties=Excel 4.0;")); break; }
-                            case "5.0": { sb.Append(string.Format("Provider=Microsoft.Jet.OLEDB.4.0;Extended Properties=Excel 5.0;")); break; }
-                            case "95": { sb.Append(string.Format("Provider=Microsoft.Jet.OLEDB.4.0;Extended Properties=Excel 5.0;")); break; }
+                            case "3.0": { sb.Append(string.Format("Provider=Microsoft.Jet.OLEDB.4.0;")); break; }//Extended Properties=Excel 3.0;
+                            case "4.0": { sb.Append(string.Format("Provider=Microsoft.Jet.OLEDB.4.0;")); break; }//Extended Properties=Excel 4.0;
+                            case "5.0": { sb.Append(string.Format("Provider=Microsoft.Jet.OLEDB.4.0;")); break; }//Extended Properties=Excel 5.0;
+                            case "95": { sb.Append(string.Format("Provider=Microsoft.Jet.OLEDB.4.0;")); break; }//Extended Properties=Excel 5.0;
                             case "97": { sb.Append(string.Format("Provider=Microsoft.Jet.OLEDB.3.51;")); break; }
-                            case "2003": { sb.Append(string.Format("Provider=Microsoft.Jet.OLEDB.4.0;Extended Properties=Excel 8.0;")); break; }
+                            case "2003": { sb.Append(string.Format("Provider=Microsoft.Jet.OLEDB.4.0;")); break; }//Extended Properties=Excel 8.0;
                             //  2007+   DR=YES
-                            default: { sb.Append(string.Format("Provider=Microsoft.ACE.OLEDB.12.0;Extended Properties=Excel 12.0;")); break; }
+                            default: { sb.Append(string.Format("Provider=Microsoft.ACE.OLEDB.12.0;")); break; }//Extended Properties=Excel 12.0;
                         }
                         sb.Append(string.Format("Data Source={0};", GetFilePath(server)));
                         if (!string.IsNullOrWhiteSpace(userID)) { sb.Append(string.Format("User ID={0};", userID)); }

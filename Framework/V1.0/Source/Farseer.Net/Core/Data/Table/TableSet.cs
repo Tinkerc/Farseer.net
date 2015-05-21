@@ -250,7 +250,7 @@ namespace FS.Core.Data.Table
         /// <param name="select"></param>
         /// <param name="fieldValue">要更新的值</param>
         /// <param name="ID">o => o.ID.Equals(ID)</param>
-        public void AddUp<T>(T? ID, Expression<Func<TEntity, T>> select, T fieldValue) where T : struct
+        public void AddUp<T>(T? ID, Expression<Func<TEntity, T?>> select, T fieldValue) where T : struct
         {
             Where(ConvertHelper.CreateBinaryExpression<TEntity>(ID));
             AddUp(select, fieldValue);
@@ -263,7 +263,7 @@ namespace FS.Core.Data.Table
         /// <param name="select"></param>
         /// <param name="fieldValue">要更新的值</param>
         /// <param name="ID">o => o.ID.Equals(ID)</param>
-        public void AddUp<T>(T ID, Expression<Func<TEntity, T?>> select, T fieldValue)
+        public void AddUp<T>(T ID, Expression<Func<TEntity, T>> select, T fieldValue)
             where T : struct
         {
             Where(ConvertHelper.CreateBinaryExpression<TEntity>(ID));
