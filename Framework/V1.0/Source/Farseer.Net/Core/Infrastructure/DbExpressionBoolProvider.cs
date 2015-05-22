@@ -174,10 +174,12 @@ namespace FS.Core.Infrastructure
 
             CreateOperate(bexp.NodeType, left, right);
 
-            // 清除状态
-            _currentFieldName = null;
-            CurrentDbParameter = null;
-
+            // 清除状态（与或状态，不清除）
+            if (bexp.NodeType != ExpressionType.And && bexp.NodeType != ExpressionType.Or)
+            {
+                _currentFieldName = null;
+                CurrentDbParameter = null;
+            }
             return bexp;
         }
 

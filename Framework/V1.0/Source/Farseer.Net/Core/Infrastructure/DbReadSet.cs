@@ -55,15 +55,25 @@ namespace FS.Core.Infrastructure
             return (TSet)this;
         }
 
-        /// <summary>
-        ///     查询条件
-        /// </summary>
-        /// <param name="where">查询条件</param>
-        //public virtual TSet Where<T>(Expression<Func<IEntity<T>, bool>> where)
-        //{
-        //    Queue.AddWhere(where);
-        //    return (TSet)this;
-        //}
+        /// <summary> 自动生成o.ID == ID </summary>
+        /// <param name="value">值</param>
+        /// <param name="memberName">默认为主键ID属性（非数据库字段名称）</param>
+        public virtual TSet Where(int value, string memberName = null)
+        {
+            memberName = string.IsNullOrWhiteSpace(memberName) ? Map.PrimaryState.Key.Name : "ID";
+            Where(ConvertHelper.CreateBinaryExpression<TEntity>(value, memberName: memberName));
+            return (TSet)this;
+        }
+
+        /// <summary> 自动生成lstIDs.Contains(o.ID) </summary>
+        /// <param name="lstvValues"></param>
+        /// <param name="memberName">默认为主键ID属性（非数据库字段名称）</param>
+        public virtual TSet Where(List<int> lstvValues, string memberName = null)
+        {
+            memberName = string.IsNullOrWhiteSpace(memberName) ? Map.PrimaryState.Key.Name : "ID";
+            Where(ConvertHelper.CreateContainsBinaryExpression<TEntity>(lstvValues, memberName: memberName));
+            return (TSet)this;
+        }
 
         /// <summary>
         /// 倒序查询
@@ -100,9 +110,7 @@ namespace FS.Core.Infrastructure
             return dt;
         }
 
-        /// <summary>
-        /// 查询多条记录（不支持延迟加载）
-        /// </summary>
+        /// <summary> 查询多条记录（不支持延迟加载） </summary>
         /// <param name="pageSize">每页显示数量</param>
         /// <param name="pageIndex">分页索引</param>
         /// <param name="isDistinct">返回当前条件下非重复数据</param>
@@ -117,9 +125,7 @@ namespace FS.Core.Infrastructure
             return Queue.SqlBuilder.ToList(pageSize, pageIndex, isDistinct).ExecuteTable();
         }
 
-        /// <summary>
-        /// 查询多条记录（不支持延迟加载）
-        /// </summary>
+        /// <summary> 查询多条记录（不支持延迟加载） </summary>
         /// <param name="pageSize">每页显示数量</param>
         /// <param name="pageIndex">分页索引</param>
         /// <param name="recordCount">总记录数量</param>
@@ -149,9 +155,7 @@ namespace FS.Core.Infrastructure
         #endregion
 
         #region ToList
-        /// <summary>
-        /// 查询多条记录（不支持延迟加载）
-        /// </summary>
+        /// <summary> 查询多条记录（不支持延迟加载） </summary>
         /// <param name="top">限制显示的数量</param>
         /// <param name="isDistinct">返回当前条件下非重复数据</param>
         /// <param name="isRand">返回当前条件下随机的数据</param>
@@ -183,18 +187,6 @@ namespace FS.Core.Infrastructure
         {
             return ToTable(pageSize, pageIndex, out recordCount, isDistinct).ToList<TEntity>();
         }
-
-        /// <summary>
-        ///     获取分页、Top、全部的数据方法(根据pageSize、pageIndex自动识别使用场景)
-        /// </summary>
-        /// <param name="lstIDs">条件，等同于：o=> IDs.Contains(o.ID) 的操作</param>
-        /// <typeparam name="T">ID</typeparam>
-        public virtual List<TEntity> ToList<T>(List<T> lstIDs)
-        {
-            Where(ConvertHelper.CreateContainsBinaryExpression<TEntity>(lstIDs));
-            return ToList(0);
-        }
-
         #endregion
 
         #region ToSelectList
@@ -250,7 +242,6 @@ namespace FS.Core.Infrastructure
         #endregion
 
         #region ToEntity
-
         /// <summary>
         /// 查询单条记录（不支持延迟加载）
         /// </summary>

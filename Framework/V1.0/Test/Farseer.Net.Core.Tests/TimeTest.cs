@@ -1,11 +1,5 @@
-﻿using System;
-using Demo.PO;
+﻿using Demo.PO;
 using Demo.VO.Members;
-using FS.Core;
-using FS.Core.Data;
-using FS.Core.Data.Table;
-using FS.Core.Infrastructure;
-using FS.Utils;
 using FS.Utils.Component;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -23,14 +17,14 @@ namespace Farseer.Net.Core.Tests
 
             SpeedTest.ConsoleTime("x1", 1, () =>
             {
-                for (int i = 0; i < 1000; i++)
+                for (var i = 0; i < 1000; i++)
                 {
                     Table.Data.Set<UserVO>().Where(o => o.ID == ID).Update(new UserVO() { UserName = "zz" });
                 }
             });
             SpeedTest.ConsoleTime("x2", 1, () =>
             {
-                for (int i = 0; i < 1000; i++)
+                for (var i = 0; i < 1000; i++)
                 {
                     Table.Data.User.Where(o => o.ID == ID).Update(new UserVO() { UserName = "zz" });
                 }

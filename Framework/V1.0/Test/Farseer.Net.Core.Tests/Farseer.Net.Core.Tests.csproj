@@ -56,11 +56,21 @@
     </Otherwise>
   </Choose>
   <ItemGroup>
+    <Compile Include="TableTest\ToList.cs" />
+    <Compile Include="TableTest\ToSelectListTest.cs" />
+    <Compile Include="TableTest\ToEntityTest.cs" />
+    <Compile Include="TableTest\CountTest.cs" />
+    <Compile Include="TableTest\GetValueTest.cs" />
+    <Compile Include="TableTest\CopyTest.cs" />
+    <Compile Include="TableTest\InsertTest.cs" />
+    <Compile Include="TableTest\DeleteTest.cs" />
+    <Compile Include="TableTest\AddUpTest.cs" />
+    <Compile Include="TableTest\UpdateTest.cs" />
     <Compile Include="TimeTest.cs" />
-    <Compile Include="TableTest\TableContext~1Test.cs" />
+    <Compile Include="TableTest\ContextTest.cs" />
     <Compile Include="ProcTest\ProcSetTest.cs" />
     <Compile Include="ViewTest\ViewSetTest.cs" />
-    <Compile Include="TableTest\TableSetTest.cs" />
+    <Compile Include="TableTest\StatisticsTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

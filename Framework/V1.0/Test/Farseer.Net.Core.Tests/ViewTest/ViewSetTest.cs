@@ -4,7 +4,6 @@ using System.Linq.Expressions;
 using Demo.PO;
 using Demo.VO.Members;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using FS.Extends;
 
 namespace Farseer.Net.Core.Tests.ViewTest
 {
