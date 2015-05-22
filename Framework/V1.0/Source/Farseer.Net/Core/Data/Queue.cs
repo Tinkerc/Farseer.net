@@ -44,7 +44,7 @@ namespace FS.Core.Data
         /// <summary>
         /// SQL生成器
         /// </summary>
-        public IBuilderSqlOper SqlBuilder { get; private set; }
+        public ISqlBuilder SqlBuilder { get; private set; }
         /// <summary>
         /// 延迟执行的委托
         /// </summary>
@@ -77,7 +77,7 @@ namespace FS.Core.Data
             Param = new List<DbParameter>();
             FieldMap = map;
             _queueManger = queueManger;
-            SqlBuilder = queueManger.DbProvider.CreateBuilderSqlOper(queueManger, this);
+            SqlBuilder = queueManger.DbProvider.CreateSqlBuilder(queueManger, this);
         }
 
         /// <summary>

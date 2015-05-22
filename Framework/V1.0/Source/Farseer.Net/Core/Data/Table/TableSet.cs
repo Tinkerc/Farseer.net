@@ -135,19 +135,32 @@ namespace FS.Core.Data.Table
         #endregion
 
         #region Insert
+
         /// <summary>
         /// 插入（支持延迟加载）
         /// </summary>
         /// <param name="entity"></param>
-        public void Insert(TEntity entity)
+        /// <param name="isReturnLastID">是否设置主键ID为返回的最新ID</param>
+        public void Insert(TEntity entity, bool isReturnLastID = false)
         {
             if (entity == null) { throw new ArgumentNullException("entity", "插入操作时，参数不能为空！"); }
 
             // 加入委托
-            QueueManger.Append(Name, Map, (queryQueue) => queryQueue.SqlBuilder.Insert(entity).Execute(), !_context.IsMergeCommand);
+            QueueManger.Append(Name, Map, (queryQueue) =>
+            {
+                if (!isReturnLastID){ queryQueue.SqlBuilder.Insert(entity).Execute(); }
+                else
+                {
+                    // 返回主键ID
+                    var ident = Queue.SqlBuilder.InsertIdentity(entity).ExecuteQuery<int>();
+                    // 设置主键ID
+                    Map.PrimaryState.Key.SetValue(entity, ident, null);
+                }
+            }, !_context.IsMergeCommand);
         }
+
         /// <summary>
-        /// 插入（不支持延迟加载）
+        /// 插入（延迟加载情况下，ID只有在SaveChange()后才能返回）
         /// </summary>
         /// <param name="entity">实体类</param>
         /// <param name="identity">返回新增的</param>
@@ -156,9 +169,10 @@ namespace FS.Core.Data.Table
             if (entity == null) { throw new ArgumentNullException("entity", "插入操作时，参数不能为空！"); }
 
             var ident = 0;
-            QueueManger.Append(Name, Map, (queryQueue) => ident = Queue.SqlBuilder.InsertIdentity(entity).ExecuteQuery<int>(), true);
+            QueueManger.Append(Name, Map, (queryQueue) => ident = Queue.SqlBuilder.InsertIdentity(entity).ExecuteQuery<int>(), !_context.IsMergeCommand);
             identity = ident;
         }
+
         /// <summary>
         /// 插入（不支持延迟加载）
         /// </summary>

@@ -2,16 +2,16 @@
 using FS.Core.Data;
 using FS.Core.Infrastructure;
 
-namespace FS.Core.Client.OleDb.SqlBuilder
+namespace FS.Core.Client.OleDb
 {
-    public class SqlQuery : Common.SqlBuilder.SqlQuery 
+    public class SqlBuilder : Common.SqlBuilder
     {
         /// <summary>
         /// 查询支持的SQL方法
         /// </summary>
         /// <param name="queueManger">队列管理模块</param>
         /// <param name="queue">包含数据库SQL操作的队列</param>
-        public SqlQuery(BaseQueueManger queueManger, Queue queue) : base(queueManger, queue) { }
+        public SqlBuilder(BaseQueueManger queueManger, Queue queue) : base(queueManger, queue) { }
 
         public override Queue ToList(int top = 0, bool isDistinct = false, bool isRand = false)
         {
@@ -54,6 +54,12 @@ namespace FS.Core.Client.OleDb.SqlBuilder
             if (!string.IsNullOrWhiteSpace(strOrderBySql)) { strOrderBySql = "ORDER BY " + strOrderBySql; }
 
             Queue.Sql.AppendFormat("SELECT TOP 1 {0} FROM {1} {2} {3}", strSelectSql, QueueManger.DbProvider.KeywordAegis(Queue.Name), strWhereSql, strOrderBySql);
+            return Queue;
+        }
+        public override Queue InsertIdentity<TEntity>(TEntity entity)
+        {
+            base.InsertIdentity(entity);
+            Queue.Sql.AppendFormat("SELECT @@IDENTITY;");
             return Queue;
         }
     }

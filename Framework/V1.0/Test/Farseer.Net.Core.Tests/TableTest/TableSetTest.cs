@@ -41,6 +41,10 @@ namespace Farseer.Net.Core.Tests.TableTest
                 var recordCount = 0;
                 // 取前99999条数据，并返回总数据
                 Assert.IsTrue(context.User.Select(o => o.ID).Where(o => o.ID > 10).ToList(99999, 1, out recordCount).ToList().Count == recordCount);
+
+                context.User.Select(o => o.CreateAt).Where(o => o.ID > 10).Asc(o => o.ID).Desc(o => new { o.UserName, o.LoginCount }).ToList(10, 3, out recordCount).ToList();
+
+
                 // 取ID为：1、2、3 的数据
                 context.User.Where(o => new List<int> { 1, 2, 3 }.Contains(o.ID)).ToList();
 

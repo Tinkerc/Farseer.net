@@ -225,14 +225,7 @@ namespace FS.Core.Infrastructure
         /// </summary>
         /// <param name="queueManger">队列管理模块</param>
         /// <param name="queue">包含数据库SQL操作的队列</param>
-        public abstract IBuilderSqlQuery CreateBuilderSqlQuery(BaseQueueManger queueManger, Queue queue);
-
-        /// <summary>
-        /// 创建SQL执行
-        /// </summary>
-        /// <param name="queueManger">队列管理模块</param>
-        /// <param name="queue">包含数据库SQL操作的队列</param>
-        public abstract IBuilderSqlOper CreateBuilderSqlOper(BaseQueueManger queueManger, Queue queue);
+        public abstract ISqlBuilder CreateSqlBuilder(BaseQueueManger queueManger, Queue queue);
 
         /// <summary>
         /// 返回数据库类型名称

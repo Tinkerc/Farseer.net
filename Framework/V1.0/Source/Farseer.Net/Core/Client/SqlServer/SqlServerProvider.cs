@@ -1,5 +1,4 @@
 ﻿using System.Data.Common;
-using FS.Core.Client.SqlServer.SqlBuilder;
 using FS.Core.Data;
 using FS.Core.Infrastructure;
 
@@ -12,18 +11,13 @@ namespace FS.Core.Client.SqlServer
             get { return DbProviderFactories.GetFactory("System.Data.SqlClient"); }
         }
 
-        public override IBuilderSqlQuery CreateBuilderSqlQuery(BaseQueueManger queueManger, Queue queue)
+        public override ISqlBuilder CreateSqlBuilder(BaseQueueManger queueManger, Queue queue)
         {
             switch (queueManger.ContextMap.ContextProperty.DataVer)
             {
-                case "2000": return new SqlQuery2000(queueManger, queue);
+                case "2000": return new SqlBuilder2000(queueManger, queue);
             }
-            return new SqlQuery(queueManger, queue);
-        }
-
-        public override IBuilderSqlOper CreateBuilderSqlOper(BaseQueueManger queueManger, Queue queue)
-        {
-            return new SqlOper(queueManger, queue);
+            return new SqlBuilder(queueManger, queue);
         }
     }
 }

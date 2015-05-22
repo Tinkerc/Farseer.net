@@ -1,5 +1,4 @@
 ﻿using System.Data.Common;
-using FS.Core.Client.SqLite.SqlBuilder;
 using FS.Core.Data;
 using FS.Core.Infrastructure;
 
@@ -11,14 +10,9 @@ namespace FS.Core.Client.SqLite
         {
             get { return DbProviderFactories.GetFactory("System.Data.SQLite"); }
         }
-        public override IBuilderSqlQuery CreateBuilderSqlQuery(BaseQueueManger queueManger, Queue queue)
+        public override ISqlBuilder CreateSqlBuilder(BaseQueueManger queueManger, Queue queue)
         {
-            return new SqlQuery(queueManger, queue);
-        }
-
-        public override IBuilderSqlOper CreateBuilderSqlOper(BaseQueueManger queueManger, Queue queue)
-        {
-            return new SqlOper(queueManger, queue);
+            return new SqlBuilder(queueManger, queue);
         }
     }
 }

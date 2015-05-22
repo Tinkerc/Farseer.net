@@ -2,14 +2,14 @@
 using FS.Core.Data;
 using FS.Core.Infrastructure;
 
-namespace FS.Core.Client.SqlServer.SqlBuilder
+namespace FS.Core.Client.SqlServer
 {
     /// <summary>
     /// 针对SqlServer 2000 数据库 提供
     /// </summary>
-    public class SqlQuery2000 : SqlQuery
+    public class SqlBuilder2000 : SqlBuilder
     {
-        public SqlQuery2000(BaseQueueManger queueManger, Queue queue) : base(queueManger, queue) { }
+        public SqlBuilder2000(BaseQueueManger queueManger, Queue queue) : base(queueManger, queue) { }
 
         public override Queue ToList(int pageSize, int pageIndex, bool isDistinct = false)
         {
