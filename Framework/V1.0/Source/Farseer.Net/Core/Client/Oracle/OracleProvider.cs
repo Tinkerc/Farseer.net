@@ -24,5 +24,11 @@ namespace FS.Core.Client.Oracle
         {
             return new SqlBuilder(queueManger, queue);
         }
+
+        public override string CreateDbConnstring(string userID, string passWord, string server, string catalog, string dataVer, int connectTimeout = 60, int poolMinSize = 16, int poolMaxSize = 100, string port = "")
+        {
+            if (string.IsNullOrWhiteSpace(port)) { port = "1521"; }
+            return string.Format("Data Source=(DESCRIPTION=(ADDRESS_LIST=(ADDRESS=(PROTOCOL=TCP)(HOST={0})(PORT={3})))(CONNECT_DATA=(SERVER=DEDICATED)(SID={4})));User Id={1};Password={2};", server, userID, passWord, port, catalog);
+        }
     }
 }

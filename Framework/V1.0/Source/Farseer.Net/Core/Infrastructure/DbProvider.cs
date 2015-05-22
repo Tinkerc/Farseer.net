@@ -3,9 +3,11 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.Common;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
+using FS.Configs;
 using FS.Core.Client.MySql;
 using FS.Core.Client.OleDb;
 using FS.Core.Client.Oracle;
@@ -256,6 +258,47 @@ namespace FS.Core.Infrastructure
                 case DataBaseType.Oracle: return new OracleProvider();
             }
             return new SqlServerProvider();
+        }
+
+        /// <summary>
+        ///     创建数据库连接字符串
+        /// </summary>
+        /// <param name="dbIndex">数据库配置</param>
+        public string CreateDbConnstring(int dbIndex = 0)
+        {
+            DbInfo dbInfo = dbIndex;
+            return CreateDbConnstring(dbInfo.UserID, dbInfo.PassWord, dbInfo.Server, dbInfo.Catalog,
+                                    dbInfo.DataVer, dbInfo.ConnectTimeout, dbInfo.PoolMinSize, dbInfo.PoolMaxSize,
+                                    dbInfo.Port);
+        }
+
+        /// <summary>
+        ///     创建数据库连接字符串
+        /// </summary>
+        /// <param name="userID">账号</param>
+        /// <param name="passWord">密码</param>
+        /// <param name="server">服务器地址</param>
+        /// <param name="catalog">表名</param>
+        /// <param name="dataVer">数据库版本</param>
+        /// <param name="connectTimeout">链接超时时间</param>
+        /// <param name="poolMinSize">连接池最小数量</param>
+        /// <param name="poolMaxSize">连接池最大数量</param>
+        /// <param name="port">端口</param>
+        public abstract string CreateDbConnstring(string userID, string passWord, string server, string catalog, string dataVer, int connectTimeout = 60, int poolMinSize = 16, int poolMaxSize = 100, string port = "");
+
+        /// <summary>
+        ///     获取数据库文件的路径
+        /// </summary>
+        /// <param name="filePath">数据库路径</param>
+        protected string GetFilePath(string filePath)
+        {
+            if (filePath.IndexOf(':') > -1) { return filePath; }
+
+            var fileName = filePath.Replace("/", "\\");
+            if (fileName.StartsWith("/")) { fileName = fileName.Substring(1); }
+
+            fileName = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "App_Data/" + fileName);
+            return fileName;
         }
     }
 }

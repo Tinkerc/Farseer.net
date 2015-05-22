@@ -63,7 +63,6 @@ namespace FS.Core.Client.Common
             if (string.IsNullOrWhiteSpace(strSelectSql)) { strSelectSql = "*"; }
             if (!string.IsNullOrWhiteSpace(strWhereSql)) { strWhereSql = "WHERE " + strWhereSql; }
             if (!string.IsNullOrWhiteSpace(strOrderBySql)) { strOrderBySql = "ORDER BY " + strOrderBySql; }
-            if (isDistinct && isRand) { strSelectSql += ",NEWID() as newid "; }
 
             if (!isRand)
             {
@@ -71,11 +70,11 @@ namespace FS.Core.Client.Common
             }
             else if (string.IsNullOrWhiteSpace(strOrderBySql))
             {
-                Queue.Sql.AppendFormat("SELECT {0} {1} {2} FROM {3} {4} ORDER BY NEWID()", strDistinctSql, strTopSql, strSelectSql, QueueManger.DbProvider.KeywordAegis(Queue.Name), strWhereSql);
+                Queue.Sql.AppendFormat("SELECT {0} {1} {2}{5} FROM {3} {4} ORDER BY NEWID()", strDistinctSql, strTopSql, strSelectSql, QueueManger.DbProvider.KeywordAegis(Queue.Name), strWhereSql, isDistinct ? ",NEWID() as newid" : "");
             }
             else
             {
-                Queue.Sql.AppendFormat("SELECT {2} FROM (SELECT {0} {1} * FROM {3} {4} ORDER BY NEWID()) a {5}", strDistinctSql, strTopSql, strSelectSql, QueueManger.DbProvider.KeywordAegis(Queue.Name), strWhereSql, strOrderBySql);
+                Queue.Sql.AppendFormat("SELECT {2} FROM (SELECT {0} {1} *{6} FROM {3} {4} ORDER BY NEWID()) a {5}", strDistinctSql, strTopSql, strSelectSql, QueueManger.DbProvider.KeywordAegis(Queue.Name), strWhereSql, strOrderBySql, isDistinct ? ",NEWID() as newid" : "");
             }
             return Queue;
         }

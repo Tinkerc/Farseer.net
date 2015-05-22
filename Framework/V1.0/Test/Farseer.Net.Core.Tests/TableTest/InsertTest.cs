@@ -15,8 +15,11 @@ namespace Farseer.Net.Core.Tests.TableTest
             UserVO info;
             using (var context = new Table())
             {
-                context.User.Insert(new UserVO() { UserName = "xx" });
+                info = new UserVO() { UserName = "xx" };
+                context.User.Insert(info, true);
                 context.SaveChanges();
+
+                Assert.IsTrue(info.ID.GetValueOrDefault() > 0);
 
                 info = context.User.Desc(o => o.ID).ToEntity();
                 Assert.IsTrue(info.UserName == "xx");

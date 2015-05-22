@@ -40,7 +40,6 @@ namespace FS.Core.Client.Oracle
             if (string.IsNullOrWhiteSpace(strSelectSql)) { strSelectSql = "*"; }
             if (!string.IsNullOrWhiteSpace(strWhereSql)) { strWhereSql = "WHERE " + strWhereSql; }
             if (!string.IsNullOrWhiteSpace(strOrderBySql)) { strOrderBySql = "ORDER BY " + strOrderBySql; }
-            if (isDistinct && isRand) { strSelectSql += ",dbms_random.value as newid "; }
 
             if (!isRand)
             {
@@ -48,11 +47,11 @@ namespace FS.Core.Client.Oracle
             }
             else if (string.IsNullOrWhiteSpace(strOrderBySql))
             {
-                Queue.Sql.AppendFormat("SELECT {0} {1} FROM {2} {3} ORDER BY dbms_random.value {4}", strDistinctSql, strSelectSql, QueueManger.DbProvider.KeywordAegis(Queue.Name), strWhereSql, strTopSql);
+                Queue.Sql.AppendFormat("SELECT {0} {1}{5} FROM {2} {3} ORDER BY dbms_random.value {4}", strDistinctSql, strSelectSql, QueueManger.DbProvider.KeywordAegis(Queue.Name), strWhereSql, strTopSql, isDistinct ? ",dbms_random.value as newid" : "");
             }
             else
             {
-                Queue.Sql.AppendFormat("SELECT {1} FROM (SELECT {0} * FROM {2} {3} ORDER BY dbms_random.value {5}) a {4}", strDistinctSql, strSelectSql, QueueManger.DbProvider.KeywordAegis(Queue.Name), strWhereSql, strOrderBySql, strTopSql);
+                Queue.Sql.AppendFormat("SELECT {1} FROM (SELECT {0} *{6} FROM {2} {3} ORDER BY dbms_random.value {5}) a {4}", strDistinctSql, strSelectSql, QueueManger.DbProvider.KeywordAegis(Queue.Name), strWhereSql, strOrderBySql, strTopSql, isDistinct ? ",dbms_random.value as newid" : "");
             }
             return Queue;
         }

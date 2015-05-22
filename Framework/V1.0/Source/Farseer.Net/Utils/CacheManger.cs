@@ -5,6 +5,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq.Expressions;
 using FS.Configs;
 using FS.Core;
+using FS.Core.Infrastructure;
 using FS.Mapping.Context;
 using FS.Mapping.Verify;
 
@@ -105,9 +106,7 @@ namespace FS.Utils
                 if (ConnList.ContainsKey(dbIndex)) return ConnList[dbIndex];
 
                 DbInfo dbInfo = dbIndex;
-                ConnList.Add(dbIndex, DbFactory.CreateConnString(dbInfo.DataType, dbInfo.UserID, dbInfo.PassWord, dbInfo.Server, dbInfo.Catalog,
-                    dbInfo.DataVer, dbInfo.ConnectTimeout, dbInfo.PoolMinSize, dbInfo.PoolMaxSize,
-                    dbInfo.Port));
+                ConnList.Add(dbIndex, DbProvider.CreateInstance(dbInfo.DataType).CreateDbConnstring(dbInfo.UserID, dbInfo.PassWord, dbInfo.Server, dbInfo.Catalog, dbInfo.DataVer, dbInfo.ConnectTimeout, dbInfo.PoolMinSize, dbInfo.PoolMaxSize, dbInfo.Port));
             }
 
             return ConnList[dbIndex];

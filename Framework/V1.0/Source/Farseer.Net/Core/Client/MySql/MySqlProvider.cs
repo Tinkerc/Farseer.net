@@ -19,5 +19,10 @@ namespace FS.Core.Client.MySql
         {
             return new SqlBuilder(queueManger, queue);
         }
+
+        public override string CreateDbConnstring(string userID, string passWord, string server, string catalog, string dataVer, int connectTimeout = 60, int poolMinSize = 16, int poolMaxSize = 100, string port = "")
+        {
+            return string.Format("Data Source='{0}';User Id='{1}';Password='{2}';Database='{3}';charset='gbk'", server, userID, passWord, catalog);
+        }
     }
 }

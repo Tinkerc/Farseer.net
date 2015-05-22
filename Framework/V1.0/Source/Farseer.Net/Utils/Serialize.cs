@@ -38,7 +38,6 @@ namespace FS.Utils
             {
                 var serializer = new XmlSerializer(t.GetType());
                 serializer.Serialize(fs, t);
-                fs.Close();
             }
         }
     }
