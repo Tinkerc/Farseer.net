@@ -52,7 +52,7 @@ namespace FS.Core.Client.SqLite
             }
             else
             {
-                Queue.Sql.AppendFormat("SELECT * FROM (SELECT {0} {1} FROM {2} {3} ORDER BY Rand() {5}) a {4}", strDistinctSql, strSelectSql, QueueManger.DbProvider.KeywordAegis(Queue.Name), strWhereSql, strOrderBySql, strTopSql);
+                Queue.Sql.AppendFormat("SELECT {1} FROM (SELECT {0} * FROM {2} {3} ORDER BY Rand() {5}) a {4}", strDistinctSql, strSelectSql, QueueManger.DbProvider.KeywordAegis(Queue.Name), strWhereSql, strOrderBySql, strTopSql);
             }
             return Queue;
         }
