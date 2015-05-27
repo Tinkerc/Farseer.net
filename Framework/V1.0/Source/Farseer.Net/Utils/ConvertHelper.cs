@@ -375,7 +375,7 @@ namespace FS.Utils
         {
             for (var i = 0; i < reader.FieldCount; i++)
             {
-                if (reader.GetName(i).Equals(name)) { return true; }
+                if (reader.GetName(i).IsEquals(name)) { return true; }
             }
             return false;
         }

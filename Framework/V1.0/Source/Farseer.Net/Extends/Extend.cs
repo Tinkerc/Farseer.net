@@ -97,5 +97,28 @@ namespace FS.Extends
         {
             return Enumerable.Contains(lst, value.GetValueOrDefault());
         }
+
+        /// <summary>
+        ///     比较两者是否相等，不考虑大小写,两边空格
+        /// </summary>
+        /// <param name="str">对比一</param>
+        /// <param name="str2">对比二</param>
+        /// <returns></returns>
+        public static bool IsEquals(this string str, string str2)
+        {
+            if (str == str2)
+            {
+                return true;
+            }
+            if (str == null || str2 == null)
+            {
+                return false;
+            }
+            if (str.Trim().Length != str2.Trim().Length)
+            {
+                return false;
+            }
+            return String.Compare(str.Trim(), str2.Trim(), StringComparison.OrdinalIgnoreCase) == 0;
+        }
     }
 }
