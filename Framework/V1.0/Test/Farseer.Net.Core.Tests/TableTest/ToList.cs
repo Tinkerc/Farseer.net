@@ -22,7 +22,8 @@ namespace Farseer.Net.Core.Tests.TableTest
                 // 取前十条 随机 非重复的数据
                 Assert.IsTrue(context.User.Desc(o => o.ID).ToList(10, true, true).Count <= 10);
                 // 取 随机 非重复的数据
-                context.User.ToList(0, true, true);
+                var IDValue = 0;
+                context.User.Where(o => o.ID == (1 + 3) || o.ID > (IDValue + 3)).ToList(0, true, true);
                 // 取 随机 的数据
                 context.User.ToList(0, true);
                 // 取 非重复 的数据

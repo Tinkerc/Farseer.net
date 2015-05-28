@@ -75,6 +75,7 @@ namespace FS.Core.Infrastructure
                 case ExpressionType.ListInit:
                 case ExpressionType.Call:
                 case ExpressionType.Constant:
+                case ExpressionType.Convert:
                 case ExpressionType.MemberAccess: exp = VisitConvertExp(exp); break;
             }
 
@@ -295,6 +296,10 @@ namespace FS.Core.Infrastructure
                     }
                 case ExpressionType.Parameter: return !exp.Type.IsClass && !exp.Type.IsAbstract && !exp.Type.IsInterface;
                 case ExpressionType.Convert: return IsFieldValue(((UnaryExpression)exp).Operand);
+                case ExpressionType.Add:
+                case ExpressionType.Subtract:
+                case ExpressionType.Multiply:
+                case ExpressionType.Divide: return IsFieldValue(((BinaryExpression)exp).Left) && IsFieldValue(((BinaryExpression)exp).Right);
                 case ExpressionType.ArrayIndex:
                 case ExpressionType.ListInit:
                 case ExpressionType.Constant: { return true; }

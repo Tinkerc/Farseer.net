@@ -72,3 +72,7 @@
 /Framework/V1.0/Source/Farseer.Net.Utils.Web/obj
 /Framework/V1.0/Source/Farseer.Net.Utils.Form/obj
 /Framework/V1.0/Source/Farseer.Net.Utils/obj
+/Framework/V1.0/Test/EntityFramework.Tests/bin
+/Framework/V1.0/Test/EntityFramework.Tests/obj
+/Framework/V1.0/Test/NHibernate.Tests/obj
+/Framework/V1.0/Test/NHibernate.Tests/bin
