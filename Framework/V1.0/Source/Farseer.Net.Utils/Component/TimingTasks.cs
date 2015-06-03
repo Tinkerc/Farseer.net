@@ -2,14 +2,14 @@
 using System.Collections.Generic;
 using System.Threading;
 
-namespace FS.Utils.Common
+namespace FS.Utils.Component
 {
     /// <summary>
     ///     定义任务
     ///     1：间隔：每隔（秒分时天星期月 ），执行ITasks.Execute()
     ///     2：指定：每当（秒分时天星期月 ），执行ITasks.Execute()
     /// </summary>
-    public class TimingTasks
+    public static class TimingTasks
     {
         private static readonly List<Timer> lstTasks;
 

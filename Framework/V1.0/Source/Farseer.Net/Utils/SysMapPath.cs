@@ -10,9 +10,9 @@ namespace FS.Utils
         /// <summary>
         /// 获取根目录下App_Data的路径
         /// </summary>
-        public static string App_Data()
+        public static string AppData
         {
-            return AppDomain.CurrentDomain.BaseDirectory + "\\App_Data\\";
+            get { return AppDomain.CurrentDomain.BaseDirectory + "\\App_Data\\"; }
         }
     }
 }

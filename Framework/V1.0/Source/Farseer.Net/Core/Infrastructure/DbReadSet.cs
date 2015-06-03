@@ -106,7 +106,7 @@ namespace FS.Core.Infrastructure
         public virtual DataTable ToTable(int top = 0, bool isDistinct = false, bool isRand = false)
         {
             DataTable dt = null;
-            QueueManger.Append(Name, Map, (queryQueue) => dt = queryQueue.SqlBuilder.ToList(top, isDistinct, isRand).ExecuteTable(), true);
+            QueueManger.Append(Name, Map, (queryQueue) => dt = queryQueue.SqlBuilder.ToList(top, isDistinct, isRand).ExecuteQuery.ToTable(), true);
             return dt;
         }
 
@@ -122,7 +122,7 @@ namespace FS.Core.Infrastructure
             if (pageSize < 0) { pageSize = 20; }
             #endregion
 
-            return Queue.SqlBuilder.ToList(pageSize, pageIndex, isDistinct).ExecuteTable();
+            return Queue.SqlBuilder.ToList(pageSize, pageIndex, isDistinct).ExecuteQuery.ToTable();
         }
 
         /// <summary> 查询多条记录（不支持延迟加载） </summary>
@@ -247,7 +247,7 @@ namespace FS.Core.Infrastructure
         /// </summary>
         public virtual TEntity ToEntity()
         {
-            return Queue.SqlBuilder.ToEntity().ExecuteInfo<TEntity>();
+            return Queue.SqlBuilder.ToEntity().ExecuteQuery.ToEntity<TEntity>();
         }
 
         /// <summary>
@@ -269,7 +269,7 @@ namespace FS.Core.Infrastructure
         /// </summary>
         public virtual int Count(bool isDistinct = false, bool isRand = false)
         {
-            return Queue.SqlBuilder.Count().ExecuteQuery<int>();
+            return Queue.SqlBuilder.Count().ExecuteQuery.ToValue<int>();
         }
 
         /// <summary>
@@ -340,7 +340,7 @@ namespace FS.Core.Infrastructure
             if (fieldName == null) { throw new ArgumentNullException("fieldName", "查询Value操作时，fieldName参数不能为空！"); }
             Select(fieldName);
 
-            return Queue.SqlBuilder.GetValue().ExecuteQuery(defValue);
+            return Queue.SqlBuilder.GetValue().ExecuteQuery.ToValue(defValue);
         }
 
         /// <summary>
@@ -368,7 +368,7 @@ namespace FS.Core.Infrastructure
             if (fieldName == null) { throw new ArgumentNullException("fieldName", "查询Sum操作时，fieldName参数不能为空！"); }
             Select(fieldName);
 
-            return Queue.SqlBuilder.Sum().ExecuteQuery(defValue);
+            return Queue.SqlBuilder.Sum().ExecuteQuery.ToValue(defValue);
         }
 
         /// <summary>
@@ -379,7 +379,7 @@ namespace FS.Core.Infrastructure
             if (fieldName == null) { throw new ArgumentNullException("fieldName", "查询Max操作时，fieldName参数不能为空！"); }
             Select(fieldName);
 
-            return Queue.SqlBuilder.Max().ExecuteQuery(defValue);
+            return Queue.SqlBuilder.Max().ExecuteQuery.ToValue(defValue);
         }
         /// <summary>
         /// 查询最小数（不支持延迟加载）
@@ -389,7 +389,7 @@ namespace FS.Core.Infrastructure
             if (fieldName == null) { throw new ArgumentNullException("fieldName", "查询Min操作时，fieldName参数不能为空！"); }
             Select(fieldName);
 
-            return Queue.SqlBuilder.Min().ExecuteQuery(defValue);
+            return Queue.SqlBuilder.Min().ExecuteQuery.ToValue(defValue);
         }
 
         #endregion

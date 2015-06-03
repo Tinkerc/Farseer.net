@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq.Expressions;
+using System.Threading;
 using FS.Configs;
 using FS.Core;
 using FS.Core.Infrastructure;
@@ -21,6 +22,7 @@ namespace FS.Utils
         /// </summary>
         private static readonly object LockObject = new object();
 
+        #region Context映射的信息
         /// <summary>
         ///     缓存所有实体类
         /// </summary>
@@ -42,8 +44,9 @@ namespace FS.Utils
 
             return ContextMapList[type];
         }
+        #endregion
 
-
+        #region Field映射的信息
         /// <summary>
         ///     缓存所有实体类
         /// </summary>
@@ -65,8 +68,9 @@ namespace FS.Utils
 
             return FieldMapList[type];
         }
+        #endregion
 
-
+        #region 验证的实体类映射的信息
         /// <summary>
         ///     缓存所有验证的实体类
         /// </summary>
@@ -88,8 +92,9 @@ namespace FS.Utils
 
             return VerifyMapList[type];
         }
+        #endregion
 
-
+        #region 数据库连接字符串
         /// <summary>
         /// 连接字符串缓存
         /// </summary>
@@ -113,8 +118,9 @@ namespace FS.Utils
 
 
         }
+        #endregion
 
-
+        #region 实体数据缓存
         /// <summary>
         /// 实体数据缓存
         /// </summary>
@@ -146,14 +152,13 @@ namespace FS.Utils
             }
             return SetCache[setState];
         }
+        #endregion
 
-
-
+        #region 枚举的Display.Name
         /// <summary>
         ///     枚举缓存列表
         /// </summary>
         private static readonly Dictionary<string, string> EnumList = new Dictionary<string, string>();
-
         /// <summary>
         ///     返回枚举的Display.Name
         /// </summary>
@@ -189,6 +194,48 @@ namespace FS.Utils
             //如果没有检测到合适的注释，则用默认名称   
             return enumName;
         }
+        #endregion
+
+        #region Sql记录日志
+        /// <summary>
+        /// SQL日志保存定时器
+        /// </summary>
+        private static Timer _saveSqlRecord;
+        private static List<SqlRecordEntity> _sqlRecordList = new List<SqlRecordEntity>();
+        /// <summary>
+        /// 获取当前SQL日志
+        /// </summary>
+        /// <returns></returns>
+        public static List<SqlRecordEntity> GetSqlRecord()
+        {
+            if (_sqlRecordList != null && _sqlRecordList.Count > 0) { return _sqlRecordList; }
+
+            var path = SysMapPath.AppData;
+            const string fileName = "SqlLog.xml";
+            return (_sqlRecordList = Serialize.Load<List<SqlRecordEntity>>(path, fileName) ?? new List<SqlRecordEntity>());
+        }
+        /// <summary>
+        /// 添加SQL日志，并启动定时保存
+        /// </summary>
+        /// <param name="entity"></param>
+        public static void AddSqlRecord(SqlRecordEntity entity)
+        {
+            _sqlRecordList.Add(entity);
+            // 启动10秒后保存
+            if (_saveSqlRecord == null)
+            {
+                _saveSqlRecord = new Timer(o =>
+                    {
+                        var path = SysMapPath.AppData;
+                        const string fileName = "SqlLog.xml";
+                        Serialize.Save(_sqlRecordList, path, fileName);
+                        _saveSqlRecord.Dispose();
+                        _saveSqlRecord = null;
+                    }, null, 1000 * 3, -1);
+            }
+        }
+        #endregion
+
 
 
 
@@ -229,6 +276,7 @@ namespace FS.Utils
             FieldMapList.Clear();
             VerifyMapList.Clear();
             ConnList.Clear();
+            _sqlRecordList.Clear();
         }
     }
 

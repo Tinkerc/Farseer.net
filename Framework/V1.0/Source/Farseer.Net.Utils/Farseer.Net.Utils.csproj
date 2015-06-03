@@ -88,7 +88,7 @@
     <Compile Include="Common\Str.cs" />
     <Compile Include="Common\StrPlus.cs" />
     <Compile Include="Component\Thumbnail.cs" />
-    <Compile Include="Common\TimingTasks.cs" />
+    <Compile Include="Component\TimingTasks.cs" />
     <Compile Include="Common\Url.cs" />
     <Compile Include="Component\WinRAR.cs" />
   </ItemGroup>

@@ -11,12 +11,13 @@ namespace FS.Utils
         /// <summary>
         ///     反序列化（从指定路径中读取内容并转换成T）
         /// </summary>
-        /// <param name="filePath">文件路径（含名称）</param>
-        public static T Load<T>(string filePath) where T : class, new()
+        /// <param name="filePath">文件路径</param>
+        /// <param name="fileName">文件名称</param>
+        public static T Load<T>(string filePath, string fileName) where T : class, new()
         {
-            if (!File.Exists(filePath)) { return default(T); }
+            if (!File.Exists(filePath + fileName)) { return default(T); }
 
-            using (var fs = new FileStream(filePath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
+            using (var fs = new FileStream(filePath + fileName, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
             {
                 var serializer = new XmlSerializer(typeof(T));
                 return (T)serializer.Deserialize(fs);

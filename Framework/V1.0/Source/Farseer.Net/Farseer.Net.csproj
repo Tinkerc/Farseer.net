@@ -58,6 +58,8 @@
     <Compile Include="Core\Client\SqLite\SqlBuilder.cs" />
     <Compile Include="Core\Client\SqlServer\SqlBuilder.cs" />
     <Compile Include="Core\Infrastructure\DbWriteSet.cs" />
+    <Compile Include="Core\Infrastructure\ExecuteQuery.cs" />
+    <Compile Include="Core\Infrastructure\ExecuteQueryProxy.cs" />
     <Compile Include="Core\Infrastructure\IViewSet.cs" />
     <Compile Include="Core\Infrastructure\DbReadSet.cs" />
     <Compile Include="Utils\CacheManger.cs" />

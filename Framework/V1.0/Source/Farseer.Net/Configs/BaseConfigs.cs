@@ -17,7 +17,7 @@ namespace FS.Configs
         /// <summary>
         ///     配置文件路径
         /// </summary>
-        private static string filePath = SysMapPath.App_Data();
+        private static string filePath = SysMapPath.AppData;
 
         /// <summary>
         ///     配置文件名称
@@ -81,7 +81,7 @@ namespace FS.Configs
 
             lock (m_LockHelper)
             {
-                m_ConfigEntity = Serialize.Load<T>(filePath + FileName);
+                m_ConfigEntity = Serialize.Load<T>(filePath,FileName);
                 LoadTime = DateTime.Now;
             }
         }

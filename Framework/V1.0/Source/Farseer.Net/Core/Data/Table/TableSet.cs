@@ -95,7 +95,7 @@ namespace FS.Core.Data.Table
             if (entity == null) { throw new ArgumentNullException("entity", "更新操作时，参数不能为空！"); }
 
             // 加入委托
-            QueueManger.Append(Name, Map, (queryQueue) => queryQueue.SqlBuilder.Update(entity).Execute(), !_context.IsMergeCommand);
+            QueueManger.Append(Name, Map, (queryQueue) => queryQueue.SqlBuilder.Update(entity).ExecuteQuery.Execute(), !_context.IsMergeCommand);
         }
 
         /// <summary>
@@ -148,11 +148,11 @@ namespace FS.Core.Data.Table
             // 加入委托
             QueueManger.Append(Name, Map, (queryQueue) =>
             {
-                if (!isReturnLastID){ queryQueue.SqlBuilder.Insert(entity).Execute(); }
+                if (!isReturnLastID) { queryQueue.SqlBuilder.Insert(entity).ExecuteQuery.Execute(); }
                 else
                 {
                     // 返回主键ID
-                    var ident = Queue.SqlBuilder.InsertIdentity(entity).ExecuteQuery<int>();
+                    var ident = Queue.SqlBuilder.InsertIdentity(entity).ExecuteQuery.ToValue<int>();
                     // 设置主键ID
                     Map.PrimaryState.Key.SetValue(entity, ident, null);
                 }
@@ -169,7 +169,7 @@ namespace FS.Core.Data.Table
             if (entity == null) { throw new ArgumentNullException("entity", "插入操作时，参数不能为空！"); }
 
             var ident = 0;
-            QueueManger.Append(Name, Map, (queryQueue) => ident = Queue.SqlBuilder.InsertIdentity(entity).ExecuteQuery<int>(), !_context.IsMergeCommand);
+            QueueManger.Append(Name, Map, (queryQueue) => ident = Queue.SqlBuilder.InsertIdentity(entity).ExecuteQuery.ToValue<int>(), !_context.IsMergeCommand);
             identity = ident;
         }
 
@@ -186,7 +186,7 @@ namespace FS.Core.Data.Table
             {
                 // 如果是MSSQLSER，则启用BulkCopy
                 if (QueueManger.DataBase.DataType == DataBaseType.SqlServer) { QueueManger.DataBase.ExecuteSqlBulkCopy(Name, ConvertHelper.ToTable(lst)); }
-                else { lst.ForEach(entity => Queue.SqlBuilder.Insert(entity).Execute()); }
+                else { lst.ForEach(entity => Queue.SqlBuilder.Insert(entity).ExecuteQuery.Execute()); }
             }, !_context.IsMergeCommand);
 
         }
@@ -199,7 +199,7 @@ namespace FS.Core.Data.Table
         public void Delete()
         {
             // 加入委托
-            QueueManger.Append(Name, Map, (queryQueue) => queryQueue.SqlBuilder.Delete().Execute(), !_context.IsMergeCommand);
+            QueueManger.Append(Name, Map, (queryQueue) => queryQueue.SqlBuilder.Delete().ExecuteQuery.Execute(), !_context.IsMergeCommand);
         }
         /// <summary>
         ///     删除数据
@@ -253,7 +253,7 @@ namespace FS.Core.Data.Table
             if (Queue.ExpAssign == null) { throw new ArgumentNullException("ExpAssign", "+=字段操作时，必须先执行AddUp的另一个重载版本！"); }
 
             // 加入委托
-            QueueManger.Append(Name, Map, (queryQueue) => queryQueue.SqlBuilder.AddUp().Execute(), !_context.IsMergeCommand);
+            QueueManger.Append(Name, Map, (queryQueue) => queryQueue.SqlBuilder.AddUp().ExecuteQuery.Execute(), !_context.IsMergeCommand);
 
         }
 
