@@ -29,7 +29,7 @@ namespace FS.Core.Infrastructure
             var val = func();
             timer.Stop();
 
-            new SqlRecordEntity(Queue.Name, Queue.Sql, Queue.Param).Write(timer.ElapsedMilliseconds);
+            new SqlRecordEntity(Queue.ID, Queue.Name, Queue.Sql, Queue.Param).Write(timer.ElapsedMilliseconds);
             return val;
         }
 
@@ -72,14 +72,16 @@ namespace FS.Core.Infrastructure
     public class SqlRecordEntity
     {
         public SqlRecordEntity() { }
-        public SqlRecordEntity(string name, StringBuilder sql, List<DbParameter> param)
+        public SqlRecordEntity(Guid id, string name, StringBuilder sql, List<DbParameter> param)
         {
+            ID = id.ToString();
             Name = name;
             SqlParamList = new List<SqlParam>();
             Sql = sql != null ? sql.ToString() : "";
             if (param != null && param.Count > 0) { param.ForEach(o => SqlParamList.Add(new SqlParam { Name = o.ParameterName, Value = o.Value.ToString() })); }
         }
-
+        /// <summary> 当前队列的ID </summary>
+        public string ID { get; set; }
         /// <summary> 执行时间（毫秒） </summary>
         public long UserTime { get; set; }
         /// <summary> 执行表名称 </summary>

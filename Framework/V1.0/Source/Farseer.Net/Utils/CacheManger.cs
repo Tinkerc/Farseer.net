@@ -201,14 +201,15 @@ namespace FS.Utils
         /// SQL日志保存定时器
         /// </summary>
         private static Timer _saveSqlRecord;
-        private static List<SqlRecordEntity> _sqlRecordList = new List<SqlRecordEntity>();
+
+        private static List<SqlRecordEntity> _sqlRecordList;
         /// <summary>
         /// 获取当前SQL日志
         /// </summary>
         /// <returns></returns>
         public static List<SqlRecordEntity> GetSqlRecord()
         {
-            if (_sqlRecordList != null && _sqlRecordList.Count > 0) { return _sqlRecordList; }
+            if (_sqlRecordList != null) { return _sqlRecordList; }
 
             var path = SysMapPath.AppData;
             const string fileName = "SqlLog.xml";
@@ -220,6 +221,8 @@ namespace FS.Utils
         /// <param name="entity"></param>
         public static void AddSqlRecord(SqlRecordEntity entity)
         {
+            lock (LockObject) { GetSqlRecord(); }
+
             _sqlRecordList.Add(entity);
             // 启动10秒后保存
             if (_saveSqlRecord == null)
@@ -231,7 +234,7 @@ namespace FS.Utils
                         Serialize.Save(_sqlRecordList, path, fileName);
                         _saveSqlRecord.Dispose();
                         _saveSqlRecord = null;
-                    }, null, 1000 * 3, -1);
+                    }, null, 1000 * 1, -1);
             }
         }
         #endregion

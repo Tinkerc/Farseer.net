@@ -35,6 +35,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Farseer.Net.Utils.Form", "S
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Farseer.Net.Utils", "Source\Farseer.Net.Utils\Farseer.Net.Utils.csproj", "{9E86E93E-F4A9-4B48-BDD8-2DC9EC4568F4}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Farseer.Net.Tools.SqlLog", "Tools\Farseer.Net.Tools.SqlLog\Farseer.Net.Tools.SqlLog.csproj", "{BE473754-9067-445C-BC59-26AA4D138096}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tools", "Tools", "{1D7D3556-1149-4D40-85AE-2A3418CA1670}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -93,6 +97,10 @@ Global
 		{9E86E93E-F4A9-4B48-BDD8-2DC9EC4568F4}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9E86E93E-F4A9-4B48-BDD8-2DC9EC4568F4}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9E86E93E-F4A9-4B48-BDD8-2DC9EC4568F4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BE473754-9067-445C-BC59-26AA4D138096}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BE473754-9067-445C-BC59-26AA4D138096}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BE473754-9067-445C-BC59-26AA4D138096}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BE473754-9067-445C-BC59-26AA4D138096}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -111,5 +119,6 @@ Global
 		{1E717783-D834-4A1B-A3FE-1D426E76CD97} = {1680B9CB-7327-4EB1-B0C5-9BFA18469650}
 		{0D70F49B-769F-4D5C-8ECA-B01FCCED6F20} = {1680B9CB-7327-4EB1-B0C5-9BFA18469650}
 		{F0CC9AF7-0428-4DFE-A744-556E753D3B79} = {1680B9CB-7327-4EB1-B0C5-9BFA18469650}
+		{BE473754-9067-445C-BC59-26AA4D138096} = {1D7D3556-1149-4D40-85AE-2A3418CA1670}
 	EndGlobalSection
 EndGlobal
