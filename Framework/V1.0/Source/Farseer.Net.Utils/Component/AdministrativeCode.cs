@@ -134,6 +134,24 @@ namespace FS.Utils.Component
         /// 下级行政
         /// </summary>
         public List<AdministrativeCode> SubAdministrativeCode { get; set; }
+        public AdministrativeCode GetCity()
+        {
+            switch (Level)
+            {
+                case 0: return SubAdministrativeCode[0];
+                case 2: return Find(ID / 100 * 100);
+            }
+            return this;
+        }
+        public AdministrativeCode GetProvince()
+        {
+            switch (Level)
+            {
+                case 1:
+                case 2: return Find(ID / 10000 * 10000);
+            }
+            return this;
+        }
         #endregion
     }
 }
