@@ -70,6 +70,9 @@
             this.行号 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.表名称 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.执行Sql = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.toolStripStatusLabel1 = new System.Windows.Forms.ToolStripStatusLabel();
+            this.toolStripStatusLabel2 = new System.Windows.Forms.ToolStripStatusLabel();
+            this.statusStrip1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.toolStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgv)).BeginInit();
@@ -77,6 +80,9 @@
             // 
             // statusStrip1
             // 
+            this.statusStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.toolStripStatusLabel1,
+            this.toolStripStatusLabel2});
             this.statusStrip1.Location = new System.Drawing.Point(0, 699);
             this.statusStrip1.Name = "statusStrip1";
             this.statusStrip1.Size = new System.Drawing.Size(1048, 22);
@@ -434,6 +440,18 @@
             this.执行Sql.Name = "执行Sql";
             this.执行Sql.ReadOnly = true;
             // 
+            // toolStripStatusLabel1
+            // 
+            this.toolStripStatusLabel1.Name = "toolStripStatusLabel1";
+            this.toolStripStatusLabel1.Size = new System.Drawing.Size(32, 17);
+            this.toolStripStatusLabel1.Text = "数量";
+            // 
+            // toolStripStatusLabel2
+            // 
+            this.toolStripStatusLabel2.Name = "toolStripStatusLabel2";
+            this.toolStripStatusLabel2.Size = new System.Drawing.Size(15, 17);
+            this.toolStripStatusLabel2.Text = "0";
+            // 
             // FrmMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
@@ -447,6 +465,8 @@
             this.Text = "Sql日志监测器";
             this.WindowState = System.Windows.Forms.FormWindowState.Maximized;
             this.Load += new System.EventHandler(this.FrmMain_Load);
+            this.statusStrip1.ResumeLayout(false);
+            this.statusStrip1.PerformLayout();
             this.groupBox2.ResumeLayout(false);
             this.groupBox2.PerformLayout();
             this.toolStrip1.ResumeLayout(false);
@@ -499,6 +519,8 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn 表名称;
         private System.Windows.Forms.DataGridViewTextBoxColumn 执行Sql;
         private System.Windows.Forms.Button btnOpenVS;
+        private System.Windows.Forms.ToolStripStatusLabel toolStripStatusLabel1;
+        private System.Windows.Forms.ToolStripStatusLabel toolStripStatusLabel2;
 
 
     }

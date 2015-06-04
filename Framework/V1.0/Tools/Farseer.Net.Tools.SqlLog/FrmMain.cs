@@ -96,6 +96,7 @@ namespace Farseer.Net.Tools.SqlLog
                 }
                 Invoke((EventHandler)delegate
                 {
+                    toolStripStatusLabel2.Text = selectSqlRecordList.Count.ToString();
                     dgv.Visible = true;
                 });
             });
@@ -131,52 +132,58 @@ namespace Farseer.Net.Tools.SqlLog
 
         private void btnOpenVS_Click(object sender, EventArgs e)
         {
+            var isHaveVs = Process.GetProcessesByName("devenv").Length > 0;
+
             #region 注册表打开
-            //try
-            //{
-            //    // 先获取VS安装路径
-            //    if (string.IsNullOrWhiteSpace(vsPath))
-            //    {
-            //        // 通过注册表，找到VS安装路径
-            //        var regKey = Registry.CurrentUser.OpenSubKey(@"Software\Microsoft\VisualStudio");
-            //        if (regKey != null)
-            //        {
-            //            // 找到末尾带_Config名字的Key项
-            //            var lstSubKey = regKey.GetSubKeyNames().Where(o => o.EndsWith("_Config")).OrderByDescending(o => o.Split('.')[0].ConvertType(0));
-
-            //            foreach (var openSubKey in lstSubKey.Select(subKey => regKey.OpenSubKey(subKey + @"\Setup\VS\")).Where(openSubKey => openSubKey != null))
-            //            {
-            //                // 找到安装路径
-            //                vsPath = openSubKey.GetValue("EnvironmentPath").ToString();
-            //                if (File.Exists(vsPath)) break;
-            //                vsPath = string.Empty;
-            //            }
-            //        }
-            //    }
-
-            //    // 用VS打开，并定位行号
-            //    if (File.Exists(vsPath)) { Process.Start(vsPath, textBox8.Text + " /command  \"Edit.GoTo " + textBox4.Text + "\""); return; }
-            //}
-            //catch (Exception ex) { MessageBox.Show(ex.Message); }
-            #endregion
-
-            // 无法用注册表找到VS程序时，直接打开源程序文件
-            Process.Start(textBox8.Text);
-            Thread.Sleep(Convert.ToInt32(3 * 1000));//开起程序后等待
-            // Ctrl + g
-            SendKeys.SendWait("^g");
-            Thread.Sleep(100);
-            // 清除现有行数
-            SendKeys.SendWait("{BACKSPACE}");
-            // 输入行号
-            foreach (var c in textBox4.Text)
+            try
             {
-                SendKeys.Send(c.ToString());
+                // 先获取VS安装路径
+                if (string.IsNullOrWhiteSpace(vsPath))
+                {
+                    // 通过注册表，找到VS安装路径
+                    var regKey = Registry.CurrentUser.OpenSubKey(@"Software\Microsoft\VisualStudio");
+                    if (regKey != null)
+                    {
+                        // 找到末尾带_Config名字的Key项
+                        var lstSubKey = regKey.GetSubKeyNames().Where(o => o.EndsWith("_Config")).OrderByDescending(o => o.Split('.')[0].ConvertType(0));
+
+                        foreach (var openSubKey in lstSubKey.Select(subKey => regKey.OpenSubKey(subKey + @"\Setup\VS\")).Where(openSubKey => openSubKey != null))
+                        {
+                            // 找到安装路径
+                            vsPath = openSubKey.GetValue("EnvironmentPath").ToString();
+                            if (File.Exists(vsPath)) break;
+                            vsPath = string.Empty;
+                        }
+                    }
+                }
+
+                // 用VS打开，并定位行号
+                if (File.Exists(vsPath) && !isHaveVs) { Process.Start(vsPath, textBox8.Text + " /command  \"Edit.GoTo " + textBox4.Text + "\""); return; }
+
+                // 用注册表的安装程序打开
+                if (File.Exists(vsPath)) { Process.Start(vsPath, "/Edit " + textBox8.Text + " /command  \"Edit.GoTo " + textBox4.Text + "\""); }
+                // 无法用注册表找到VS程序时，直接打开源程序文件
+                else { Process.Start(textBox8.Text); }
+
+                // 下面用键盘操作定位
+                Thread.Sleep(isHaveVs ? 1000 : 4000);//开起程序后等待
+                // Ctrl + g
+                SendKeys.SendWait("^g");
                 Thread.Sleep(100);
+                // 清除现有行数
+                SendKeys.SendWait("{BACKSPACE}");
+                // 输入行号
+                foreach (var c in textBox4.Text)
+                {
+                    SendKeys.Send(c.ToString());
+                    Thread.Sleep(100);
+                }
+                // 回车
+                SendKeys.SendWait("~");
+                SendKeys.SendWait("+{END}");
             }
-            // 回车
-            SendKeys.SendWait("~");
-            SendKeys.SendWait("+{END}");
+            catch (Exception ex) { MessageBox.Show(ex.Message); }
+            #endregion
         }
 
         private void dgv_CellDoubleClick(object sender, DataGridViewCellEventArgs e)
