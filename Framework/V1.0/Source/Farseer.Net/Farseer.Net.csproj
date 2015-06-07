@@ -62,7 +62,7 @@
     <Compile Include="Core\Infrastructure\ExecuteQueryProxy.cs" />
     <Compile Include="Core\Infrastructure\IViewSet.cs" />
     <Compile Include="Core\Infrastructure\DbReadSet.cs" />
-    <Compile Include="Utils\CacheManger.cs" />
+    <Compile Include="Core\CacheManger.cs" />
     <Compile Include="Core\Client\Common\ExpressionBool.cs" />
     <Compile Include="Core\Client\MySql\ExpressionBool.cs">
       <SubType>Code</SubType>

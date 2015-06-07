@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Data;
+using FS.Core;
 using FS.Utils;
 
 // ReSharper disable once CheckNamespace

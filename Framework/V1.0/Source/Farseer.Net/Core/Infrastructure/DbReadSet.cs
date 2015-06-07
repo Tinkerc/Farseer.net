@@ -10,9 +10,7 @@ using FS.Utils;
 
 namespace FS.Core.Infrastructure
 {
-    public abstract class DbReadSet<TSet, TEntity>
-        where TSet : DbReadSet<TSet, TEntity>
-        where TEntity : class, new()
+    public abstract class DbReadSet<TSet, TEntity> where TSet : DbReadSet<TSet, TEntity> where TEntity : class, new()
     {
         protected Queue Queue { get { return QueueManger.CreateQueue(Name, Map); } }
         /// <summary>
@@ -28,6 +26,7 @@ namespace FS.Core.Infrastructure
         /// </summary>
         protected SetState SetState;
         protected abstract BaseQueueManger QueueManger { get; }
+        private List<TEntity> _lstCurrentCache;
 
         public DbReadSet()
         {

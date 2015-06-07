@@ -7,6 +7,7 @@ using System.Reflection;
 using System.Text;
 using System.Web;
 using FS.Configs;
+using FS.Core;
 using FS.Extends;
 using FS.Utils.Common;
 using FS.Utils.Web.Component;

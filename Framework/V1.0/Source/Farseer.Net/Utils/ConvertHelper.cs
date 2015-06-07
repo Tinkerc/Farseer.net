@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 using System.Linq.Expressions;
+using FS.Core;
 using FS.Core.Infrastructure;
 using FS.Extends;
 
@@ -11,7 +12,7 @@ namespace FS.Utils
     /// <summary>
     /// 类型转换器
     /// </summary>
-    public class ConvertHelper
+    public static class ConvertHelper
     {
         /// <summary>
         ///     将对象转换为T类型

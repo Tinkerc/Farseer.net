@@ -1,12 +1,11 @@
-﻿// Copyright (c) Microsoft Open Technologies, Inc. All rights reserved. See License.txt in the project root for license information.
+﻿using System;
 
-using System;
 namespace FS.Utils
 {
     /// <summary>
     /// 检测
     /// </summary>
-    public class Check
+    public static class Check
     {
         /// <summary>
         /// 当为空时，报参数不能为空的异常信息

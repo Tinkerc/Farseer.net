@@ -5,12 +5,12 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq.Expressions;
 using System.Threading;
 using FS.Configs;
-using FS.Core;
 using FS.Core.Infrastructure;
 using FS.Mapping.Context;
 using FS.Mapping.Verify;
+using FS.Utils;
 
-namespace FS.Utils
+namespace FS.Core
 {
     /// <summary>
     /// 框架缓存管理

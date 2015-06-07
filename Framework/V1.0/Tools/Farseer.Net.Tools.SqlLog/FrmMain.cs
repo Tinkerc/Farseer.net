@@ -157,10 +157,10 @@ namespace Farseer.Net.Tools.SqlLog
                     }
                 }
 
-                // 用VS打开，并定位行号
+                // 用VS打开，并定位行号（不存在进程时）
                 if (File.Exists(vsPath) && !isHaveVs) { Process.Start(vsPath, textBox8.Text + " /command  \"Edit.GoTo " + textBox4.Text + "\""); return; }
 
-                // 用注册表的安装程序打开
+                // 用注册表的安装程序打开（已存在进程时）
                 if (File.Exists(vsPath)) { Process.Start(vsPath, "/Edit " + textBox8.Text + " /command  \"Edit.GoTo " + textBox4.Text + "\""); }
                 // 无法用注册表找到VS程序时，直接打开源程序文件
                 else { Process.Start(textBox8.Text); }

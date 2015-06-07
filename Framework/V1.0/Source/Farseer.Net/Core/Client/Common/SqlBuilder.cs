@@ -1,10 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.Text;
 using FS.Core.Data;
 using FS.Core.Infrastructure;
-using FS.Mapping.Context.Attribute;
 using FS.Utils;
 
 namespace FS.Core.Client.Common

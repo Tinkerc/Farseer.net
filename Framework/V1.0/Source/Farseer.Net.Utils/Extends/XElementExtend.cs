@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Xml.Linq;
+using FS.Core;
 using FS.Mapping.Context;
 using FS.Utils;
 
