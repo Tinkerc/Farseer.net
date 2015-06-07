@@ -1,13 +1,12 @@
 ﻿using System;
 using System.IO;
-using FS.Utils;
 
-namespace FS.Configs
+namespace FS.Utils
 {
     /// <summary>
     ///     配置管理工具
     /// </summary>
-    public class BaseConfigs<T> where T : class, new()
+    public abstract class AbsConfigs<T> where T : class, new()
     {
         /// <summary>
         ///     锁对象

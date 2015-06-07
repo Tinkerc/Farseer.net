@@ -46,6 +46,9 @@
     <Compile Include="Component\Mvc\Routing\DomainData.cs" />
     <Compile Include="Component\Mvc\Routing\DomainRoute.cs" />
     <Compile Include="Component\Mvc\Routing\LinkExtensions.cs" />
+    <Compile Include="Configs\WebConfigs.cs" />
+    <Compile Include="Configs\WebRewriterConfigs.cs" />
+    <Compile Include="Configs\WebSystemConfigs.cs" />
     <Compile Include="Extends\CheckBoxListExtend.cs">
       <SubType>Code</SubType>
     </Compile>

@@ -28,7 +28,7 @@ namespace FS.Utils.Web.Page
         /// </summary>
         protected BaseController()
         {
-            WebTitle = GeneralConfigs.ConfigEntity.WebTitle;
+            WebTitle = WebConfigs.ConfigEntity.WebTitle;
         }
 
         #region Request

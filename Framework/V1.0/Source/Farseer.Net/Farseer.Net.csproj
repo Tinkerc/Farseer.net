@@ -44,12 +44,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Configs\BaseConfigs.cs" />
-    <Compile Include="Configs\CacheConfigs.cs" />
+    <Compile Include="Utils\AbsConfigs.cs" />
     <Compile Include="Configs\DbConfigs.cs" />
-    <Compile Include="Configs\EmailConfigs.cs" />
-    <Compile Include="Configs\GeneralConfigs.cs" />
-    <Compile Include="Configs\RewriterConfigs.cs" />
     <Compile Include="Configs\SystemConfigs.cs" />
     <Compile Include="Core\Client\Common\SqlBuilder.cs" />
     <Compile Include="Core\Client\MySql\SqlBuilder.cs" />
@@ -143,7 +139,7 @@
     </Compile>
     <Compile Include="Mapping\Context\Attribute\FieldAttribute.cs" />
     <Compile Include="Mapping\Context\Attribute\SetAttribute.cs" />
-    <Compile Include="Mapping\Context\Attribute\DBAttribute.cs" />
+    <Compile Include="Mapping\Context\Attribute\ContextAttribute.cs" />
     <Compile Include="Mapping\Context\Attribute\PropertyExtendAttribute.cs" />
     <Compile Include="Mapping\Context\FieldMap.cs" />
     <Compile Include="Mapping\Context\FieldState.cs" />

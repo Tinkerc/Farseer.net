@@ -43,6 +43,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Configs\EmailConfigs.cs" />
     <Compile Include="Extends\ArrayExtend.cs" />
     <Compile Include="Component\AdministrativeCode.cs" />
     <Compile Include="Component\Assembly.cs" />

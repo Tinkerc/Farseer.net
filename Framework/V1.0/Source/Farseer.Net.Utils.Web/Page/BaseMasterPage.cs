@@ -45,7 +45,7 @@ namespace FS.Utils.Web.Page
         /// </summary>
         protected BaseMasterPage()
         {
-            WebTitle = GeneralConfigs.ConfigEntity.WebTitle;
+            WebTitle = WebConfigs.ConfigEntity.WebTitle;
             JavaScript = new JavaScript(Page);
             LhgDialog = new LhgDialog(Page);
         }

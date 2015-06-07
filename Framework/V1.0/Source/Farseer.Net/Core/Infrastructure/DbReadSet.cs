@@ -26,7 +26,7 @@ namespace FS.Core.Infrastructure
         /// </summary>
         protected SetState SetState;
         protected abstract BaseQueueManger QueueManger { get; }
-        private List<TEntity> _lstCurrentCache;
+        //private List<TEntity> _lstCurrentCache;
 
         public DbReadSet()
         {
