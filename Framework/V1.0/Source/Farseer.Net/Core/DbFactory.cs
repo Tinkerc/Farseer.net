@@ -40,7 +40,7 @@ namespace FS.Core
                 case DataBaseType.Oracle: return DbProviderFactories.GetFactory("System.Data.OracleClient");
                 case DataBaseType.SQLite: return DbProviderFactories.GetFactory("System.Data.SQLite");
                 case DataBaseType.SqlServer: return DbProviderFactories.GetFactory("System.Data.SqlClient");
-                case DataBaseType.Xml: return DbProviderFactories.GetFactory("System.Linq.Xml");
+                //case DataBaseType.Xml: return DbProviderFactories.GetFactory("System.Linq.Xml");
             }
             return DbProviderFactories.GetFactory("System.Data.SqlClient");
         }

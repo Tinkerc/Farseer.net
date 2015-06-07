@@ -272,23 +272,15 @@ namespace FS.Core.Data
                     bulkCopy.BatchSize = dt.Rows.Count;
                     bulkCopy.BulkCopyTimeout = 3600;
                     bulkCopy.WriteToServer(dt);
-
-                    //bulkCopy.Close();
                 }
             }
-            finally
-            {
-                Close(false);
-            }
+            finally { Close(false); }
         }
 
         protected virtual void Dispose(bool disposing)
         {
             //释放托管资源
-            if (disposing)
-            {
-                Close(true);
-            }
+            if (disposing) { Close(true); }
         }
 
         /// <summary>
@@ -301,116 +293,60 @@ namespace FS.Core.Data
         }
     }
 
-    /// <summary>
-    ///     数据库类型
-    /// </summary>
+    /// <summary> 数据库类型 </summary>
     public enum DataBaseType
     {
-        /// <summary>
-        ///     SqlServer数据库
-        /// </summary>
+        /// <summary> SqlServer数据库 </summary>
         [Display(Name = "System.Data.SqlClient")]
         SqlServer,
-
-        /// <summary>
-        ///     Access数据库
-        /// </summary>
+        /// <summary> Access数据库 </summary>
         [Display(Name = "System.Data.OleDb")]
         OleDb,
-
-        /// <summary>
-        ///     MySql数据库
-        /// </summary>
+        /// <summary> MySql数据库 </summary>
         [Display(Name = "MySql.Data.MySqlClient")]
         MySql,
-
-        /// <summary>
-        ///     Xml
-        /// </summary>
-        [Display(Name = "System.Linq.Xml")]
-        Xml,
-
-        /// <summary>
-        ///     SQLite
-        /// </summary>
+        /// <summary> SQLite </summary>
         [Display(Name = "System.Data.SQLite")]
         SQLite,
-
-        /// <summary>
-        ///     Oracle
-        /// </summary>
+        /// <summary> Oracle </summary>
         [Display(Name = "System.Data.OracleClient")]
         Oracle,
     }
 
-    /// <summary>
-    ///     字段类型
-    /// </summary>
+    /// <summary> 字段类型 </summary>
     public enum FieldType
     {
-        /// <summary>
-        ///     整型
-        /// </summary>
+        /// <summary> 整型 </summary>
         [Display(Name = "Int")]
         Int,
-
-        /// <summary>
-        ///     布尔型
-        /// </summary>
+        /// <summary> 布尔型 </summary>
         [Display(Name = "Bit")]
         Bit,
-
-        /// <summary>
-        ///     可变字符串
-        /// </summary>
+        /// <summary> 可变字符串 </summary>
         [Display(Name = "Varchar")]
         Varchar,
-
-        /// <summary>
-        ///     可变字符串（双字节）
-        /// </summary>
+        /// <summary> 可变字符串（双字节） </summary>
         [Display(Name = "Nvarchar")]
         Nvarchar,
-
-        /// <summary>
-        ///     不可变字符串
-        /// </summary>
+        /// <summary> 不可变字符串 </summary>
         [Display(Name = "Char")]
         Char,
-
-        /// <summary>
-        ///     不可变字符串（双字节）
-        /// </summary>
+        /// <summary> 不可变字符串（双字节） </summary>
         [Display(Name = "NChar")]
         NChar,
-
-        /// <summary>
-        ///     不可变文本
-        /// </summary>
+        /// <summary> 不可变文本 </summary>
         [Display(Name = "Text")]
         Text,
-
-        /// <summary>
-        ///     不可变文本
-        /// </summary>
+        /// <summary> 不可变文本 </summary>
         [Display(Name = "Ntext")]
         Ntext,
-
-        /// <summary>
-        ///     日期
-        /// </summary>
+        /// <summary> 日期 </summary>
         [Display(Name = "DateTime")]
         DateTime,
-
-        /// <summary>
-        ///     短整型
-        /// </summary>
+        /// <summary> 短整型 </summary>
         [Display(Name = "Smallint")]
         Smallint,
-
-        /// <summary>
-        ///     浮点
-        /// </summary>
+        /// <summary> 浮点 </summary>
         [Display(Name = "Float")]
         Float,
     }
