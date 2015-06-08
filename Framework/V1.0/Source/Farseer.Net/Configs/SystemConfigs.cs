@@ -10,6 +10,8 @@ namespace FS.Configs
     [Serializable]
     public class SystemConfig
     {
+        /// <summary> 根据自己的需要来设置 </summary>
+        public bool DeBug = false;
         /// <summary> 开启记录数据库执行过程 </summary>
         public bool IsWriteDbLog = false;
     }
